@@ -13,7 +13,7 @@ import {
 /**
  * @description: 自己的账户详细
  */
-export async function user_account(): Promise<Result<UserAccountResponse, string>> {
+export async function userAccount(): Promise<Result<UserAccountResponse, string>> {
   return await request<UserAccountResponse, object>('/api/net_ease/user/detail', {})
 }
 //-----------------------user_detail---------------------------------------------------
@@ -21,7 +21,7 @@ export async function user_account(): Promise<Result<UserAccountResponse, string
 /**
  * @description: 用户账户详细信息
  */
-export async function user_detail(
+export async function userDetail(
   params: UserDetailRequest
 ): Promise<Result<UserDetailResponse, string>> {
   return await request<UserDetailResponse, UserDetailRequest>('/api/net_ease/user/detail', params)
@@ -31,7 +31,7 @@ export async function user_detail(
 /**
  * @description: 用户歌单信息
  */
-export async function user_playlist(
+export async function userPlaylist(
   params: UserPlaylistRequest
 ): Promise<Result<UserPlaylistResponse, string>> {
   return await request<UserPlaylistResponse, UserPlaylistRequest>(
@@ -44,7 +44,7 @@ export async function user_playlist(
  * @description: 用户最近播放记录返回数据
  * 1: 最近一周, 0: 所有时间
  */
-export async function user_record(
+export async function userRecord(
   params: UserRecordRequest
 ): Promise<Result<UserRecordResponse, string>> {
   return await request<UserRecordResponse, UserRecordRequest>('/api/net_ease/user/record', params)
@@ -53,6 +53,6 @@ export async function user_record(
 /**
  * @description: 用户粉丝
  */
-export async function user_subcount(): Promise<Result<UserSubCountResponse, string>> {
+export async function userSubcount(): Promise<Result<UserSubCountResponse, string>> {
   return await request<UserSubCountResponse, object>('/api/net_ease/user/record', {})
 }

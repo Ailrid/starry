@@ -12,7 +12,7 @@ import { PlaylistCreateResponse, PlaylistDetailResponse } from './types/response
 /**
  * @description: 创建歌单
  */
-export async function playlist_create(
+export async function playlistCreate(
   params: PlaylistCreateRequest
 ): Promise<Result<PlaylistCreateResponse, string>> {
   return await request<PlaylistCreateResponse, PlaylistCreateRequest>(
@@ -25,7 +25,7 @@ export async function playlist_create(
 /**
  * @description: 歌单详细
  */
-export async function playlist_delete(
+export async function playlistDelete(
   params: PlaylistDeleteRequest
 ): Promise<Result<unknown, string>> {
   return await request<unknown, PlaylistDeleteRequest>('/api/net_ease/playlist/delete', params)
@@ -35,7 +35,7 @@ export async function playlist_delete(
 /**
  * @description: 歌单详细
  */
-export async function playlist_detail(
+export async function playlistDetail(
   params: PlaylistDetailRequest
 ): Promise<Result<PlaylistDetailResponse, string>> {
   return await request<PlaylistDetailResponse, PlaylistDetailRequest>(
@@ -48,7 +48,7 @@ export async function playlist_detail(
 /**
  * @description: 歌单详细
  */
-export async function playlist_order(
+export async function playlistOrder(
   params: PlaylistOrderRequest
 ): Promise<Result<unknown, string>> {
   return await request<unknown, PlaylistOrderRequest>('/api/net_ease/playlist/order/update', params)
@@ -58,7 +58,7 @@ export async function playlist_order(
 /**
  * @description: 收藏单曲到歌单 从歌单删除歌曲
  */
-export async function playlist_tracks(
+export async function playlistTracks(
   params: PlaylistTracksRequest
 ): Promise<Result<unknown, string>> {
   return await request<unknown, PlaylistTracksRequest>('/api/net_ease/playlist/tracks', params)
@@ -68,7 +68,7 @@ export async function playlist_tracks(
 /**
  * @description: 更新歌单描述、名字等
  */
-export async function playlist_update(
+export async function playlistUpdate(
   params: PlaylistUpdateRequest
 ): Promise<Result<unknown, string>> {
   return await request<unknown, PlaylistUpdateRequest>('/api/net_ease/playlist/update', params)

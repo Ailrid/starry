@@ -10,7 +10,7 @@ import {
 /**
  * @description: 登陆检查
  */
-export async function login_qr_check(
+export async function loginQrCheck(
   params: LoginQrCheckRequest
 ): Promise<Result<LoginQrCheckResponse, string>> {
   return await request<LoginQrCheckResponse, LoginQrCheckRequest>(
@@ -22,7 +22,7 @@ export async function login_qr_check(
 /**
  * @description: 登陆检查
  */
-export async function login_qr_create(
+export async function loginQrCreate(
   params: LoginQrCreateRequest
 ): Promise<Result<LoginQrCreateResponse, string>> {
   return await request<LoginQrCreateResponse, LoginQrCreateRequest>(
@@ -34,13 +34,13 @@ export async function login_qr_create(
 /**
  * @description: 登陆检查
  */
-export async function login_qr_key(): Promise<Result<LoginQrKeyResponse, string>> {
+export async function loginQrKey(): Promise<Result<LoginQrKeyResponse, string>> {
   return await request<LoginQrKeyResponse, object>('/api/login/qrcode/key', {})
 }
 //-----------------------login_status---------------------------------------------------
 /**
  * @description: 登陆状态
  */
-export async function login_status(): Promise<Result<any, string>> {
+export async function loginStatus(): Promise<Result<any, string>> {
   return await request<any, any>('/api/login/status', {})
 }

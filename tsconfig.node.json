@@ -6,9 +6,13 @@
     "src/preload/**/*"
   ],
   "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
     "composite": true,
     "types": [
-      "electron-vite/node"
+      "electron-vite/node",
+      "reflect-metadata"
     ],
     "baseUrl": ".",
     "paths": {

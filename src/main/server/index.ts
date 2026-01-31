@@ -2,8 +2,8 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-07 15:19:54
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-01-22 19:03:07
- * @FilePath: /template/src/main/server/index.ts
+ * @LastEditTime: 2026-01-30 14:50:47
+ * @FilePath: /starry/src/main/server/index.ts
  * @Description: 服务器入口文件
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.

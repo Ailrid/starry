@@ -35,44 +35,42 @@ export async function lyric(params: LyricRequest): Promise<Result<any, string>> 
 /**
  * @description: MV详情
  */
-export async function mv_detail(
-  params: MvDetailRequest
-): Promise<Result<MvDetailResponse, string>> {
+export async function mvDetail(params: MvDetailRequest): Promise<Result<MvDetailResponse, string>> {
   return await request<MvDetailResponse, MvDetailRequest>('/api/net_ease/mv', params)
 }
 //-----------------------mv_url---------------------------------------------------
 /**
  * @description: MV链接
  */
-export async function mv_url(params: MvUrlRequest): Promise<Result<MvUrlResponse, string>> {
+export async function mvUrl(params: MvUrlRequest): Promise<Result<MvUrlResponse, string>> {
   return await request<MvUrlResponse, MvUrlRequest>('/api/net_ease/mv/url', params)
 }
 //-----------------------personal_fm---------------------------------------------------
 /**
  * @description: personal_fm模式
  */
-export async function personal_fm(): Promise<Result<PersonalFmResponse, string>> {
+export async function personalFm(): Promise<Result<PersonalFmResponse, string>> {
   return await request<PersonalFmResponse, object>('/api/net_ease/fm', {})
 }
 //-----------------------recommend_playlist---------------------------------------------------
 /**
  * @description: 推荐歌单
  */
-export async function recommend_playlist(): Promise<Result<RecommendPlaylistResponse, string>> {
+export async function recommendPlaylist(): Promise<Result<RecommendPlaylistResponse, string>> {
   return await request<RecommendPlaylistResponse, object>('/api/net_ease/recommend/playlists', {})
 }
 //-----------------------recommend_song---------------------------------------------------
 /**
  * @description: 每日推荐
  */
-export async function recommend_song(): Promise<Result<RecommendSongResponse, string>> {
+export async function recommendSong(): Promise<Result<RecommendSongResponse, string>> {
   return await request<RecommendSongResponse, object>('/api/net_ease/recommend/song', {})
 }
 //-----------------------ugc_album_get---------------------------------------------------
 /**
  * @description: 专辑百科
  */
-export async function ugc_album(): Promise<Result<UgcRequest, string>> {
+export async function ugcAlbum(): Promise<Result<UgcRequest, string>> {
   return await request<UgcRequest, object>('/api/net_ease/album/wiki', {})
 }
 //-----------------------intelligence---------------------------------------------------
@@ -91,6 +89,6 @@ export async function intelligence(
 /**
  * @description: vip信息
  */
-export async function vip_info(): Promise<Result<VipInfoResponse, string>> {
+export async function vipInfo(): Promise<Result<VipInfoResponse, string>> {
   return await request<VipInfoResponse, object>('/api/net_ease/vip', {})
 }

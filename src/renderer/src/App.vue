@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="flex flex-col items-center justify-center min-h-screen gap-4 bg-background">
     <h1 class="text-2xl font-bold text-slate-900">Shadcn Button 测试</h1>
 
@@ -14,6 +14,15 @@
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+</script>
+
+<style lang="css"></style> -->
+<template>
+  <Test></Test>
+</template>
+
+<script setup lang="ts">
+import Test from './components/test/Test.vue'
 </script>
 
 <style lang="css"></style>

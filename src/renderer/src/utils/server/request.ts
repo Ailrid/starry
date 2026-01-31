@@ -2,8 +2,8 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-22 19:57:22
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-01-22 21:33:02
- * @FilePath: /template/src/renderer/src/utils/server/request.ts
+ * @LastEditTime: 2026-01-30 14:56:52
+ * @FilePath: /starry/src/renderer/src/utils/server/request.ts
  * @Description:请求封装，把所有请求转换为Result
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.

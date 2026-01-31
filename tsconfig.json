@@ -9,6 +9,12 @@
     }
   ],
   "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "types": [
+      "reflect-metadata"
+    ],
     // ...
     "baseUrl": ".",
     "paths": {

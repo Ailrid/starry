@@ -7,7 +7,7 @@ import { AlbumSublistResponse, AlbumDetailResponse } from './types/response/albu
 /**
  * @description: 专辑详情
  */
-export async function alibum_detail(
+export async function alibumDetail(
   params: AlbumDetailRequest
 ): Promise<Result<AlbumDetailResponse, string>> {
   return await request<AlbumDetailResponse, AlbumDetailRequest>(
@@ -20,7 +20,7 @@ export async function alibum_detail(
 /**
  * @description: 收藏/取消收藏专辑
  */
-export async function alibum_sub(params: AlbumSubRequest): Promise<Result<unknown, string>> {
+export async function alibumSub(params: AlbumSubRequest): Promise<Result<unknown, string>> {
   return await request<unknown, AlbumSubRequest>('/api/net_ease/album/sub', params)
 }
 
@@ -28,7 +28,7 @@ export async function alibum_sub(params: AlbumSubRequest): Promise<Result<unknow
 /**
  * @description: 用户收藏的专辑列表
  */
-export async function alibum_sublist(
+export async function alibumSublist(
   params: AlbumSublistRequest
 ): Promise<Result<AlbumSublistResponse, string>> {
   return await request<AlbumSublistResponse, AlbumSublistRequest>(

@@ -20,7 +20,7 @@ const song_router: Router = Router()
 const modules = [song_comment, song_detail, song_like_check, song_like, song_url]
 
 // 统一注册
-modules.forEach(m => {
+modules.forEach((m) => {
   if (m.url && m.handler) {
     song_router.all(m.url, m.handler) // 使用 .all 支持更多谓词
   }
