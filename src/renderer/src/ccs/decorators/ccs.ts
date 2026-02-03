@@ -2,45 +2,75 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-31 16:17:36
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-02 15:41:27
+ * @LastEditTime: 2026-02-03 13:32:27
  * @FilePath: /starry/src/renderer/src/ccs/decorators/ccs.ts
- * @Description: ccs核心魔法装饰器合集
+ * @Description: ccs核心魔法装饰器
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.
  */
 import { container } from '@/ccs/ioc'
-import { MessageReader, MessageRegistry, BaseMessage } from '../message'
+import { MessageReader, MessageRegistry, BaseMessage, MessageWriter } from '../message'
 import { CCS_METADATA } from '../constants'
 import { injectable } from 'inversify'
+
 /**
- * @description: 自动注入 Service 和 MessageReader 的系统装饰器
+ * @description: 系统装饰器
+ * @param priority 优先级，数值越大越早执行
  */
-export function System() {
+export function System(priority: number = 0) {
   return (target: any, key: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value
     const types = Reflect.getMetadata('design:paramtypes', target, key) || []
     const readerConfigs = Reflect.getMetadata(CCS_METADATA.MESSAGE, target, key) || []
 
+    // 重新包装 System 函数
     const wrappedSystem = function () {
+      /**
+       * 修复：从 IoC 容器中获取当前类的实例，而不是使用原型
+       * 这样 System 内部通过 @inject 注入的属性才能正常访问
+       */
+      const instance = container.get(target.constructor)
+
       const args = types.map((type: any, index: number) => {
         const config = readerConfigs.find((c: any) => c.index === index)
-        if (config) {
-          return new MessageReader(config.eventClass)
-        }
+        if (config) return new MessageReader(config.eventClass)
         return container.get(type)
       })
 
-      return originalMethod.apply(target, args)
+      // 使用 instance 作为 this 绑定执行
+      const result = originalMethod.apply(instance, args)
+
+      const handleResult = (res: any) => {
+        if (res === undefined || res === null) return
+        if (res instanceof BaseMessage) {
+          MessageWriter.write(res)
+        } else {
+          MessageWriter.error(
+            new Error(`[CCS] System '${key}' returned invalid value.`),
+            `SystemReturnTypeCheck:${key}`
+          )
+        }
+      }
+
+      // 异步 System 处理
+      if (result instanceof Promise) {
+        return result.then(handleResult).catch((e) => {
+          MessageWriter.error(e, `AsyncSystemExection:${key}`)
+        })
+      }
+
+      return handleResult(result)
     }
 
+    // 替换原方法（注意：这里通常在类加载阶段执行）
     descriptor.value = wrappedSystem
 
+    // 注册到调度中心
     readerConfigs.forEach((config: any) => {
-      MessageRegistry.register(config.eventClass, wrappedSystem)
+      MessageRegistry.register(config.eventClass, wrappedSystem, priority)
     })
   }
 }
-
 /**
  * @description: 标记参数为 MessageReader 并锁定其消息类型
  */

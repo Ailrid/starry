@@ -2,12 +2,13 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:47:24
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-02 12:12:50
+ * @LastEditTime: 2026-02-03 16:04:53
  * @FilePath: /starry/src/renderer/src/ccs/decorators/vue.ts
  * @Description:各种Vue的魔法装饰器
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.
  */
+import { Newable } from 'inversify'
 import { CCS_METADATA } from '../constants'
 import type { WatchOptions } from 'vue'
 /**
@@ -54,5 +55,47 @@ export function Responsive() {
     const props = Reflect.getMetadata(CCS_METADATA.RESPONSIVE, target) || []
     props.push(propertyKey)
     Reflect.defineMetadata(CCS_METADATA.RESPONSIVE, props, target)
+  }
+}
+
+/**
+ * @description: 跨组件属性投影（自动注入版）
+ */
+export function InstantProject<T, V>(componentToken: Newable<T>, selector: (instance: T) => V) {
+  return (target: any, propertyKey: string) => {
+    const existing = Reflect.getMetadata(CCS_METADATA.INSTANT_PROJECT, target) || []
+    existing.push({ propertyKey, componentToken, selector })
+    Reflect.defineMetadata(CCS_METADATA.INSTANT_PROJECT, existing, target)
+  }
+}
+
+/**
+ * @description: 声明式生命周期钩子
+ * 用法：@OnHook("onMounted")
+ */
+export function OnHook(hookName: 'onMounted' | 'onUnmounted' | 'onUpdated') {
+  return (target: any, methodName: string) => {
+    const existing = Reflect.getMetadata(CCS_METADATA.LIFE_CRICLE, target) || []
+    existing.push({ hookName, methodName })
+    Reflect.defineMetadata(CCS_METADATA.LIFE_CRICLE, existing, target)
+  }
+}
+/**
+ * @description: 万能 Hook 注入装饰器
+ * 用法：@Use(() => useRoute()) public route!: RouteLocationNormalized
+ */
+export function Use(hookFactory: () => any) {
+  return (target: any, propertyKey: string) => {
+    const existing = Reflect.getMetadata(CCS_METADATA.USE_HOOKS, target) || []
+    existing.push({ propertyKey, hookFactory })
+    Reflect.defineMetadata(CCS_METADATA.USE_HOOKS, existing, target)
+  }
+}
+
+export function Signal(signalName: string) {
+  return (target: any, methodName: string) => {
+    const existing = Reflect.getMetadata(CCS_METADATA.SIGNAL, target) || []
+    existing.push({ signalName, methodName })
+    Reflect.defineMetadata(CCS_METADATA.SIGNAL, existing, target)
   }
 }
