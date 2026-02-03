@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-31 16:17:36
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 13:32:27
+ * @LastEditTime: 2026-02-03 19:55:40
  * @FilePath: /starry/src/renderer/src/ccs/decorators/ccs.ts
  * @Description: ccs核心魔法装饰器
  *
@@ -25,10 +25,6 @@ export function System(priority: number = 0) {
 
     // 重新包装 System 函数
     const wrappedSystem = function () {
-      /**
-       * 修复：从 IoC 容器中获取当前类的实例，而不是使用原型
-       * 这样 System 内部通过 @inject 注入的属性才能正常访问
-       */
       const instance = container.get(target.constructor)
 
       const args = types.map((type: any, index: number) => {
@@ -46,7 +42,7 @@ export function System(priority: number = 0) {
           MessageWriter.write(res)
         } else {
           MessageWriter.error(
-            new Error(`[CCS] System '${key}' returned invalid value.`),
+            new Error(`[CCS Decorator] System Decorator: '${key}' returned invalid value.`),
             `SystemReturnTypeCheck:${key}`
           )
         }
@@ -54,9 +50,7 @@ export function System(priority: number = 0) {
 
       // 异步 System 处理
       if (result instanceof Promise) {
-        return result.then(handleResult).catch((e) => {
-          MessageWriter.error(e, `AsyncSystemExection:${key}`)
-        })
+        return result.then(handleResult)
       }
 
       return handleResult(result)

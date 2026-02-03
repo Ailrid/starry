@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-03 10:00:24
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 16:06:29
+ * @LastEditTime: 2026-02-03 19:52:25
  * @FilePath: /starry/src/renderer/src/ccs/message/registry.ts
  * @Description:给消息的注册器，收集所有的system函数
  *
@@ -11,7 +11,7 @@
 // ccs/message/registry.ts
 import { MessageInternal } from './internal'
 import { ErrorMessage } from './types'
-import { MessageReader, MessageWriter } from './io'
+import { MessageReader } from './io'
 
 export interface SystemTask {
   fn: () => any
@@ -50,73 +50,6 @@ export class MessageRegistry {
 MessageRegistry.register(ErrorMessage, () => {
   const errors = new MessageReader(ErrorMessage).read()
   errors.forEach((err) => {
-    console.error(`[CCS Critical Error] [${err.context}]:`, err.error)
+    console.error(`[CCS Error] Global Error Caught: [${err.context}]:`, err.error)
   })
 })
-
-/**
- * @description: 轻量级信号处理器定义
- * 支持任意参数，不能在信号中返回数据，以保持单向流
- */
-export type SignalHandler = (...args: any[]) => void
-
-export class Signal {
-  // 单订阅模式：每个信号名对应一个唯一的处理器
-  private static handlers = new Map<string, SignalHandler>()
-
-  /**
-   * @description: 注册信号处理器
-   * @param name 信号标识符
-   * @param handler 回调函数
-   * @returns 卸载函数
-   */
-  static register(name: string, handler: SignalHandler): () => void {
-    if (this.handlers.has(name)) {
-      console.warn(`[CCS Signal] Signal '${name}' already has a handler. Overwriting...`)
-    }
-
-    this.handlers.set(name, handler)
-
-    // 返回一个闭包用于卸载，防止组件销毁后依然残留引用
-    return () => {
-      if (this.handlers.get(name) === handler) {
-        this.handlers.delete(name)
-      }
-    }
-  }
-
-  /**
-   * @description: 呼叫信号（立即同步执行）
-   * @param name 信号标识符
-   * @param args 传递给处理器的任意参数
-   */
-  static call(name: string, ...args: any[]): void {
-    const handler = this.handlers.get(name)
-
-    if (!handler) {
-      // 按照你的要求，使用现有的错误消息体系
-      MessageWriter.error(
-        new Error(`[CCS Signal] Called an unregistered signal: ${name}`),
-        'SignalSystem'
-      )
-      return
-    }
-
-    try {
-      handler(...args)
-    } catch (e) {
-      // 捕获处理器内部的执行错误
-      MessageWriter.error(
-        e instanceof Error ? e : new Error(String(e)),
-        `[CCS Signal] SignalExecutionError:${name}`
-      )
-    }
-  }
-
-  /**
-   * 全局清理，通常在游戏/应用关机时调用
-   */
-  static reset() {
-    this.handlers.clear()
-  }
-}

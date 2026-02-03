@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:47:24
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 16:04:53
+ * @LastEditTime: 2026-02-03 19:42:02
  * @FilePath: /starry/src/renderer/src/ccs/decorators/vue.ts
  * @Description:各种Vue的魔法装饰器
  *
@@ -11,6 +11,7 @@
 import { Newable } from 'inversify'
 import { CCS_METADATA } from '../constants'
 import type { WatchOptions } from 'vue'
+import { BaseRequest, BaseSignal } from '../message/types'
 /**
  * @description:实现Watch
  * 用法：@Watch('a.b.c') 或 @Watch(instance => instance.a.b.c)
@@ -92,10 +93,14 @@ export function Use(hookFactory: () => any) {
   }
 }
 
-export function Signal(signalName: string) {
+/**
+ * @description: 响应信号或请求的装饰器
+ * @param SignalClass 必须是 BaseSignal 或 BaseRequest 的子类
+ */
+export function Respond<T extends typeof BaseSignal | typeof BaseRequest<any>>(SignalClass: T) {
   return (target: any, methodName: string) => {
     const existing = Reflect.getMetadata(CCS_METADATA.SIGNAL, target) || []
-    existing.push({ signalName, methodName })
+    existing.push({ SignalClass, methodName })
     Reflect.defineMetadata(CCS_METADATA.SIGNAL, existing, target)
   }
 }

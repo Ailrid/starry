@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 16:02:19
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 16:05:03
+ * @LastEditTime: 2026-02-03 18:18:54
  * @FilePath: /starry/src/renderer/src/ccs/message/dispatcher.ts
  * @Description:事件调度中心
  *
@@ -48,7 +48,9 @@ export class Dispatcher {
       this.tickCount = 0
       //强制清空所有缓冲
       MessageInternal.eventHub.reset()
-      MessageWriter.error(new Error('Recursive event loop detected. Aborting.'))
+      MessageWriter.error(
+        new Error('[CCS Dispatcher] Frequency Too High: Recursive event loop detected. Aborting.')
+      )
       return
     }
 
@@ -91,12 +93,18 @@ export class Dispatcher {
             if (result instanceof Promise) {
               asyncTasks.push(
                 result.catch((e) =>
-                  MessageWriter.error(e, `AsyncSystem Execution Error,System Name ${run.name}`)
+                  MessageWriter.error(
+                    e,
+                    `[CCS Dispatcher] Sysytem Run Failed: AsyncSystem Execution Error,System Name ${run.name}`
+                  )
                 )
               )
             }
           } catch (e) {
-            MessageWriter.error(e as Error, `SyncSystem Execution Error,System Name ${run.name}`)
+            MessageWriter.error(
+              e as Error,
+              `[CCS Dispatcher] Sysytem Run Failed: SyncSystem Execution Error,System Name ${run.name}`
+            )
           }
         }
 

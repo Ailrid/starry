@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:32:13
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 10:01:28
+ * @LastEditTime: 2026-02-03 19:27:01
  * @FilePath: /starry/src/renderer/src/ccs/message/index.ts
  * @Description:
  *
@@ -17,6 +17,7 @@ import { Middleware } from './types'
 export * from './types'
 export * from './io'
 export * from './registry'
+
 export function useMiddleware(mw: Middleware) {
   MessageInternal.use(mw)
 }

@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-03 11:05:48
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 16:02:23
+ * @LastEditTime: 2026-02-03 19:58:37
  * @FilePath: /starry/src/renderer/src/ccs/adapters/bind.ts
  * @Description: hook绑定适配器，用于处理各种魔法装饰器的绑定逻辑
  *
@@ -11,7 +11,8 @@
 import { CCS_METADATA } from '../constants'
 import { watch, computed, type WatchStopHandle, isRef, ref, reactive } from 'vue'
 import { container } from '../ioc'
-import { MessageWriter, Signal } from '../message'
+import { MessageWriter } from '../message'
+import { Signal } from '../message/signal'
 export function bindProject(proto: any, instance: any, rawDeps: Record<string, any>) {
   const projects = Reflect.getMetadata(CCS_METADATA.PROJECT, proto)
   projects?.forEach(({ propertyKey, path, isAccessor }) => {
@@ -61,7 +62,11 @@ export function bindProject(proto: any, instance: any, rawDeps: Record<string, a
         }
       })
     } else {
-      MessageWriter.error(new Error(`Property ${propertyKey} @Project but missing logic/path.`))
+      MessageWriter.error(
+        new Error(
+          `[CCS Project] Data Not Found: Property ${propertyKey} @Project but missing logic/path.`
+        )
+      )
       return
     }
 
@@ -137,7 +142,7 @@ export function bindResponsive(instance: any) {
   for (const key of allKeys) {
     const val = instance[key]
     if (val && typeof val === 'object') {
-      // 只要父级是 Service，或者你在 Controller 里明确标记了这是注入项
+      // 只要父级是 Component，或者在 Controller 里明确标记了这是注入项
       // 递归下去的每一层都应该维持 isService = true
       bindResponsive(val)
     }
@@ -177,7 +182,7 @@ export function createDeepShield(target: any, rootName: string, path: string = '
 
       // 优雅地失败，并给出修复建议
       const errorMsg = [
-        `\n[CCS Security Violation]`,
+        `\n[CCS DeepShield]`,
         `------------------------------------------------`,
         `Component: ${rootName}`,
         `Code: this.${rootName}.${currentPath}`,
@@ -191,7 +196,9 @@ export function createDeepShield(target: any, rootName: string, path: string = '
 
     deleteProperty(_obj, prop) {
       MessageWriter.error(
-        new Error(`Physical Protection: Prohibit Deletion of Component Attributes ${String(prop)}`)
+        new Error(
+          `[CCS DeepShield] Physical Protection: Prohibit Deletion of Component Attributes ${String(prop)}`
+        )
       )
       return false
     },
@@ -199,7 +206,9 @@ export function createDeepShield(target: any, rootName: string, path: string = '
     // 拦截 Object.defineProperty 等底层操作
     defineProperty() {
       MessageWriter.error(
-        new Error(`Physical Protection: Prohibit redefining component attribute structure`)
+        new Error(
+          `[CCS DeepShield] Physical Protection: Prohibit redefining component attribute structure`
+        )
       )
       return false
     }
@@ -225,7 +234,9 @@ export function bindInstantProject(proto: any, instance: any) {
       },
       set: (_val) => {
         MessageWriter.error(
-          new Error(`Attempted to set read-only InstanceProject property: ${propertyKey}`)
+          new Error(
+            `[CCS InstantProject] No Modification：Attempted to set read-only InstanceProject property: ${propertyKey}`
+          )
         )
       }
     })
@@ -287,12 +298,12 @@ export function bindSignals(proto: any, instance: any) {
   const signalConfigs = Reflect.getMetadata(CCS_METADATA.SIGNAL, proto)
   const unbinds: Array<() => void> = []
 
-  signalConfigs?.forEach(({ signalName, methodName }) => {
-    // 绑定 instance 确保 this 指向正确
-    const handler = (...args: any[]) => (instance[methodName] as any).apply(instance, args)
-
-    // 注册并记录销毁函数
-    const unbind = Signal.register(signalName, handler)
+  signalConfigs?.forEach(({ SignalClass, methodName }) => {
+    const handler = (signalInstance: any) => {
+      return (instance[methodName] as any).call(instance, signalInstance)
+    }
+    // 注册这个处理函数
+    const unbind = Signal.register(SignalClass, handler)
     unbinds.push(unbind)
   })
 
