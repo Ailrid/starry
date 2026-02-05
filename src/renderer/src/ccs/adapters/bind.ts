@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-03 11:05:48
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-05 11:14:05
+ * @LastEditTime: 2026-02-05 15:30:18
  * @FilePath: /starry/src/renderer/src/ccs/adapters/bind.ts
  * @Description: hook绑定适配器，用于处理各种魔法装饰器的绑定逻辑
  *
@@ -324,15 +324,16 @@ export function bindListener(proto: any, instance: any): (() => void)[] {
   const listenerConfigs: any[] = Reflect.getMetadata(CCS_METADATA.CONTROLLER_LISTENERS, proto) || []
   const unbindFunctions: (() => void)[] = []
 
-  listenerConfigs.forEach(({ propertyKey, eventClass, priority }) => {
+  listenerConfigs.forEach(({ propertyKey, eventClass, priority, single }) => {
     const originalMethod = instance[propertyKey]
 
     // 强制只能接受一个参数且是 SingleMessage
     const wrappedHandler = function (msgs) {
       // 只有当确实有消息时才触发，没消息不空跑
+      const message = single && Array.isArray(msgs) ? msgs[msgs.length - 1] : msgs
       if (msgs.length > 0) {
         // 直接注入快照数组副本，实现所有权转移
-        originalMethod.apply(instance, [msgs])
+        originalMethod.apply(instance, [message])
       }
     }
 
@@ -340,7 +341,7 @@ export function bindListener(proto: any, instance: any): (() => void)[] {
     const taskContext: CCSSystemContext = {
       params: eventClass,
       targetClass: instance.constructor,
-      methodName: proto,
+      methodName: propertyKey,
       originalMethod: originalMethod
     }
     ;(wrappedHandler as any).ccsContext = taskContext
@@ -357,7 +358,6 @@ export function bindListener(proto: any, instance: any): (() => void)[] {
  **/
 export function bindInherit(proto: any, instance: any) {
   const inherits = Reflect.getMetadata(CCS_METADATA.INHERIT, proto)
-  console.log('inherits :>> ', inherits)
   if (!inherits) return
 
   // @ts-ignore : token

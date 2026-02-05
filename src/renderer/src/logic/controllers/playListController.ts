@@ -17,10 +17,11 @@ export class PlaylistController {
   public playlist!: Song[]
 
   @Listener(SongControllerMessage)
-  onMessage(@Message(SongControllerMessage) message: SongControllerMessage[]) {
-    console.log('song', this.playlist[message[0].index])
+  onMessage(@Message(SongControllerMessage) message: SongControllerMessage) {
+    console.log('message :>> ', message)
+    console.log('song', this.playlist[message.index])
     //可以做一些操作统一拦截，或者直接调用播放器
-    PlaySongMesage.send(this.playlist[message[0].index])
+    PlaySongMesage.send(this.playlist[message.index])
   }
   @OnHook('onSetup')
   async getPlaylist() {

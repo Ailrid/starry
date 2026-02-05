@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-31 16:17:36
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-05 13:46:32
+ * @LastEditTime: 2026-02-05 15:26:09
  * @FilePath: /starry/src/renderer/src/ccs/decorators/ccs.ts
  * @Description: ccs核心魔法装饰器
  *
@@ -133,7 +133,8 @@ export function Message<T extends BaseMessage>(
  */
 export function Listener<T extends ControllerMessage>(
   eventClass: new (...args: any[]) => T,
-  priority: number = 0
+  priority: number = 0,
+  single = true
 ) {
   return (target: any, propertyKey: string) => {
     // 获取该 Controller 原型上已有的监听器元数据
@@ -143,7 +144,8 @@ export function Listener<T extends ControllerMessage>(
     listeners.push({
       propertyKey,
       eventClass,
-      priority
+      priority,
+      single
     })
 
     // 将元数据重新定义回类原型，供 useController 在实例化时扫描

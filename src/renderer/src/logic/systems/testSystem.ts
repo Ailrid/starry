@@ -1,7 +1,6 @@
 import { PlayerComponent, PlaylistComponent, Song } from '@/logic/components/testComponent'
 import { System, Message } from '@/ccs/decorators/ccs'
 import { SingleMessage, EventMessage, onBeforeExecute } from '@/ccs/message'
-import { injectable } from 'inversify'
 
 //可以在这里注册一个全局钩子用来看看都有什么消息
 onBeforeExecute(SingleMessage, (message, context) => {
