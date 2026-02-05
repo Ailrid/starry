@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 16:02:19
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-04 21:29:30
+ * @LastEditTime: 2026-02-05 12:26:36
  * @FilePath: /starry/src/renderer/src/ccs/message/dispatcher.ts
  * @Description:事件调度中心
  *
@@ -16,25 +16,26 @@ import {
   SingleMessage,
   EventMessage,
   BaseMessage,
-  Constructor,
   Hook,
   CCSSystemContext,
-  SystemTask
+  SystemTask,
+  MessageIdentifier
 } from './types'
 import { MessageInternal } from './internal'
 
 export class ExecutionTask {
-  private static beforeHooks: Array<{ type: Constructor<any>; handler: Hook<any> }> = []
-  private static afterHooks: Array<{ type: Constructor<any>; handler: Hook<any> }> = []
+  // 使用 MessageIdentifier 允许存入 BaseMessage, SingleMessage 等抽象类
+  private static beforeHooks: Array<{ type: MessageIdentifier<any>; handler: Hook<any> }> = []
+  private static afterHooks: Array<{ type: MessageIdentifier<any>; handler: Hook<any> }> = []
 
   constructor(
     public fn: (...args: any[]) => any,
     public priority: number,
-    public message: any,
+    public message: any, // 运行时可能是 T 或 T[]
     public context: CCSSystemContext
   ) {}
 
-  private triggerHooks(hooks: Array<{ type: Constructor<any>; handler: Hook<any> }>) {
+  private triggerHooks(hooks: Array<{ type: MessageIdentifier<any>; handler: Hook<any> }>) {
     const sample = Array.isArray(this.message) ? this.message[0] : this.message
     if (!sample) return
 
@@ -57,12 +58,12 @@ export class ExecutionTask {
     }
   }
 
-  public execute(arg?: any): any {
+  public execute(): any {
     // 执行前置钩子
     this.triggerHooks(ExecutionTask.beforeHooks)
 
     // 执行核心业务逻辑
-    const result = this.fn(arg)
+    const result = this.fn(this.message)
 
     // 分支处理
     if (result instanceof Promise) {
@@ -82,12 +83,13 @@ export class ExecutionTask {
     }
   }
 
-  static addBefore<T extends BaseMessage>(type: Constructor<T>, hook: Hook<T>) {
-    this.beforeHooks.push({ type, handler: hook })
+  // 静态方法：通过 MessageIdentifier 接收抽象类
+  static addBefore<T extends BaseMessage>(type: MessageIdentifier<T>, hook: Hook<T>) {
+    this.beforeHooks.push({ type, handler: hook as Hook<any> })
   }
 
-  static addAfter<T extends BaseMessage>(type: Constructor<T>, hook: Hook<T>) {
-    this.afterHooks.push({ type, handler: hook })
+  static addAfter<T extends BaseMessage>(type: MessageIdentifier<T>, hook: Hook<T>) {
+    this.afterHooks.push({ type, handler: hook as Hook<any> })
   }
 }
 
@@ -177,11 +179,23 @@ export class Dispatcher {
           // 如果是 Promise，只管注册一个 catch 防止崩溃，不 await 它
           if (result instanceof Promise) {
             result.catch((e) =>
-              MessageWriter.error(e, `[CCS Dispatcher] Async Error: ${task.fn.name}`)
+              MessageWriter.error(
+                e,
+                `[CCS Dispatcher] Async Error: 
+                targetClass:${task.context.targetClass}
+                methodName:${task.context.methodName}
+                `
+              )
             )
           }
         } catch (e) {
-          MessageWriter.error(e as Error, `[CCS Dispatcher] Sync Error: ${task.fn.name}`)
+          MessageWriter.error(
+            e as Error,
+            `[CCS Dispatcher] Sync Error: 
+                targetClass:${task.context.targetClass}
+                methodName:${task.context.methodName}
+                `
+          )
         }
       }
       // 立即进行清理

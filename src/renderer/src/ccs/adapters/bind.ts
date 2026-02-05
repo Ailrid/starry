@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-03 11:05:48
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-04 21:36:13
+ * @LastEditTime: 2026-02-05 11:14:05
  * @FilePath: /starry/src/renderer/src/ccs/adapters/bind.ts
  * @Description: hook绑定适配器，用于处理各种魔法装饰器的绑定逻辑
  *
@@ -295,6 +295,9 @@ export function bindHooks(proto: any, instance: any) {
       case 'onDeactivated':
         onDeactivated(fn)
         break
+      case 'onSetup':
+        fn()
+        break
       // 可以根据需要扩展更多的钩子
     }
   })
@@ -354,7 +357,9 @@ export function bindListener(proto: any, instance: any): (() => void)[] {
  **/
 export function bindInherit(proto: any, instance: any) {
   const inherits = Reflect.getMetadata(CCS_METADATA.INHERIT, proto)
+  console.log('inherits :>> ', inherits)
   if (!inherits) return
+
   // @ts-ignore : token
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   inherits.forEach(({ propertyKey, token, id, selector }) => {
@@ -362,7 +367,10 @@ export function bindInherit(proto: any, instance: any) {
     // 这个 computed 就像一个隧道，一头连着 Registry，一头连着子组件
     const tunnel = computed(() => {
       const target = GlobalRegistry.get(id) // 自动依赖 Registry 的增删
-      if (!target) return null
+      if (!target) {
+        MessageWriter.warn(`[CCS Inherit] Warning: Inherit target not found: ${id}`)
+        return null
+      }
       // 这里的 selector(target) 也会触发依赖收集
       // 如果 target.state.count 变了，这个 computed 也会感知到
       return selector ? selector(target) : target

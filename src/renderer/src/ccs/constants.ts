@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:31:35
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-04 16:23:54
+ * @LastEditTime: 2026-02-05 13:37:02
  * @FilePath: /starry/src/renderer/src/ccs/constants.ts
  * @Description:字符串类型常量
  *

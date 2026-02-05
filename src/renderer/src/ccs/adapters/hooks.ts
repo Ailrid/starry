@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-31 16:01:12
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-04 18:48:01
+ * @LastEditTime: 2026-02-05 13:44:32
  * @FilePath: /starry/src/renderer/src/ccs/adapters/hooks.ts
  * @Description:vue hooks 适配器，用于挂在各种vue魔法装饰器械
  *
@@ -16,7 +16,8 @@ import {
   bindHooks,
   bindUseHooks,
   bindListener,
-  GlobalRegistry
+  GlobalRegistry,
+  bindInherit
 } from './bind'
 import { onUnmounted, useAttrs } from 'vue'
 import { container } from '../ioc'
@@ -29,11 +30,8 @@ import { MessageWriter } from '../message'
  * @param {Newable} token
  * @return {*}
  */
-export function useController<T extends object>(
-  token: Newable,
-  options?: { id?: string; context?: any }
-): T {
-  const instance = container.get<T>(token)
+export function useController<T>(token: Newable<T>, options?: { id?: string; context?: any }): T {
+  const instance = container.get<T>(token) as any
   //注入vue的乱七八糟的context
   const reactiveContext = options?.context || useAttrs()
   if (reactiveContext) {
@@ -77,6 +75,8 @@ export function useController<T extends object>(
   }
   // 生命周期钩子
   bindHooks(proto, instance)
+  // @Iherit装饰器
+  bindInherit(proto, instance)
   //绑定全局注册表
   //如果有id,就去注册
   let unbindRegister = () => true

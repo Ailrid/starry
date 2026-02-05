@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-03 09:57:20
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-04 22:04:57
+ * @LastEditTime: 2026-02-05 12:54:43
  * @FilePath: /starry/src/renderer/src/ccs/message/types.ts
  * @Description:  消息类型定义
  *
@@ -10,9 +10,11 @@
  */
 import { Newable } from 'inversify'
 import { MessageWriter } from './io'
-
+type AnyConstructor = abstract new (...args: any[]) => any
 export abstract class BaseMessage {
-  static send<T extends typeof BaseMessage>(this: T, ...args: ConstructorParameters<T>) {
+  static send<T extends AnyConstructor>(this: T, ...args: ConstructorParameters<T>) {
+    // 实例化并传递给 Writer
+    // 注意：这里需要根据你的 MessageWriter.write 实现来决定是传类还是传实例
     MessageWriter.write(this as any, ...args)
   }
   public senderInfo?: {
@@ -47,6 +49,8 @@ export abstract class BaseMessage {
  * 可合并的信号基类
  */
 export abstract class SingleMessage extends BaseMessage {
+  // @ts-ignore 只用来区分的标识符
+  private readonly __kind = 'SingleMessage' as const
   constructor() {
     super()
   }
@@ -56,6 +60,8 @@ export abstract class SingleMessage extends BaseMessage {
  * 不可合并的消息基类
  */
 export abstract class EventMessage extends BaseMessage {
+  // @ts-ignore 只用来区分的标识符
+  private readonly __kind = 'EventMessage' as const
   constructor() {
     super()
   }
@@ -100,15 +106,21 @@ export class AtomicModifyMessage<T> extends EventMessage {
 export abstract class ControllerMessage extends SingleMessage {}
 
 export type Middleware = (message: BaseMessage, next: () => void) => void
-/**
- * 核心 Hook 类型推理
- */
+
+// 修改 Hook 定义，增加对基类的处理逻辑
 export type Hook<T extends BaseMessage> = (
-  message: T extends SingleMessage ? T[] : T,
+  message: [BaseMessage] extends [T]
+    ? SingleMessage[] | EventMessage // 如果是基类本身，可能是数组也可能是单体
+    : T extends SingleMessage
+      ? T[]
+      : T,
   context: CCSSystemContext
 ) => void | Promise<void>
 
-export type Constructor<T> = new (...args: any[]) => T
+// 定义一个可以接受抽象类和普通类的类型
+export type MessageIdentifier<T> =
+  | (abstract new (...args: any[]) => T)
+  | (new (...args: any[]) => T)
 
 // 定义在 types.ts 中
 export interface CCSSystemContext {
@@ -122,3 +134,8 @@ export interface SystemTask {
   fn: (...args: any[]) => any
   priority: number
 }
+
+/**
+ * 核心逻辑：根据 T 的类型决定 Hook 接收的是数组还是单体
+ */
+export type MessagePayload<T> = T extends SingleMessage ? T[] : T extends EventMessage ? T : T | T[] // BaseMessage 可能是两者之一

@@ -18,11 +18,11 @@ import { Button } from '@/components/ui/button'
 
 <style lang="css"></style> -->
 <template>
-  <Test></Test>
+  <RouterView />
 </template>
 
 <script setup lang="ts">
-import Test from './components/test/Test.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <style lang="css"></style>

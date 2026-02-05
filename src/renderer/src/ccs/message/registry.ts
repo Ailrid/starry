@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-03 10:00:24
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-04 21:47:38
+ * @LastEditTime: 2026-02-05 12:23:01
  * @FilePath: /starry/src/renderer/src/ccs/message/registry.ts
  * @Description:给消息的注册器，收集所有的system函数
  *
@@ -35,7 +35,6 @@ export class MessageRegistry {
     priority: number = 0
   ): () => void {
     const systems = this.interestMap.get(eventClass) || []
-
     const existingIndex = systems.findIndex((s) => s.fn === systemFn)
     if (existingIndex === -1) {
       systems.push({ fn: systemFn, priority })

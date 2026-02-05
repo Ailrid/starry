@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:47:24
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-04 19:04:12
+ * @LastEditTime: 2026-02-05 13:32:45
  * @FilePath: /starry/src/renderer/src/ccs/decorators/vue.ts
  * @Description:各种Vue的魔法装饰器
  *
@@ -100,7 +100,7 @@ export function Responsive() {
  * 用法：@OnHook("onMounted")
  */
 export function OnHook(
-  hookName: 'onMounted' | 'onUnmounted' | 'onUpdated' | 'onActivated' | 'onDeactivated'
+  hookName: 'onMounted' | 'onUnmounted' | 'onUpdated' | 'onActivated' | 'onDeactivated' | 'onSetup'
 ) {
   return (target: any, methodName: string) => {
     const existing = Reflect.getMetadata(CCS_METADATA.LIFE_CRICLE, target) || []
@@ -123,7 +123,7 @@ export function Use(hookFactory: () => any) {
  * @description: Inherit注入装饰器
  * 用法：@Inherit(Contronller,(instance) => instance.xxxx) public data!: SomeType
  */
-export function Inherit(token: Newable, id: string, selector?: (instance: any) => any) {
+export function Inherit<T>(token: Newable<T>, id: string, selector?: (instance: T) => any) {
   return (target: any, propertyKey: string) => {
     const metadata = Reflect.getMetadata(CCS_METADATA.INHERIT, target) || []
     metadata.push({ propertyKey, token, id, selector })
