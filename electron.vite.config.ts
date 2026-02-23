@@ -1,13 +1,32 @@
 import { resolve } from 'path'
-import { defineConfig } from 'electron-vite'
+import { defineConfig, swcPlugin } from 'electron-vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import swc from 'vite-plugin-swc-transform'
 
 export default defineConfig({
-  main: {},
+  main: {
+    build: {
+      // 必须加上这一行，解决 "must be node?" 报错
+      target: 'node*',
+      rollupOptions: {
+        external: ['electron', 'reflect-metadata']
+      }
+    },
+    esbuild: false,
+    plugins: [swcPlugin()],
+    resolve: {
+      alias: {
+        // 确保这里的配置与 tsconfig.json 一致
+        '@main': resolve(__dirname, './src/main')
+      }
+    }
+  },
   preload: {},
   renderer: {
+    optimizeDeps: {
+      exclude: ['@virid/core', '@virid/vue']
+    },
     resolve: {
       alias: {
         '@': resolve(__dirname, './src/renderer/src'),
@@ -19,7 +38,6 @@ export default defineConfig({
         '@controllers': resolve(__dirname, './src/renderer/src/controllers')
       }
     },
-    // 1. 强制 esbuild 处理装饰器元数据
     esbuild: false,
     plugins: [
       vue(),

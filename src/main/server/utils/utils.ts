@@ -3,7 +3,7 @@
  * @Date: 2026-01-07 15:46:30
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
  * @LastEditTime: 2026-01-07 17:11:17
- * @FilePath: /server/src/utils/net_ease/utils.ts
+ * @FilePath: /server/src/utils/netease/utils.ts
  * @Description:一些通用的工具函数
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.
@@ -24,7 +24,7 @@ export const cookieToJson = (cookie: string): Record<string, string> => {
   if (!cookie) return {}
   const obj: Record<string, string> = {}
   const cookieArr = cookie.split(';')
-  cookieArr.forEach(i => {
+  cookieArr.forEach((i) => {
     const parts = i.split('=')
     if (parts.length >= 2) {
       const key = parts[0]!.trim() // 去掉可能的空格
@@ -40,7 +40,7 @@ export const cookieToJson = (cookie: string): Record<string, string> => {
  */
 export const cookieObjToString = (cookie: Record<string, any>): string => {
   return Object.keys(cookie)
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(cookie[key])}`)
+    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(cookie[key])}`)
     .join('; ')
 }
 

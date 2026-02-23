@@ -3,7 +3,7 @@
  * @Date: 2026-01-07 15:31:59
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
  * @LastEditTime: 2026-01-22 17:33:19
- * @FilePath: /template/src/main/server/utils/net_ease/crypto.ts
+ * @FilePath: /template/src/main/server/utils/netease/crypto.ts
  * @Description:网易云加密和解密算法
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.

@@ -3,7 +3,7 @@
  * @Date: 2026-01-07 15:45:19
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
  * @LastEditTime: 2026-01-22 17:33:32
- * @FilePath: /template/src/main/server/utils/net_ease/request.ts
+ * @FilePath: /template/src/main/server/utils/netease/request.ts
  * @Description: 创建加密请求和解密请求的统一接口
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.
@@ -196,7 +196,7 @@ export const createRequest = async (
   }
   const res = await axios(config)
   let resData = res.data
-  const resCookie = (res.headers['set-cookie'] || []).map(x =>
+  const resCookie = (res.headers['set-cookie'] || []).map((x) =>
     x.replace(/\s*Domain=[^(;|$)]+;*/, '')
   )
 

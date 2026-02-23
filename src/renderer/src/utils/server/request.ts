@@ -1,36 +1,54 @@
-/*
- * @Author: ShirahaYuki  shirhayuki2002@gmail.com
- * @Date: 2026-01-22 19:57:22
- * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-01-30 14:56:52
- * @FilePath: /starry/src/renderer/src/utils/server/request.ts
- * @Description:请求封装，把所有请求转换为Result
- *
- * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.
- */
 import { Ok, Err, type Result } from 'ts-results'
+const RETRYABLE_STATUS = new Set([429, 500, 502, 503, 504])
 
-export async function request<T, P>(url: string, params: P): Promise<Result<T, string>> {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(params)
-    })
+/**
+ * 带有重试逻辑的请求封装
+ */
+export async function request<T, P>(
+  url: string,
+  params: P,
+  maxRetries = 3,
+  baseDelay = 1000
+): Promise<Result<T, string>> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+      })
 
-    // 处理非 2xx 状态码
-    if (!response.ok) {
-      const errorText = await response.text()
-      return Err(`HTTP Error ${response.status}: ${errorText}`)
+      // 成功拿到数据
+      if (response.ok) {
+        const data = (await response.json()) as T
+        return Ok(data)
+      }
+
+      //遇到了 HTTP 错误
+      // 如果不是值得重试的错误（比如 401 没登录，403 没权限），直接放弃
+      if (!RETRYABLE_STATUS.has(response.status) || attempt === maxRetries) {
+        const errorText = await response.text()
+        return Err(`[HTTP ${response.status}] ${errorText}`)
+      }
+
+      // 如果是 429 或 5xx，且还有重试机会，继续往下走触发重试逻辑
+    } catch (e: unknown) {
+      // 网络层面的硬崩溃
+      const message = e instanceof Error ? e.message : String(e)
+
+      // 如果次数用光了，返回 Err
+      if (attempt === maxRetries) {
+        return Err(`[Network Error] ${message}`)
+      }
+
+      // 否则，打印个警告，准备进入下一次循环
+      console.warn(`Request attempt ${attempt + 1} failed: ${message}. Retrying...`)
     }
 
-    // 解析 JSON
-    const data = (await response.json()) as T
-    return Ok(data)
-  } catch (e: unknown) {
-    const message = e instanceof Error ? e.message : String(e)
-    return Err(message)
+    // 指数退避逻辑
+    const delay = baseDelay * Math.pow(2, attempt)
+    await new Promise((resolve) => setTimeout(resolve, delay))
   }
+
+  return Err('Request failed after maximum retries')
 }
