@@ -41,7 +41,7 @@ export interface ArtistSublistRequest {
 /**
  * @description: 歌手信息
  */
-export interface ArtistDetailtRequest {
+export interface ArtistDetailRequest {
   id: number
 }
 //-----------------------artist_sub---------------------------------------------------

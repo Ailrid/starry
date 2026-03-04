@@ -1,38 +1,41 @@
-import { SingleMessage, System, Message } from '@virid/core'
+import { SingleMessage, System } from '@virid/core'
 import {
   PlayerComponent,
   LyricComponent,
   PlayOrPauseMessage,
   PreviousSongMessage,
-  NextSongMessage
-} from '../player'
+  NextSongMessage,
+  PlaylistComponent
+} from '../playback'
 export class InitializationMessage extends SingleMessage {}
 
 export class InitSystem {
-  @System(1000)
-  static initSetting(@Message(InitializationMessage) _message: InitializationMessage) {
+  @System({
+    priority: 1000,
+    messageClass: InitializationMessage
+  })
+  static initSetting() {
     //TODO
   }
-  @System(999)
-  static initPlayer(
-    @Message(InitializationMessage) _message: InitializationMessage,
-    playerComponent: PlayerComponent,
-    lyricComponent: LyricComponent
-  ) {
+  @System({
+    priority: 999,
+    messageClass: InitializationMessage
+  })
+  static initPlayer(playerComponent: PlayerComponent, lyricComponent: LyricComponent) {
     // 绑定回调,在时间更新时自动更新歌词
     playerComponent.player.addListener('timeupdate', () => {
       const time = playerComponent.player.currentTime
-      const lines = lyricComponent.lyric // 这里假设你之前存入的是数组
-      if (!lines || lines.lyrics.length === 0) return
+      const data = lyricComponent.lyric
+      if (!data || data.lyrics.length === 0) return
 
       // 寻找当前时间对应的索引
       let low = 0
-      let high = lines.lyrics.length - 1
+      let high = data.lyrics.length - 1
       let index = -1
 
       while (low <= high) {
         const mid = Math.floor((low + high) / 2)
-        if (lines.lyrics[mid].time <= time) {
+        if (data.lyrics[mid].time <= time) {
           index = mid
           low = mid + 1
         } else {
@@ -41,17 +44,15 @@ export class InitSystem {
       }
       if (index !== -1 && index !== lyricComponent.currentIndex) {
         lyricComponent.currentIndex = index
+        navigator.mediaSession.metadata!.title = data.lyrics[index].text
       }
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: lines.lyrics[index].text
-      })
     })
   }
-  @System(998)
-  static initMediaSession(
-    @Message(InitializationMessage) _message: InitializationMessage,
-    playerComponent: PlayerComponent
-  ) {
+  @System({
+    priority: 998,
+    messageClass: InitializationMessage
+  })
+  static initMediaSession(playerComponent: PlayerComponent, playlistComponent: PlaylistComponent) {
     const actionHandlers: [MediaSessionAction, (params?: any) => void][] = [
       ['play', () => PlayOrPauseMessage.send(true)],
       ['pause', () => PlayOrPauseMessage.send(false)],
@@ -75,7 +76,7 @@ export class InitSystem {
           if (details.seekTime !== undefined) {
             playerComponent.player.seek(details.seekTime)
             navigator.mediaSession.setPositionState({
-              duration: playerComponent.player.currentSong.duration,
+              duration: playlistComponent.currentSong?.duration,
               playbackRate: 1,
               position: details.seekTime
             })

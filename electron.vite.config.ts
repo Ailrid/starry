@@ -7,7 +7,6 @@ import swc from 'vite-plugin-swc-transform'
 export default defineConfig({
   main: {
     build: {
-      // 必须加上这一行，解决 "must be node?" 报错
       target: 'node*',
       rollupOptions: {
         external: ['electron', 'reflect-metadata']

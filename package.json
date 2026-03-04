@@ -1,7 +1,7 @@
 {
   "name": "starry",
   "version": "0.1.0",
-  "description": "An Electron application with Vue and TypeScript",
+  "description": "An Electron application with Vue and Virid",
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",
@@ -29,6 +29,7 @@
     "@virid/main": "link:../../virid/packages/main",
     "@virid/renderer": "link:../../virid/packages/renderer",
     "@virid/vue": "link:../../virid/packages/vue",
+    "@virid/express": "link:../../virid/packages/express",
     "axios": "^1.13.2",
     "better-sqlite3": "^12.6.2",
     "class-variance-authority": "^0.7.1",

@@ -26,6 +26,9 @@ importers:
       '@virid/core':
         specifier: link:../../virid/packages/core
         version: link:../../virid/packages/core
+      '@virid/express':
+        specifier: link:../../virid/packages/express
+        version: link:../../virid/packages/express
       '@virid/main':
         specifier: link:../../virid/packages/main
         version: link:../../virid/packages/main

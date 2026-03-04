@@ -237,7 +237,7 @@ export interface ArtistHotSong {
 /**
  * @description: 歌手信息
  */
-export interface ArtistDetailtResponse {
+export interface ArtistDetailResponse {
   artist: ArtistDetail
   hotSongs: ArtistHotSong[]
   more: boolean

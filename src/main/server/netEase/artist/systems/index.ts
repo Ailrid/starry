@@ -1,0 +1,6 @@
+export * from './artist-album'
+export * from './artist-detail'
+export * from './artist-mv'
+export * from './artist-song'
+export * from './artist-sub'
+export * from './artist-sublist'

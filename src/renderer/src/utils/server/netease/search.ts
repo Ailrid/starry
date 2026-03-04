@@ -2,11 +2,11 @@ import { request } from '../request'
 import { Result } from 'ts-results'
 import { SearchSuggestRequest, SearchType, SearchRequest } from './types'
 import { SearchSuggestResponse, SearchResultMap } from './types'
-//-----------------------search_suggets---------------------------------------------------
+//-----------------------search_suggest---------------------------------------------------
 /**
  * @description:搜索建议
  */
-export async function searchSuggets(
+export async function searchSuggest(
   params: SearchSuggestRequest
 ): Promise<Result<SearchSuggestResponse, string>> {
   return await request<SearchSuggestResponse, SearchSuggestRequest>(

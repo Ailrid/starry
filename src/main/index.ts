@@ -1,14 +1,23 @@
 import 'reflect-metadata'
-import.meta.glob('./systems/**/*.ts', { eager: true })
-import { MESSAGE_MAP, InitializationMessage } from '@main/messages'
+//注册system
+export * from './init'
+export * from './server'
+export * from './windows'
+//启动
+import { InitStarryMessage } from './init'
+import { server } from './utils'
 import { createVirid } from '@virid/core'
 import { MainPlugin } from '@virid/main'
+import { ExpressPlugin } from '@virid/express'
 import { app } from 'electron'
-import { bindComponents } from './components'
-const virid = createVirid().use(MainPlugin, { messageMap: MESSAGE_MAP, electronApp: app })
+import { bindComponents } from './server'
+const virid = createVirid()
+  .use(MainPlugin, { electronApp: app })
+  .use(ExpressPlugin, { server: server })
+//绑定组件
 bindComponents(virid)
 
 // 初始化完成，点火
 app.whenReady().then(() => {
-  InitializationMessage.send()
+  InitStarryMessage.send(server, 1566)
 })

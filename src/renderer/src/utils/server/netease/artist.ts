@@ -6,14 +6,14 @@ import {
   ArtistSongRequest,
   ArtistSubRequest,
   ArtistSublistRequest,
-  ArtistDetailtRequest
+  ArtistDetailRequest
 } from './types'
 import {
   ArtistAlbumResponse,
   ArtistMVResponse,
   ArtistSongResponse,
   ArtistSublistResponse,
-  ArtistDetailtResponse
+  ArtistDetailResponse
 } from './types'
 
 //-----------------------artist_album---------------------------------------------------
@@ -70,9 +70,9 @@ export async function artistSublist(
  * @description: 歌手信息
  */
 export async function artistDetail(
-  params: ArtistDetailtRequest
-): Promise<Result<ArtistDetailtResponse, string>> {
-  return await request<ArtistDetailtResponse, ArtistDetailtRequest>(
+  params: ArtistDetailRequest
+): Promise<Result<ArtistDetailResponse, string>> {
+  return await request<ArtistDetailResponse, ArtistDetailRequest>(
     '/api/netease/artist/detail',
     params
   )

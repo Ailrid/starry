@@ -12,7 +12,7 @@ export interface SongCommentRequest {
 /**
  * @description: 歌曲喜欢检查
  */
-export interface SongLikeChechRequest {
+export interface SongLikeCheckRequest {
   ids: { id: number }[]
 }
 //-----------------------song_lick--------------------------------------------------
@@ -28,5 +28,5 @@ export interface SongLikeRequest {
  * @description: 音乐详情
  */
 export interface SongDetailRequest {
-  ids: { id: number }[]
+  ids: number[]
 }
