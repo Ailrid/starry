@@ -8,7 +8,7 @@ import {
   SetPlayModeMessage,
   LoadFMPlaylistMessage,
   LoadIntelligencePlaylistMessage,
-  CurrentSongChangedMessage,
+  MediaSessionMessage,
   SeekTimeMessage
 } from '../messages'
 import { PlayerComponent, PlaylistComponent, LyricComponent } from '../components'
@@ -59,15 +59,16 @@ export class PlayerSystem {
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(new Error(val))
       })
-      .exhaustive() // 注意：如果不使用 exhaustive，建议加个 .run() 或确保分支完备
+      .exhaustive()
 
     // 处理播放逻辑
     match(urlDetail)
       .with({ ok: true }, ({ val }) => {
         const url = val.data.url
         playerComponent.player.setSrc(url)
+        //转交播放权并通知MediaSession
         PlayOrPauseMessage.send(true)
-        CurrentSongChangedMessage.send()
+        MediaSessionMessage.send()
       })
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(new Error(val))

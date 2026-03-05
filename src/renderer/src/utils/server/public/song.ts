@@ -1,7 +1,7 @@
 import { request } from '../request'
 import { Result } from 'ts-results'
 import { SongUrlRequest, LyricRequest } from './types'
-import { SongUrlResponse, LyircResponse } from './types'
+import { SongUrlResponse, LyricResponse } from './types'
 
 //-----------------------song_url---------------------------------------------------
 /**
@@ -15,6 +15,6 @@ export async function songUrl(params: SongUrlRequest): Promise<Result<SongUrlRes
 /**
  * @description: 歌词
  */
-export async function lyric(params: LyricRequest): Promise<Result<LyircResponse, string>> {
-  return await request<LyircResponse, LyricRequest>('/api/lyric', params)
+export async function lyric(params: LyricRequest): Promise<Result<LyricResponse, string>> {
+  return await request<LyricResponse, LyricRequest>('/api/lyric', params)
 }

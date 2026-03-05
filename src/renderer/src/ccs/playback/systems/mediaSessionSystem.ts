@@ -1,10 +1,10 @@
 import { System } from '@virid/core'
-import { CurrentSongChangedMessage } from '../messages'
+import { MediaSessionMessage } from '../messages'
 import { LyricComponent, PlaylistComponent } from '../components'
 
 export class MediaSessionSystem {
   @System({
-    messageClass: CurrentSongChangedMessage
+    messageClass: MediaSessionMessage
   })
   async changeSongMetadata(lyricComponent: LyricComponent, playlistComponent: PlaylistComponent) {
     const currentSong = playlistComponent.currentSong

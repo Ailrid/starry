@@ -2,7 +2,7 @@
 /**
  * @description: 歌词数据
  */
-export interface LyircResponse {
+export interface LyricResponse {
   isPure: boolean
   lyrics: {
     time: number

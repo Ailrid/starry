@@ -49,7 +49,7 @@ export class LoadIntelligencePlaylistMessage extends SingleMessage {
   }
 }
 
-export class CurrentSongChangedMessage extends SingleMessage {
+export class MediaSessionMessage extends SingleMessage {
   constructor() {
     super()
   }

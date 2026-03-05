@@ -36,10 +36,15 @@ export class InitSystem {
   @System()
   static createMainWindow(@Message(CreateMainWindowMessage) message: CreateMainWindowMessage) {
     const mainWindow = new BrowserWindow({
-      width: 900,
-      height: 670,
+      width: 1200,
+      height: 800,
+      minWidth: 900, // 保证最少能看清两列
+      minHeight: 600, // 保证播放条不会遮挡内容
       show: false,
       autoHideMenuBar: true,
+      titleBarStyle: 'hidden',
+      titleBarOverlay: false,
+      backgroundColor: '#00000000',
       ...(process.platform === 'linux' ? { icon } : {}),
       webPreferences: {
         preload: join(__dirname, '../preload/index.js'),
