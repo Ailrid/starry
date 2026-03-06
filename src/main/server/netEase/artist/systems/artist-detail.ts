@@ -68,7 +68,7 @@ export class ArtistDetailSystem {
 }
 
 /**
- * @description: 歌手的详细信息
+ * * 歌手的详细信息
  */
 interface RawArtistDetail {
   musicSize: number
@@ -87,7 +87,7 @@ interface RawArtistDetail {
   [key: string]: any
 }
 /**
- * @description: 歌手的热门专辑信息
+ * * 歌手的热门专辑信息
  */
 interface RawArtistHotSong {
   rtUrls: []
@@ -129,7 +129,7 @@ interface RawArtistHotSong {
   [key: string]: any
 }
 /**
- * @description: 歌手信息
+ * * 歌手信息
  */
 interface RawArtistDetailResponse {
   artist: RawArtistDetail

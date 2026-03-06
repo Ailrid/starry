@@ -1,6 +1,6 @@
 //-----------------------login_qr_check---------------------------------------------------
 /**
- * @description: 登陆检查
+ * * 登陆检查
  */
 export interface WaitScan {
   code: 801
@@ -19,7 +19,7 @@ export interface LoginSuccess {
 export type LoginQrCheckResponse = WaitScan | Scaning | LoginSuccess
 //-----------------------login_qr_create---------------------------------------------------
 /**
- * @description: 创建登陆二维码
+ * * 创建登陆二维码
  */
 export interface LoginQrCreateResponse {
   qrurl: string
@@ -27,7 +27,7 @@ export interface LoginQrCreateResponse {
 }
 //-----------------------login_qr_key---------------------------------------------------
 /**
- * @description: 创建登陆key
+ * * 创建登陆key
  */
 export interface LoginQrKeyResponse {
   code: number

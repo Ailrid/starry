@@ -1,6 +1,6 @@
 //-----------------------song_comment---------------------------------------------------
 /**
- * @description: 音乐评论返回数据
+ * * 音乐评论返回数据
  */
 
 import { type SongDetail } from '../../utils'
@@ -42,7 +42,7 @@ export interface SongCommentResponse {
 
 //-----------------------song_lick_check---------------------------------------------------
 /**
- * @description: 歌曲喜欢检查返回数据
+ * * 歌曲喜欢检查返回数据
  */
 
 export interface SongLikeCheckResponse {
@@ -52,7 +52,7 @@ export interface SongLikeCheckResponse {
 }
 //-----------------------song_detail---------------------------------------------------
 /**
- * @description: 音乐详情返回数据
+ * * 音乐详情返回数据
  */
 export interface SongDetailResponse {
   songs: SongDetail[]

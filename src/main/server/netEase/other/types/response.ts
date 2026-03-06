@@ -4,7 +4,7 @@ import { type PlaylistInfo, type SongDetail } from '../../utils'
 import { type PersonalFmRequest } from './request'
 
 /**
- * @description: MV详情
+ * * MV详情
  */
 export interface MvDetailResponse {
   mp: {
@@ -50,7 +50,7 @@ export interface MvDetailResponse {
 }
 //-----------------------mv_detail---------------------------------------------------
 /**
- * @description: MV链接
+ * * MV链接
  */
 export interface MvUrlResponse {
   data: {
@@ -62,7 +62,7 @@ export interface MvUrlResponse {
 }
 //-----------------------personal_fm---------------------------------------------------
 /**
- * @description: 私人FM
+ * * 私人FM
  */
 export interface PersonalFmResponse {
   songs: SongDetail[]
@@ -72,7 +72,7 @@ export interface PersonalFmResponse {
 //-----------------------recommend_playlist---------------------------------------------------
 
 /**
- * @description: 私人FM
+ * * 私人FM
  */
 export interface RecommendPlaylistResponse {
   data: PlaylistInfo[]
@@ -82,7 +82,7 @@ export interface RecommendPlaylistResponse {
 //-----------------------recommend_songs---------------------------------------------------
 
 /**
- * @description: 日推
+ * * 日推
  */
 export interface RecommendSongResponse {
   data: SongDetail[]
@@ -127,7 +127,7 @@ export interface VipInfoResponse {
 }
 //-----------------------intelligence---------------------------------------------------
 /**
- * @description: 心动模式数据
+ * * 心动模式数据
  */
 export interface IntelligenceResponse {
   message: string

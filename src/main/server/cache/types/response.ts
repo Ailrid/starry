@@ -1,6 +1,6 @@
 //-----------------------lyric---------------------------------------------------
 /**
- * @description: 歌词数据
+ * * 歌词数据
  */
 export interface LyricResponse {
   isPure: boolean
@@ -14,7 +14,7 @@ export interface LyricResponse {
 }
 //-----------------------song_url---------------------------------------------------
 /**
- * @description: 歌曲url返回数据
+ * * 歌曲url返回数据
  */
 export interface SongUrlResponse {
   data: {

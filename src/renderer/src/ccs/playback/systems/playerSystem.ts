@@ -12,9 +12,9 @@ import {
   SeekTimeMessage
 } from '../messages'
 import { PlayerComponent, PlaylistComponent, LyricComponent } from '../components'
-import { songUrl, lyric } from '@/utils/server/public'
+import { songUrl, lyric } from '@/utils/server'
 import { match, P } from 'ts-pattern'
-import { SongDetail } from '../interface'
+import { SongDetail } from '@utils/server/interfaces'
 
 export class PlayerSystem {
   /**

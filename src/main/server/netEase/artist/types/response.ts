@@ -3,7 +3,7 @@
 import { type SongDetail, type ArtistInfo, type AlbumInfo } from '../../utils'
 
 /**
- * @description: 歌手专辑列表
+ * * 歌手专辑列表
  */
 export interface ArtistAlbumResponse {
   artist: ArtistInfo
@@ -13,7 +13,7 @@ export interface ArtistAlbumResponse {
 }
 //-----------------------artist_mv---------------------------------------------------
 /**
- * @description: 歌手单个MV信息
+ * * 歌手单个MV信息
  */
 export interface ArtistMv {
   id: number
@@ -40,7 +40,7 @@ export interface ArtistMv {
 }
 
 /**
- * @description: 歌手MV列表
+ * * 歌手MV列表
  */
 export interface ArtistMvResponse {
   mvs: ArtistMv[]
@@ -51,7 +51,7 @@ export interface ArtistMvResponse {
 //-----------------------artist_song---------------------------------------------------
 
 /**
- * @description: 歌手MV列表
+ * * 歌手MV列表
  */
 export interface ArtistSongResponse {
   songs: SongDetail[]
@@ -61,7 +61,7 @@ export interface ArtistSongResponse {
 }
 //-----------------------artist_sublist---------------------------------------------------
 /**
- * @description: 已收藏的歌手的简短信息
+ * * 已收藏的歌手的简短信息
  */
 export interface ArtistSub {
   info: string
@@ -77,7 +77,7 @@ export interface ArtistSub {
 }
 
 /**
- * @description: 已收藏的歌手列表
+ * * 已收藏的歌手列表
  */
 export interface ArtistSublistResponse {
   data: ArtistSub[]
@@ -87,7 +87,7 @@ export interface ArtistSublistResponse {
 }
 //-----------------------artist_sublist---------------------------------------------------
 /**
- * @description: 歌手信息
+ * * 歌手信息
  */
 export interface ArtistDetailResponse {
   artist: ArtistInfo

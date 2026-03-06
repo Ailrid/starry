@@ -54,7 +54,7 @@ export class UserPlaylistSystem {
 }
 
 /**
- * @description: 用户账户详细信息返回数据
+ * * 用户账户详细信息返回数据
  */
 interface RawUserPlaylistResponse {
   more: boolean

@@ -1,4 +1,4 @@
-export * from './interface'
+export * from './interfaces'
 export * from './messages'
 export * from './components'
 export * from './systems'

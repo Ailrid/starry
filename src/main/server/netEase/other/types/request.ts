@@ -1,6 +1,6 @@
 //-----------------------comment---------------------------------------------------
 /**
- * @description: MV详情
+ * * MV详情
  */
 export interface CommentRequest {
   id: number
@@ -11,14 +11,14 @@ export interface CommentRequest {
 
 //-----------------------mv_detail---------------------------------------------------
 /**
- * @description: MV详情
+ * * MV详情
  */
 export interface MvDetailRequest {
   id: number
 }
 //-----------------------mv_detail---------------------------------------------------
 /**
- * @description: MV链接
+ * * MV链接
  */
 export interface MvUrlRequest {
   id: number
@@ -27,7 +27,7 @@ export interface MvUrlRequest {
 
 //-----------------------intelligence---------------------------------------------------
 /**
- * @description: 心动模式
+ * * 心动模式
  */
 export interface IntelligenceRequest {
   id: number

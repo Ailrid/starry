@@ -1,5 +1,5 @@
 /**
- * @description: 音乐详情返回的原始的数据
+ * * 音乐详情返回的原始的数据
  */
 export interface RawSongDetailResponse {
   songs: {

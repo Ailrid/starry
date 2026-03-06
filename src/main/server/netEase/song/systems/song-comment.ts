@@ -69,7 +69,7 @@ export class SongCommentsSystem {
 }
 
 /**
- * @description: 音乐评论返回数据
+ * * 音乐评论返回数据
  */
 interface RawSongCommentResponse {
   comments: {

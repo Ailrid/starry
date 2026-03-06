@@ -4,7 +4,7 @@
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
  * @LastEditTime: 2026-01-31 18:10:48
  * @FilePath: /starry/src/renderer/src/store/settingStore.ts
- * @Description:设置的store
+ * *设置的store
  *
  * Copyright (c) 2025 by ShirahaYuki, All Rights Reserved.
  */

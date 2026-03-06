@@ -48,7 +48,7 @@ export interface UserPlaylistResponse {
 
 //-----------------------user_record---------------------------------------------------
 /**
- * @description: 用户最近播放歌曲
+ * * 用户最近播放歌曲
  */
 export interface PlayRecord {
   playCount: number
@@ -57,7 +57,7 @@ export interface PlayRecord {
 }
 
 /**
- * @description: 用户最近播放记录返回数据
+ * * 用户最近播放记录返回数据
  */
 export interface UserRecordResponse {
   weekData?: PlayRecord[]
@@ -66,7 +66,7 @@ export interface UserRecordResponse {
 }
 //-----------------------user_subcount---------------------------------------------------
 /**
- * @description: 用户最近播放记录返回数据
+ * * 用户最近播放记录返回数据
  */
 export interface UserSubCountResponse {
   programCount: number

@@ -2,7 +2,7 @@
 
 import { type AlbumInfo, type ArtistInfo, type SongDetail, type PlaylistInfo } from '../../utils'
 /**
- * @description:搜索建议
+ * *搜索建议
  */
 export interface SearchSuggestResponse {
   result: {

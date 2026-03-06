@@ -52,7 +52,7 @@ export class AlbumSublistSystem {
 }
 
 /**
- * @description: 专辑信息
+ * * 专辑信息
  */
 interface RawAlbumInfo {
   artists: [
@@ -75,7 +75,7 @@ interface RawAlbumInfo {
 }
 
 /**
- * @description: 用户收藏的专辑列表信息
+ * * 用户收藏的专辑列表信息
  */
 interface RawAlbumSublistResponse {
   data: RawAlbumInfo[]

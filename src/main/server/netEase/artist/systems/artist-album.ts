@@ -62,7 +62,7 @@ export class ArtistAlbumsSystem {
   }
 }
 /**
- * @description: 歌手专辑里的歌手信息
+ * * 歌手专辑里的歌手信息
  */
 interface RawArtistAlbumArtist {
   img1v1Url: string
@@ -78,7 +78,7 @@ interface RawArtistAlbumArtist {
   [key: string]: any
 }
 /**
- * @description: 歌手专辑里的热门专辑
+ * * 歌手专辑里的热门专辑
  */
 interface RawArtistHotAlbum {
   artists: {
@@ -125,7 +125,7 @@ interface RawArtistHotAlbum {
 }
 
 /**
- * @description: 歌手专辑列表
+ * * 歌手专辑列表
  */
 interface RawArtistAlbumResponse {
   artist: RawArtistAlbumArtist

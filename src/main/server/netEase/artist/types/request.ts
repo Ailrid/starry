@@ -1,7 +1,7 @@
 //-----------------------artist_album---------------------------------------------------
 
 /**
- * @description: 歌手专辑列表
+ * * 歌手专辑列表
  */
 export interface ArtistAlbumRequest {
   id: number
@@ -10,7 +10,7 @@ export interface ArtistAlbumRequest {
 }
 //-----------------------artist_mv---------------------------------------------------
 /**
- * @description: 歌手MV列表
+ * * 歌手MV列表
  */
 export interface ArtistMvRequest {
   id: number
@@ -19,7 +19,7 @@ export interface ArtistMvRequest {
 }
 //-----------------------artist_song---------------------------------------------------
 /**
- * @description: 歌手MV列表
+ * * 歌手MV列表
  */
 export interface ArtistSongRequest {
   id: number
@@ -30,7 +30,7 @@ export interface ArtistSongRequest {
 //-----------------------artist_sublist---------------------------------------------------
 
 /**
- * @description: 已收藏的歌手列表
+ * * 已收藏的歌手列表
  */
 export interface ArtistSublistRequest {
   limit: number
@@ -39,7 +39,7 @@ export interface ArtistSublistRequest {
 //-----------------------artist_detail---------------------------------------------------
 
 /**
- * @description: 歌手信息
+ * * 歌手信息
  */
 export interface ArtistDetailRequest {
   id: number
@@ -47,7 +47,7 @@ export interface ArtistDetailRequest {
 //-----------------------artist_sub---------------------------------------------------
 
 /**
- * @description: 收藏/取消收藏歌手
+ * * 收藏/取消收藏歌手
  */
 export interface ArtistSubRequest {
   id: number

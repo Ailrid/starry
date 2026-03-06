@@ -1,6 +1,6 @@
 //-----------------------song_comment---------------------------------------------------
 /**
- * @description: 音乐评论
+ * * 音乐评论
  */
 export interface SongCommentRequest {
   id: number
@@ -10,14 +10,14 @@ export interface SongCommentRequest {
 }
 //-----------------------song_lick_check---------------------------------------------------
 /**
- * @description: 歌曲喜欢检查
+ * * 歌曲喜欢检查
  */
 export interface SongLikeCheckRequest {
   ids: number[]
 }
 //-----------------------song_lick--------------------------------------------------
 /**
- * @description: 歌曲喜欢/取消喜欢
+ * * 歌曲喜欢/取消喜欢
  */
 export interface SongLikeRequest {
   id: number
@@ -25,7 +25,7 @@ export interface SongLikeRequest {
 }
 //-----------------------song_detail---------------------------------------------------
 /**
- * @description: 音乐详情
+ * * 音乐详情
  */
 export interface SongDetailRequest {
   ids: number[]

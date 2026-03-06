@@ -4,7 +4,7 @@
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
  * @LastEditTime: 2026-02-11 21:21:15
  * @FilePath: /starry/src/renderer/src/utils/setting/store.ts
- * @Description:初始化某个对象当对象更改时自动存储到localStorage
+ * *初始化某个对象当对象更改时自动存储到localStorage
  *
  * Copyright (c) 2025 by ShirahaYuki, All Rights Reserved.
  */

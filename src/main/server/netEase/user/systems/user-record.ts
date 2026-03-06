@@ -46,7 +46,7 @@ export class UserRecordSystem {
 }
 
 /**
- * @description: 用户最近播放歌曲
+ * * 用户最近播放歌曲
  */
 interface RawPlayRecord {
   playCount: number
@@ -80,7 +80,7 @@ interface RawPlayRecord {
 }
 
 /**
- * @description: 用户最近播放记录返回数据
+ * * 用户最近播放记录返回数据
  */
 interface RawUserRecordResponse {
   weekData?: RawPlayRecord[]

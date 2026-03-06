@@ -42,12 +42,6 @@ export class RecommendPlaylistRequestMessage extends HttpRequestMessage {}
 export class RecommendSongRequestMessage extends HttpRequestMessage {}
 
 @HttpRoute({
-  path: '/netease/album/wiki',
-  method: 'post'
-})
-export class AlbumWikiRequestMessage extends HttpRequestMessage {}
-
-@HttpRoute({
   path: '/netease/vip/info',
   method: 'post'
 })

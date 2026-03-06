@@ -182,7 +182,7 @@ export class SearchSystem {
 }
 
 /**
- * @description:歌曲搜索
+ * *歌曲搜索
  */
 interface RawSearchSong {
   result: {
@@ -221,7 +221,7 @@ interface RawSearchSong {
   [key: string]: any
 }
 /**
- * @description:专辑搜索
+ * *专辑搜索
  */
 interface RawSearchAlbum {
   result: {
@@ -270,7 +270,7 @@ interface RawSearchAlbum {
   [key: string]: any
 }
 /**
- * @description:歌手搜索
+ * *歌手搜索
  */
 interface RawSearchSinger {
   result: {
@@ -294,7 +294,7 @@ interface RawSearchSinger {
   [key: string]: any
 }
 /**
- * @description:歌单搜索
+ * *歌单搜索
  */
 interface RawSearchPlaylist {
   result: {
@@ -323,7 +323,7 @@ interface RawSearchPlaylist {
   [key: string]: any
 }
 /**
- * @description:用户搜索
+ * *用户搜索
  */
 interface RawSearchUser {
   result: {
@@ -347,7 +347,7 @@ interface RawSearchUser {
   [key: string]: any
 }
 /**
- * @description:MV搜索
+ * *MV搜索
  */
 interface RawSearchMv {
   result: {
@@ -379,7 +379,7 @@ interface RawSearchMv {
   [key: string]: any
 }
 // /**
-//  * @description:歌词搜索
+//  * *歌词搜索
 //  */
 // interface RawSearchLyric {
 //   result: {

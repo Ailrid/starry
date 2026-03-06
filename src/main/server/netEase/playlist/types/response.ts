@@ -3,7 +3,7 @@
 import { type PlaylistDetail, type PlaylistInfo } from '../../utils'
 
 /**
- * @description: 创建歌单返回数据
+ * * 创建歌单返回数据
  */
 export interface PlaylistCreateResponse {
   code: number
@@ -13,7 +13,7 @@ export interface PlaylistCreateResponse {
 //-----------------------playlist_detail---------------------------------------------------
 
 /**
- * @description: 歌单详细返回数据
+ * * 歌单详细返回数据
  */
 export interface PlaylistDetailResponse {
   code: number

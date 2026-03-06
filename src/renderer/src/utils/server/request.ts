@@ -5,7 +5,7 @@ const RETRYABLE_STATUS = new Set([429, 500, 502, 503, 504])
 /**
  * 带有重试逻辑的请求封装
  */
-export async function request<T, P>(
+export async function request<P, T>(
   url: string,
   params: P,
   maxRetries = 3,

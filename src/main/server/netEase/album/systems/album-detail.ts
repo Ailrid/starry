@@ -74,7 +74,7 @@ export class AlbumDetailSystem {
 
 //-----------------------album---------------------------------------------------
 /**
- * @description: 专辑的详细详情
+ * * 专辑的详细详情
  */
 export interface RawAlbumDetail {
   artists: {
@@ -132,7 +132,7 @@ export interface RawAlbumDetail {
   }
 }
 /**
- * @description: 专辑详情响应
+ * * 专辑详情响应
  */
 
 interface RawAlbumSongDetail {
