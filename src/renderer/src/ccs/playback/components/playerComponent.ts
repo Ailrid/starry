@@ -11,7 +11,10 @@ export class Player {
   @Responsive() public currentTime: number = 0.0
   @Responsive() public duration: number = 0.0
   @Responsive(true) public buffered: TimeRanges | null = null
-
+  @Responsive()
+  public slider: Array<number> = Array(60).fill(0)
+  @Responsive()
+  public sliderMask: Array<boolean> = Array(60).fill(false)
   constructor() {
     this.audio = new Audio()
     this.audio.crossOrigin = 'anonymous'
@@ -20,6 +23,7 @@ export class Player {
     this.ctx = new AudioContext()
     this.gainNode = this.ctx.createGain()
     this.analyser = this.ctx.createAnalyser()
+    this.analyser.fftSize = 256
     const source = this.ctx.createMediaElementSource(this.audio)
     source.connect(this.gainNode).connect(this.analyser).connect(this.ctx.destination)
     // 初始化音量同步
@@ -50,6 +54,16 @@ export class Player {
     // 默认的内部同步：只负责更新响应式数据
     this.audio.addEventListener('timeupdate', () => {
       this.currentTime = this.audio.currentTime
+      //更新音频柱
+      if (!this.duration) return
+      // 计算当前播放进度占总长度的比例
+      const progress = this.currentTime / this.duration
+      const sliderIndex = Math.floor(progress * 60)
+      // 边界检查
+      if (sliderIndex >= 0 && sliderIndex < 60 && this.slider[sliderIndex] == 0) {
+        this.slider[sliderIndex] = this.getAveragePower()
+        this.sliderMask[sliderIndex] = true
+      }
     })
   }
   // 唯一可直接被Controller调用的方法
@@ -65,9 +79,31 @@ export class Player {
       this.audio.removeEventListener(eventName, listener)
     }
   }
+  @Safe()
+  /**
+   * * 返回0-1
+   */
+  public getAveragePower() {
+    const dataArray = new Uint8Array(this.analyser.frequencyBinCount)
+    // 获取时域数据
+    this.analyser.getByteTimeDomainData(dataArray)
+
+    let max = 0
+    for (let i = 0; i < dataArray.length; i++) {
+      // 归一化并取绝对值
+      const amplitude = Math.abs(dataArray[i] / 128 - 1)
+      if (amplitude > max) max = amplitude
+    }
+    const highContrastMax = Math.pow(max, 0.6)
+
+    return highContrastMax
+  }
 
   public setSrc(url: string) {
     this.audio.src = url
+    //清空状态
+    this.slider = Array(60).fill(0)
+    this.sliderMask = Array(60).fill(false)
   }
 
   public play() {
@@ -81,6 +117,15 @@ export class Player {
 
   public seek(time: number) {
     this.audio.currentTime = time
+    //清除从这往后的slider和sliderMask
+    const progress = time / this.duration
+    const sliderIndex = Math.floor(progress * 60) - 1
+    this.slider.forEach((_item, index) => {
+      if (index > sliderIndex) {
+        this.slider[index] = 0
+        this.sliderMask[index] = false
+      }
+    })
   }
 
   public setVolume(val: number) {

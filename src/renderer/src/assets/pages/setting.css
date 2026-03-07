@@ -16,11 +16,11 @@
   @apply flex w-full flex-col gap-4;
 }
 .setting-sheet-title {
-  @apply text-base font-bold tracking-wider uppercase opacity-50;
+  @apply text-base font-bold tracking-wider uppercase ;
 }
 .setting-item-title {
   @apply text-sm font-medium opacity-70;
 }
 .prompt-text {
-  @apply text-xs leading-relaxed italic opacity-40;
+  @apply text-xs leading-relaxed italic opacity-50;
 }

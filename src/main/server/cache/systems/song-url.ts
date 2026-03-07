@@ -12,7 +12,7 @@ import {
 import { Message } from '@virid/core'
 import { type SongUrlRequest, type SongUrlResponse } from '../types'
 import { DatabaseComponent } from '../../components'
-import { CacheSongsUrlRequestMessage } from '../message'
+import { CacheSongUrlRequestMessage } from '../message'
 
 class UrlFromLocalMessage extends HttpRequestMessage {
   constructor(
@@ -28,7 +28,7 @@ export class CacheSongUrlSystem {
   static urlMap: Map<number, string> = new Map()
   @HttpSystem()
   public static async songUrl(
-    @Message(CacheSongsUrlRequestMessage) message: CacheSongsUrlRequestMessage,
+    @Message(CacheSongUrlRequestMessage) message: CacheSongUrlRequestMessage,
     @Body() body: SongUrlRequest,
     @Cookies() cookies: Record<string, string>,
     @Headers() headers: Record<string, string>

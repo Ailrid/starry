@@ -7,7 +7,6 @@
     <!-- Theme -->
     <div class="setting-sheet">
       <span class="setting-sheet-title">主题与壁纸 (Theme & Background)</span>
-
       <div class="flex items-center">
         <div class="flex items-center gap-1">
           <Button
@@ -93,9 +92,7 @@
           <label class="setting-item-title block">字体族 (Family)</label>
           <div class="flex gap-2">
             <Select @update:model-value="v => (thc.setting.fontFamily = v as string)">
-              <SelectTrigger class="select-trigger">
-                <span class="opacity-70">预设</span>
-              </SelectTrigger>
+              <SelectTrigger class="select-trigger"> 预置字体 </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="ui-sans-serif, system-ui, sans-serif">默认无衬线</SelectItem>
@@ -128,14 +125,14 @@
           <div class="flex gap-2">
             <Button
               variant="ghost"
-              class="font-color-btn bg-white"
+              class="font-color-btn bg-white shadow"
               @click="thc.setting.textColor = 'black'"
             >
               <span class="text-xs text-black">深色文字</span>
             </Button>
             <Button
               variant="ghost"
-              class="font-color-btn bg-black hover:bg-zinc-900"
+              class="font-color-btn bg-black shadow hover:bg-zinc-900"
               @click="thc.setting.textColor = 'white'"
             >
               <span class="text-xs text-white">浅色文字</span>
@@ -160,7 +157,7 @@
 
               <Button
                 variant="outline"
-                class="h-8 flex-1 cursor-pointer gap-2 border-dashed transition-all"
+                class="h-8 flex-1 cursor-pointer gap-2 border-dashed"
                 @click="thc.setting.primaryColor = thc.setting.imgAvgColor"
               >
                 <span class="text-xs">提取背景色</span>
@@ -236,12 +233,15 @@ const thc = useController(ThemeController)
   @apply h-8 flex-1 cursor-pointer gap-2 border-dashed transition-all;
 }
 .select-trigger {
-  @apply bg-card h-8 w-25 shrink-0 cursor-pointer border-black/5 text-sm dark:border-white/10;
+  @apply bg-card h-8 w-25 shrink-0 cursor-pointer border-black/10 text-sm dark:border-white/10;
 }
 .palette-item {
-  @apply relative flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-black/5 transition-all hover:scale-110 active:scale-90 dark:border-white/10;
+  @apply relative flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-black/10 transition-all hover:scale-110 active:scale-90 dark:border-white/10;
 }
 .path-line {
   @apply from-primary cursor-pointer bg-linear-to-r to-transparent bg-size-[100%_3px] bg-bottom bg-no-repeat pb-1 text-xs transition-opacity hover:opacity-80;
+}
+.shadow {
+  @apply shadow-[0_0_0_1px_rgba(0,0,0,0.05)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05)];
 }
 </style>

@@ -1,5 +1,5 @@
 import { DatabaseComponent } from '../../components'
-import { CacheSongsDataRequestMessage } from '../message'
+import { CacheSongDataRequestMessage } from '../message'
 import { CacheSongUrlSystem } from './song-url'
 import fs from 'fs'
 import path from 'path'
@@ -38,8 +38,8 @@ export class CacheSongDataSystem {
   static urlMap: Map<number, string> = new Map()
   @HttpSystem()
   public static async songData(
-    @Message(CacheSongsDataRequestMessage)
-    message: CacheSongsDataRequestMessage,
+    @Message(CacheSongDataRequestMessage)
+    message: CacheSongDataRequestMessage,
     @Query('id') id: number,
     @Query('md5') md5: string,
     @Query('source') source: 'netease' | 'local',
@@ -121,7 +121,7 @@ export class CacheSongDataSystem {
           .run(id, md5, savePath, size)
       })
 
-      writer.on('error', (err) => {
+      writer.on('error', err => {
         fs.unlink(savePath, () => {})
         MessageWriter.error(err, `[Song Cache] Write Error: ${savePath}`)
       })
@@ -157,7 +157,7 @@ export class CacheSongDataSystem {
     if (!fs.existsSync(cachePath)) {
       //缓存有问题，删除数据库记录，然后重新发回CacheSongsDataRequestMessage
       dbComponent.db.prepare('DELETE FROM song_cache WHERE id = ? AND md5 = ?').run(id, md5)
-      return new CacheSongsDataRequestMessage(requestId)
+      return new CacheSongDataRequestMessage(requestId)
     }
     // 更新缓存数据
     dbComponent.db

@@ -1,5 +1,5 @@
 <template>
-  <div class="window" :class="stc.themeClasses" :style="stc.rootStyle">
+  <div class="window">
     <!-- 图片背景 -->
     <div
       v-if="stc.setting.theme.mode === 'image'"
@@ -12,7 +12,7 @@
       :style="stc.maskStyle"
       class="image-bg z-1"
     ></div>
-    <!-- 侧边栏 -->
+    <!-- 上半部分-->
     <div class="z-10 flex flex-1 overflow-hidden">
       <aside class="side-bar flex w-64 flex-col">
         <TitleBarLeft class="h-12 shrink-0" />
@@ -20,16 +20,19 @@
           <Sidebar class="h-full" />
         </div>
       </aside>
-
       <main class="bg-background flex flex-1 flex-col overflow-hidden">
         <TitleBarRight class="h-12 shrink-0" />
         <div class="flex flex-1 flex-col overflow-hidden">
-          <RouterView />
+          <router-view v-slot="{ Component }">
+            <Transition>
+              <component :is="Component" />
+            </Transition>
+          </router-view>
         </div>
       </main>
     </div>
     <!-- 底部播放条 -->
-    <div class="player">
+    <div class="player h-20 shrink-0">
       <Player />
     </div>
   </div>
@@ -47,15 +50,16 @@ const stc = useController(SettingController)
 <style scoped>
 @reference "@/assets/main.css";
 .window {
-  @apply flex h-screen w-full flex-col overflow-hidden border;
+  @apply flex h-screen w-full flex-col overflow-hidden border-0;
+  color: var(--foreground);
 }
 .image-bg {
   @apply pointer-events-none absolute inset-0;
 }
 .side-bar {
-  @apply bg-sidebar z-10 overflow-hidden border-r border-black/5 shadow-[4px_0_24px_rgba(0,0,0,0.05)] backdrop-blur-xl dark:border-white/10 dark:shadow-none;
+  @apply bg-sidebar z-10 overflow-hidden border-r border-black/5 shadow-[6px_0_15px_-3px_rgba(0,0,0,0.05)] backdrop-blur-md dark:border-white/10 dark:shadow-none;
 }
 .player {
-  @apply bg-card z-50 h-20 shrink-0 overflow-hidden border-t border-black/5 shadow-[0_-4px_24px_rgba(0,0,0,0.05)] backdrop-blur-xl dark:border-white/10 dark:shadow-none;
+  @apply bg-card z-50 border-t border-black/5 shadow-[0_-8px_20px_-6px_rgba(0,0,0,0.08)] backdrop-blur-md dark:border-white/10 dark:shadow-none;
 }
 </style>

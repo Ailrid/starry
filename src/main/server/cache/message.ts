@@ -7,12 +7,12 @@ export class CacheLyricRequestMessage extends HttpRequestMessage {}
 
 @HttpRoute({
   path: '/cache/songs/data',
-  method: 'post'
+  method: 'get'
 })
-export class CacheSongsDataRequestMessage extends HttpRequestMessage {}
+export class CacheSongDataRequestMessage extends HttpRequestMessage {}
 
 @HttpRoute({
   path: '/cache/songs/url',
   method: 'post'
 })
-export class CacheSongsUrlRequestMessage extends HttpRequestMessage {}
+export class CacheSongUrlRequestMessage extends HttpRequestMessage {}

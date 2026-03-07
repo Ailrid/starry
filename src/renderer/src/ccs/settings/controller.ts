@@ -6,7 +6,7 @@ const toRgb = (arr: number[]) => `rgb(${arr[0]}, ${arr[1]}, ${arr[2]})`
 
 @Controller()
 export class SettingController {
-  @Project(SettingComponent, (i) => {
+  @Project(SettingComponent, i => {
     return i
   })
   public setting!: SettingComponent
@@ -29,8 +29,9 @@ export class SettingController {
     styles['font-family'] = config.fontFamily
 
     // 颜色映射：必须转换为字符串格式
-    if (config.textColor && Array.isArray(config.textColor)) {
-      styles['--foreground'] = toRgb(config.textColor)
+    if (config.textColor && config.mode == 'image') {
+      styles['--foreground'] =
+        config.textColor == 'black' ? 'oklch(0.145 0 0)' : 'oklch(0.92 0.01 0)'
     }
     if (config.primaryColor && Array.isArray(config.primaryColor)) {
       styles['--primary'] = toRgb(config.primaryColor)

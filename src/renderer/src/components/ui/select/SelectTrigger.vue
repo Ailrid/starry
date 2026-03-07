@@ -22,12 +22,23 @@ const forwardedProps = useForwardProps(delegatedProps)
     v-bind="forwardedProps"
     :class="
       cn(
-        'flex h-9 w-full items-center justify-between gap-2 rounded-lg border bg-background/50 px-3 py-2 text-sm transition-all duration-200',
-        'border-input hover:bg-accent/50 hover:border-accent-foreground/20',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/20 focus-visible:border-ring',
-        'data-[placeholder]:text-muted-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-muted-foreground/60 group-hover:[&_svg]:text-muted-foreground',
-        'aria-invalid:border-destructive aria-invalid:ring-destructive/20 disabled:cursor-not-allowed disabled:opacity-50',
-        'shadow-sm whitespace-nowrap overflow-hidden',
+        // 基础布局：增加字间距 tracking-wide，使用更细的 font-medium
+        'flex h-9 w-full items-center justify-between gap-3 rounded-xl px-4 py-2 transition-all duration-300',
+        'text-xs font-medium tracking-wide tabular-nums',
+
+        // 背景与边框：弱化边框，改为半透明背景叠加
+        'bg-secondary/50 border border-white/5 shadow-inner backdrop-blur-md',
+        'hover:bg-secondary/50 hover:border-white/10',
+
+        // 状态处理
+        'focus-visible:ring-primary/30 focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:outline-none',
+
+        // 图标与占位符：调淡图标，增加顺滑的过渡
+        'placeholder:text-muted-foreground/50 [&_svg]:text-muted-foreground/40 group-hover:[&_svg]:text-primary/60 [&_svg]:size-3.5 [&_svg]:transition-colors',
+
+        // 异常状态
+        'overflow-hidden whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-40',
+
         props.class
       )
     "

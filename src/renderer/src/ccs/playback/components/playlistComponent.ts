@@ -15,6 +15,7 @@ export class PlaylistComponent {
   // 当前播放的歌曲详情
   @Responsive(true)
   public currentSong: SongDetail | null = null
+
   // 当前列表的id
   public playlistId: number = 0
   // 暂存列表

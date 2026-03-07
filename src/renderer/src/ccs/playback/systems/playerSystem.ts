@@ -31,20 +31,20 @@ export class PlayerSystem {
     const list = playlistComponent.currentList
 
     // 更新播放列表
-    let index = list.findIndex((item) => item.id === song.id)
+    let index = list.findIndex(item => item.id === song.id)
     if (index === -1) {
       list.push(song)
       index = list.length - 1
     }
     playlistComponent.currentIndex = index
     playlistComponent.currentSong = song
+    playerComponent.player.duration = song.duration
     // 同时发起请求
     const lyricPromise = lyric({ id: song.id, source: song.source })
     const urlPromise = songUrl({ id: song.id, level: 'lossless', source: song.source })
 
     // 并行等待结果
     const [lyricDetail, urlDetail] = await Promise.all([lyricPromise, urlPromise])
-
     // 处理歌词逻辑
     match(lyricDetail)
       .with({ ok: true }, ({ val }) => {
@@ -242,7 +242,7 @@ export class PlayerSystem {
       // 直接替换当前列表
       playlistComponent.currentList = list
       playlistComponent.currentIndex = list.findIndex(
-        (s) => s.id === playlistComponent.currentSong!.id
+        s => s.id === playlistComponent.currentSong!.id
       )
     }
     // 从随机模式切回,恢复原列表
@@ -252,7 +252,7 @@ export class PlayerSystem {
       playlistComponent.currentList = [...playlistComponent.stagingList]
       // 找到当前这首歌在顺序列表里的位置
       playlistComponent.currentIndex = playlistComponent.currentList.findIndex(
-        (s) => s.id === playlistComponent.currentSong!.id
+        s => s.id === playlistComponent.currentSong!.id
       )
       // 清空备份
       playlistComponent.stagingList = []
