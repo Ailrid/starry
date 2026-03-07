@@ -1,119 +1,76 @@
 <template>
-  <div
-    class="backdrop-blur-md flex flex-col gap-4 p-4 border border-black/5 dark:border-white/10 shadow-sm rounded-lg bg-card"
-  >
-    <div class="flex items-center gap-4 p-2">
-      <div class="w-1 h-3 bg-primary rounded-full"></div>
-      <span class="text-base font-bold uppercase tracking-wider"> Theme Settings </span>
+  <div class="setting-card">
+    <div class="setting-card-title">
+      <div></div>
+      <span> Theme Settings </span>
     </div>
     <!-- Theme -->
-    <div class="flex flex-col w-full gap-4 p-2 backdrop-blur-md">
-      <span class="text-base font-bold uppercase tracking-wider opacity-50"
-        >主题与壁纸 (Theme & Background)</span
-      >
+    <div class="setting-sheet">
+      <span class="setting-sheet-title">主题与壁纸 (Theme & Background)</span>
 
       <div class="flex items-center">
-        <div class="flex items-center gap-1.5">
+        <div class="flex items-center gap-1">
           <Button
+            v-for="item in [
+              { mode: 'light', icon: Sun, effect: 'rotate-180' },
+              { mode: 'dark', icon: Moon, effect: 'scale-110 -rotate-12' },
+              { mode: 'image', icon: ImageIcon, effect: '-translate-y-0.5' }
+            ] as const"
+            :key="item.mode"
             variant="ghost"
             size="icon"
-            class="relative cursor-pointer hover:bg-accent/50 transition-all duration-300 group"
-            :class="{
-              'bg-accent text-accent-foreground shadow-sm': thc.themeSetting.mode === 'light'
-            }"
-            @click="thc.toggleTheme('light')"
+            class="theme-toggle-btn h-8 w-8 transition-all"
+            :class="thc.activatedBtnClass(item.mode)"
+            @click="thc.toggleTheme(item.mode)"
           >
-            <Sun
-              class="h-4 w-4 transition-transform duration-500 ease-in-out"
-              :class="{ 'rotate-180': thc.activeBtn === 'light' }"
-            />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            class="relative cursor-pointer hover:bg-accent/50 transition-all duration-300 group"
-            :class="{
-              'bg-accent text-accent-foreground shadow-sm': thc.themeSetting.mode === 'dark'
-            }"
-            @click="thc.toggleTheme('dark')"
-          >
-            <Moon
-              class="h-4 w-4 transition-all duration-500"
-              :class="{ 'scale-110 -rotate-12': thc.activeBtn === 'dark' }"
-            />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            class="relative cursor-pointer hover:bg-accent/50 transition-all duration-300 group"
-            :class="{
-              'bg-accent text-accent-foreground shadow-sm': thc.themeSetting.mode === 'image'
-            }"
-            @click="thc.toggleTheme('image')"
-          >
-            <ImageIcon
-              class="h-4 w-4 transition-transform duration-500"
-              :class="{ '-translate-y-0.5': thc.activeBtn === 'image' }"
+            <component
+              :is="item.icon"
+              class="h-4 w-4 transition-transform duration-300"
+              :class="thc.activeBtn === item.mode ? item.effect : 'opacity-50'"
             />
           </Button>
         </div>
         <div class="flex-1"></div>
-        <div
-          v-if="thc.setting.url"
-          class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-accent/30 hover:bg-accent/50 border border-border/50 transition-all cursor-pointer group w-fit"
-          @click="thc.openDialog"
-        >
-          <span class="text-sm font-mono truncate opacity-70 group-hover:opacity-100">
-            {{ thc.setting.url.split('/').pop() }}
-          </span>
+        <div v-if="thc.setting.url" class="prompt-text path-line" @click="thc.openDialog">
+          {{ thc.setting.url.split('/').pop() }}
         </div>
       </div>
-
       <!-- Image Settings -->
       <Transition name="panel-slide">
-        <div v-if="thc.themeSetting.mode === 'image'" class="overflow-hidden">
-          <div class="flex flex-row items-center gap-6">
-            <div class="flex-1 space-y-2">
-              <div class="flex justify-between text-sm font-medium opacity-70">
-                <label>透明度 (Opacity)</label>
-                <span class="font-mono text-primary"
-                  >{{ (thc.setting.opacity * 100).toFixed(0) }}%</span
-                >
-              </div>
-              <Slider v-model="thc.opacityArray" :min="0" :max="1" :step="0.01" class="w-full" />
+        <div v-if="thc.themeSetting.mode === 'image'" class="flex flex-row items-center gap-4">
+          <div class="flex-1 space-y-2">
+            <div class="flex justify-between">
+              <label class="setting-item-title">透明度 (Opacity)</label>
+              <span class="text-primary font-mono"
+                >{{ (thc.setting.opacity * 100).toFixed(0) }}%</span
+              >
             </div>
-            <div class="h-8 w-px bg-black/5 dark:bg-white/10 self-end mb-1"></div>
-            <div class="w-40 space-y-2">
-              <label class="text-sm font-medium opacity-70">模糊半径 (Blur)</label>
-              <div class="flex items-center gap-2">
-                <Input
-                  v-model.number="thc.setting.blur"
-                  type="number"
-                  min="0"
-                  max="100"
-                  class="h-8 flex-1 border"
-                />
-                <span class="text-sm uppercase opacity-50 font-bold">px</span>
-              </div>
+            <Slider v-model="thc.opacityArray" :min="0" :max="1" :step="0.01" class="w-full" />
+          </div>
+          <div class="w-40 space-y-2">
+            <label class="setting-item-title">模糊半径 (Blur)</label>
+            <div class="flex items-center gap-2">
+              <Input
+                v-model.number="thc.setting.blur"
+                type="number"
+                min="0"
+                max="100"
+                class="h-8 flex-1 border"
+              />
+              <span class="text-sm font-bold uppercase opacity-50">px</span>
             </div>
           </div>
         </div>
       </Transition>
     </div>
-
     <!-- General Settings -->
-    <div class="flex flex-col gap-4 p-2">
-      <div class="flex items-center gap-2 opacity-50">
-        <span class="text-base font-bold uppercase tracking-wider">颜色与字体 (Color & Font)</span>
-      </div>
-
-      <div class="grid grid-cols-2 gap-x-8 gap-y-6">
+    <div class="setting-sheet">
+      <span class="setting-sheet-title">颜色与字体 (Color & Font)</span>
+      <div class="grid grid-cols-2 gap-x-8 gap-y-4">
         <div class="space-y-3">
-          <div class="flex justify-between text-sm font-medium opacity-70">
-            <label>UI缩放 (Scale)</label>
-            <span class="font-mono text-primary"
+          <div class="flex justify-between">
+            <label class="setting-item-title">UI缩放 (Scale)</label>
+            <span class="text-primary font-mono"
               >{{ (thc.setting.fontSizeScale * 100).toFixed(0) }}%</span
             >
           </div>
@@ -125,23 +82,18 @@
             class="w-full"
           />
         </div>
-
         <div class="space-y-3">
-          <div class="flex justify-between text-sm font-medium opacity-70">
-            <label>全局圆角 (Radius)</label>
-            <span class="font-mono text-primary">{{ thc.setting.borderRadius }}px</span>
+          <div class="flex justify-between">
+            <label class="setting-item-title">全局圆角 (Radius)</label>
+            <span class="text-primary font-mono">{{ thc.setting.borderRadius }}px</span>
           </div>
           <Slider v-model="thc.borderRadiusArray" :min="0" :max="24" :step="2" class="w-full" />
         </div>
         <div class="space-y-3">
-          <div>
-            <label class="text-sm font-medium opacity-70">字体族 (Family)</label>
-          </div>
+          <label class="setting-item-title block">字体族 (Family)</label>
           <div class="flex gap-2">
-            <Select @update:model-value="(v) => (thc.setting.fontFamily = v as string)">
-              <SelectTrigger
-                class="cursor-pointer h-8 w-25 bg-card text-sm border-black/5 dark:border-white/10 shrink-0"
-              >
+            <Select @update:model-value="v => (thc.setting.fontFamily = v as string)">
+              <SelectTrigger class="select-trigger">
                 <span class="opacity-70">预设</span>
               </SelectTrigger>
               <SelectContent>
@@ -163,92 +115,72 @@
                 class="h-8 w-full pr-8 text-sm font-medium"
               />
               <div
-                class="absolute right-2 top-1/2 -translate-y-1/2 opacity-20 hover:opacity-100 transition-opacity cursor-help"
+                class="absolute top-1/2 right-2 -translate-y-1/2 cursor-help opacity-20 transition-opacity hover:opacity-100"
               >
-                <component :is="FontIcon" class="w-3 h-3" />
+                <FontIcon class="h-3 w-3" />
               </div>
             </div>
           </div>
-          <p class="text-xs opacity-40 italic">提示：输入系统中已安装的字体名后回车</p>
+          <p class="prompt-text">提示：输入系统中已安装的字体名后回车</p>
         </div>
         <div class="space-y-3">
-          <div>
-            <label class="text-sm font-medium opacity-70">文本对比度 (Text Contrast)</label>
-          </div>
+          <label class="setting-item-title block">文本对比度 (Text Contrast)</label>
           <div class="flex gap-2">
             <Button
-              variant="outline"
-              class="flex-1 h-9 gap-2 transition-all cursor-pointer"
+              variant="ghost"
+              class="font-color-btn bg-white"
               @click="thc.setting.textColor = 'black'"
             >
-              <div class="h-3 w-3 rounded-full bg-black border border-white/20"></div>
-              <span class="text-xs">深色文字</span>
+              <span class="text-xs text-black">深色文字</span>
             </Button>
             <Button
-              variant="outline"
-              class="flex-1 h-9 gap-2 transition-all cursor-pointer"
+              variant="ghost"
+              class="font-color-btn bg-black hover:bg-zinc-900"
               @click="thc.setting.textColor = 'white'"
             >
-              <div class="h-3 w-3 rounded-full bg-white border border-black/10"></div>
-              <span class="text-xs">浅色文字</span>
+              <span class="text-xs text-white">浅色文字</span>
             </Button>
           </div>
-
-          <p class="text-xs opacity-40 leading-relaxed italic">
-            提示：使用图片背景时，手动选择字体色来保持可读性
-          </p>
+          <p class="prompt-text">提示：使用图片背景时，手动选择字体色来保持可读性</p>
         </div>
         <div class="space-y-3">
-          <div>
-            <label class="text-sm font-medium opacity-70">强调色 (Primary)</label>
+          <label class="setting-item-title block">强调色 (Primary)</label>
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <div
+                class="h-8 w-16 rounded-md border border-black/10 shadow-inner transition-transform dark:border-white/20"
+                :style="{
+                  backgroundColor: thc.setting.primaryColor
+                    ? `rgb(${thc.setting.primaryColor.join(',')})`
+                    : 'var(--primary)'
+                }"
+              ></div>
+
+              <span class="font-mono text-xs opacity-50">Current</span>
+
+              <Button
+                variant="outline"
+                class="h-8 flex-1 cursor-pointer gap-2 border-dashed transition-all"
+                @click="thc.setting.primaryColor = thc.setting.imgAvgColor"
+              >
+                <span class="text-xs">提取背景色</span>
+              </Button>
+            </div>
+
+            <div class="space-y-2">
+              <label class="prompt-text block">Palette</label>
+              <div class="grid grid-cols-8 gap-2">
+                <button
+                  v-for="(rgb, name) in thc.colors"
+                  :key="name"
+                  type="button"
+                  class="palette-item"
+                  :style="{ backgroundColor: `rgb(${rgb.join(',')})` }"
+                  @click="thc.setting.primaryColor = rgb"
+                ></button>
+              </div>
+            </div>
           </div>
-
-          <Popover>
-            <PopoverTrigger as-child>
-              <div class="w-full flex items-center">
-                <div
-                  class="h-8 w-16 rounded-md border border-black/10 dark:border-white/20 cursor-pointer shadow-inner transition-transform hover:scale-105 active:scale-95"
-                  :style="{
-                    backgroundColor: thc.setting.primaryColor
-                      ? `rgb(${thc.setting.primaryColor.join(',')})`
-                      : 'var(--primary)'
-                  }"
-                ></div>
-                <div class="flex-1"></div>
-
-                <Button
-                  variant="outline"
-                  class="flex-1 h-9 gap-2 transition-all cursor-pointer"
-                  @click="thc.setting.primaryColor = thc.setting.imgAvgColor"
-                >
-                  <span class="text-xs">提取背景色</span>
-                </Button>
-              </div>
-            </PopoverTrigger>
-
-            <PopoverContent class="p-3">
-              <div class="space-y-3">
-                <div class="text-xs font-medium opacity-50 flex justify-between items-center">
-                  <span>选择强调色</span>
-                </div>
-                <div class="grid grid-cols-6 gap-2">
-                  <Button
-                    v-for="(rgb, name) in thc.colors"
-                    :key="name"
-                    variant="outline"
-                    class="cursor-pointer h-8 w-8 rounded-full transition-all hover:scale-110 active:scale-90 flex items-center justify-center"
-                    :style="{ backgroundColor: `rgb(${rgb.join(',')})` }"
-                    @click="thc.setting.primaryColor = rgb"
-                  >
-                    <Check
-                      v-if="thc.setting.primaryColor === rgb"
-                      class="h-4 w-4 text-white mix-blend-difference"
-                    />
-                  </Button>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
         </div>
       </div>
     </div>
@@ -273,6 +205,8 @@ const thc = useController(ThemeController)
 </script>
 
 <style scoped>
+@import '@/assets/pages/setting.css';
+@reference "@/assets/main.css";
 /* 定义动画：进入和离开的过程 */
 .panel-slide-enter-active,
 .panel-slide-leave-active {
@@ -290,5 +224,24 @@ const thc = useController(ThemeController)
   margin-top: 0;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.theme-toggle-btn {
+  @apply hover:bg-accent/50 relative cursor-pointer transition-all duration-300;
+}
+.theme-toggle-icon {
+  @apply h-4 w-4 transition-all duration-500;
+}
+.font-color-btn {
+  @apply h-8 flex-1 cursor-pointer gap-2 border-dashed transition-all;
+}
+.select-trigger {
+  @apply bg-card h-8 w-25 shrink-0 cursor-pointer border-black/5 text-sm dark:border-white/10;
+}
+.palette-item {
+  @apply relative flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-black/5 transition-all hover:scale-110 active:scale-90 dark:border-white/10;
+}
+.path-line {
+  @apply from-primary cursor-pointer bg-linear-to-r to-transparent bg-size-[100%_3px] bg-bottom bg-no-repeat pb-1 text-xs transition-opacity hover:opacity-80;
 }
 </style>

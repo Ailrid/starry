@@ -29,7 +29,7 @@ export class InitSystem {
   @System()
   static initApp(@Message(BootStrapElectronMessage) message: BootStrapElectronMessage) {
     // 处理协议的具体逻辑
-    protocol.handle('local-file', (request) => {
+    protocol.handle('local-file', request => {
       // 去掉协议头
       const rawPath = request.url.replace('local-file://', '')
       // 对路径进行解码
@@ -88,7 +88,7 @@ export class InitSystem {
       mainWindow.show()
     })
 
-    mainWindow.webContents.setWindowOpenHandler((details) => {
+    mainWindow.webContents.setWindowOpenHandler(details => {
       shell.openExternal(details.url)
       return { action: 'deny' }
     })

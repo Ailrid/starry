@@ -28,13 +28,14 @@ class OpenDialogMessage extends ToMainMessage {
 
 @Controller()
 export class ThemeController {
-  @Project(SettingComponent, (setting) => setting.theme)
+  @Project(SettingComponent, setting => setting.theme)
   public themeSetting!: ThemeConfig
-
+  /**
+   * *这一堆只是给组件用的,他要一个数组
+   */
   public get opacityArray(): number[] {
     return [this.setting.opacity]
   }
-
   public set opacityArray(val: number[]) {
     this.setting.opacity = val[0]
   }
@@ -55,16 +56,30 @@ export class ThemeController {
   public setting!: ThemeConfig
   @Responsive()
   public activeBtn!: string
+  /**
+   * *setup阶段拷贝一份设置给自己
+   */
   @OnHook('onSetup')
   public setup() {
     this.setting = JSON.parse(JSON.stringify(this.themeSetting))
   }
-  @Watch<ThemeController>((i) => i.setting, { deep: true })
+  /**
+   * *只要setting变，那就发消息更新
+   */
+  @Watch<ThemeController>(i => i.setting, { deep: true })
   public updateTheme() {
     //切换到图片主题
-    SaveSettingsMessage.send((settings) => {
+    SaveSettingsMessage.send(settings => {
       settings.theme = this.setting
     })
+  }
+  /**
+   * *辅助函数而已
+   */
+  public activatedBtnClass(mode: 'light' | 'dark' | 'image') {
+    return {
+      'bg-accent text-accent-foreground shadow-sm': this.themeSetting.mode === mode
+    }
   }
   /**
    * *切换主题模式
@@ -77,7 +92,7 @@ export class ThemeController {
     }, 500)
     //亮色和暗色主题
     if (mode === 'light' || mode === 'dark') {
-      return SaveSettingsMessage.send((settings) => {
+      return SaveSettingsMessage.send(settings => {
         settings.theme.mode = mode
       })
     }
@@ -88,12 +103,14 @@ export class ThemeController {
         this.openDialog()
         return
       }
-      SaveSettingsMessage.send((settings) => {
+      SaveSettingsMessage.send(settings => {
         settings.theme = this.setting
       })
     }
   }
-  //监听选择对话框的消息，并调整自己的路径
+  /**
+   * *  监听选择对话框的消息，并调整自己的路径
+   */
   @Listener(ChooseBgImageMessage)
   public async chooseBgImageListener(message: ChooseBgImageMessage) {
     //更新路径
@@ -111,7 +128,9 @@ export class ThemeController {
       filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'webp'] }]
     })
   }
-  @Responsive()
+  /*
+   * * 调色板颜色
+   */
   public colors = {
     // --- 基础中性色 (5个) ---
     white: [255, 255, 255],
@@ -119,9 +138,7 @@ export class ThemeController {
     neutral: [115, 115, 115], // Neutral-500
     darkGray: [63, 63, 70], // Zinc-700
     black: [0, 0, 0],
-
     // --- HSL 循环光谱 (19个) ---
-    // 按照 Hue 每隔 ~19° 取样，饱和度 85%，亮度根据视觉感官微调
     red: [239, 68, 68], // 0°
     roseRed: [225, 29, 72], // 340°
     pink: [244, 114, 182], // 330°
@@ -135,7 +152,7 @@ export class ThemeController {
     emerald: [16, 185, 129], // 160°
     green: [34, 197, 94], // 140°
     lime: [101, 163, 13], // 80°
-    yellow: [234, 179, 8], // 45° (调低了亮度以防看不见)
+    yellow: [234, 179, 8], // 45° 
     amber: [245, 158, 11], // 35°
     orange: [249, 115, 22], // 25°
     warmOrange: [234, 88, 12], // 20°

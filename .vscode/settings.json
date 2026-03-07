@@ -7,5 +7,16 @@
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  // "editor.parameterHints.enabled": true,
+  // "editor.quickSuggestions": {
+  //   "other": true,
+  //   "comments": true,
+  //   "strings": true // 确保在字符串（即 class=""）里也触发建议
+  // },
+  // // 让编辑器把 Vue 文件当作 HTML 一样处理 CSS 补全
+  // "emmet.includeLanguages": {
+  //   "vue-html": "html",
+  //   "vue": "html"
+  // }
 }

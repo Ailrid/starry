@@ -1,6 +1,6 @@
 <template>
   <div class="h-full overflow-y-auto">
-    <div class="m-2 pl-2 pr-2 space-y-10">
+    <div class="m-2 space-y-10 pr-2 pl-2">
       <section>
         <Theme />
       </section>

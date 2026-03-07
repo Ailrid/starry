@@ -1,0 +1,26 @@
+@reference '../main.css';
+
+.setting-card {
+  @apply bg-card flex flex-col gap-6 rounded-lg border border-black/5 p-8 shadow-sm backdrop-blur-md dark:border-white/10;
+}
+.setting-card-title {
+  @apply flex items-center gap-4;
+  & div {
+    @apply bg-primary h-3 w-1 rounded-full;
+  }
+  & span {
+    @apply text-base font-bold tracking-wider uppercase;
+  }
+}
+.setting-sheet {
+  @apply flex w-full flex-col gap-4;
+}
+.setting-sheet-title {
+  @apply text-base font-bold tracking-wider uppercase opacity-50;
+}
+.setting-item-title {
+  @apply text-sm font-medium opacity-70;
+}
+.prompt-text {
+  @apply text-xs leading-relaxed italic opacity-40;
+}
