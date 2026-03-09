@@ -1,19 +1,14 @@
 import { HttpRoute, HttpRequestMessage } from '@virid/express'
 @HttpRoute({
-  path: '/netease/login/cellphone',
+  path: '/netease/login/window/open',
   method: 'post'
 })
-export class LoginCellphoneRequestMessage extends HttpRequestMessage {}
+export class OpenLoginWindowRequestMessage extends HttpRequestMessage {}
 @HttpRoute({
-  path: '/netease/login/captcha/sent',
+  path: '/netease/login/window/close',
   method: 'post'
 })
-export class SendCaptchaRequestMessage extends HttpRequestMessage {}
-@HttpRoute({
-  path: '/netease/login/captcha/verify',
-  method: 'post'
-})
-export class VerifyCaptchaRequestMessage extends HttpRequestMessage {}
+export class CloseLoginWindowRequestMessage extends HttpRequestMessage {}
 
 @HttpRoute({
   path: '/netease/login/qr/check',
@@ -32,12 +27,6 @@ export class LoginQrCreateRequestMessage extends HttpRequestMessage {}
   method: 'post'
 })
 export class LoginQrKeyRequestMessage extends HttpRequestMessage {}
-
-@HttpRoute({
-  path: '/netease/login/status',
-  method: 'post'
-})
-export class LoginStatusRequestMessage extends HttpRequestMessage {}
 
 @HttpRoute({
   path: '/netease/logout',

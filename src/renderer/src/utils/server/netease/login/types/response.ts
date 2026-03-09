@@ -1,21 +1,30 @@
 /**
  * * 登陆检查
  */
+
+export interface Timeout {
+  code: 800
+  message: '已过期'
+}
 export interface WaitScan {
   code: 801
   message: '等待扫码'
 }
 export interface Scaning {
-  code: 200
-  message: '登录成功'
+  code: 802
+  message: '扫码成功'
 }
 
 export interface LoginSuccess {
-  code: 200
+  code: 803
   message: '登录成功'
 }
 
-export type LoginQrCheckResponse = WaitScan | Scaning | LoginSuccess
+export interface TooManyRequest {
+  code: -462
+  message: '登录成功'
+}
+export type LoginQrCheckResponse = WaitScan | Scaning | LoginSuccess | Timeout | TooManyRequest
 
 /**
  * * 创建登陆二维码
@@ -31,4 +40,12 @@ export interface LoginQrCreateResponse {
 export interface LoginQrKeyResponse {
   code: number
   unikey: string
+}
+export interface OpenLoginWindowResponse {
+  code: 200 | 500 //成功或者窗口已存在
+  message: string
+}
+export interface CloseLoginWindowResponse {
+  code: 200 | 500
+  message: string
 }

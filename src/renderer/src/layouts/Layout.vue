@@ -1,8 +1,8 @@
 <template>
   <div class="relative z-10 h-screen w-full overflow-hidden">
-    <router-view v-slot="{ Component, route }">
+    <router-view v-slot="{ Component }">
       <Transition :name="lct.transitionName">
-        <component :is="Component" :key="route.path" />
+        <component :is="Component" />
       </Transition>
     </router-view>
   </div>
@@ -26,7 +26,7 @@ const lct = useController(LayoutController)
   width: 100%;
   height: 100%;
   will-change: transform;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .fly-up-enter-from {

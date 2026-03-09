@@ -1,5 +1,7 @@
+import { PlaylistComponent } from '@/ccs/playback'
+import { SongDetail } from '@/utils/server'
 import { Controller, SingleMessage } from '@virid/core'
-import { Listener, Use } from '@virid/vue'
+import { Listener, Project, Use } from '@virid/vue'
 import { useTemplateRef, type ShallowRef } from 'vue'
 import { useRouter } from 'vue-router'
 export class PlayerControllerMessage extends SingleMessage {
@@ -17,8 +19,11 @@ export class PlayerController {
 
   @Use(() => useTemplateRef('player'))
   public container!: ShallowRef<HTMLElement | null>
+  @Project(PlaylistComponent, i => i.currentSong)
+  public currentSong!: SongDetail | null
   @Listener(PlayerControllerMessage)
   public onPlayerController(message: PlayerControllerMessage) {
+    if (!this.currentSong) return
     if (message.mark || message.event.target === this.container.value)
       this.router.push({ name: 'player' })
   }

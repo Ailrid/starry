@@ -1,59 +1,56 @@
 /**
- * 兼容本地自定义协议与远程 HTTP 协议的颜色提取函数
+ * 提取主色调并根据背景亮度自动调整，确保作为强调色（文字/按钮）时的对比度
  */
-export async function getAverageRGB(imageUrl: string): Promise<number[]> {
+export async function getAccentRGB(imageUrl: string): Promise<{
+  accentColor: Array<number>
+  avgColor: Array<number>
+}> {
   return new Promise((resolve, reject) => {
     const img = new Image()
-
-    // 关键：允许跨域请求。
-    // 对于 http 资源，这会触发 CORS 检查；
-    // 对于 local-file 资源，需要主进程协议注册时支持 CORS。
     img.crossOrigin = 'anonymous'
 
     img.onload = () => {
-      const SAMPLE_SIZE = 64
       const canvas = document.createElement('canvas')
-      canvas.width = SAMPLE_SIZE
-      canvas.height = SAMPLE_SIZE
+      canvas.width = 1
+      canvas.height = 1
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return reject(new Error('Canvas error'))
 
-      const ctx = canvas.getContext('2d', { willReadFrequently: true })
-      if (!ctx) {
-        reject(new Error('Canvas context not available'))
-        return
+      ctx.drawImage(img, 0, 0, 1, 1)
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data
+
+      // 计算感知亮度
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+      const avgColor = [r, g, b]
+      let accentR: number, accentG: number, accentB: number
+      if (luminance > 0.5) {
+        // 背景整体偏亮 -> 强调色需要变深才能看清
+        accentR = Math.max(0, r * 0.4)
+        accentG = Math.max(0, g * 0.4)
+        accentB = Math.max(0, b * 0.4)
+      } else {
+        // 背景整体偏暗 -> 强调色需要拉高亮度
+        const boost = 0.6 // 提高 60% 的亮度差
+        accentR = Math.min(255, r + (255 - r) * boost)
+        accentG = Math.min(255, g + (255 - g) * boost)
+        accentB = Math.min(255, b + (255 - b) * boost)
+      }
+      //饱和度补偿
+      const max = Math.max(accentR, accentG, accentB)
+      if (max < 150 && luminance < 0.5) {
+        // 如果是暗背景下的强调色太暗了，强制拉一把最亮通道
+        if (accentR === max) accentR = 200
+        else if (accentG === max) accentG = 200
+        else accentB = 200
       }
 
-      // 绘制图片到缩放后的 Canvas
-      ctx.drawImage(img, 0, 0, SAMPLE_SIZE, SAMPLE_SIZE)
-
-      try {
-        const imageData = ctx.getImageData(0, 0, SAMPLE_SIZE, SAMPLE_SIZE)
-        const data = imageData.data
-        let r = 0,
-          g = 0,
-          b = 0
-        const pixelCount = data.length / 4
-
-        for (let i = 0; i < data.length; i += 4) {
-          r += data[i]
-          g += data[i + 1]
-          b += data[i + 2]
-        }
-
-        resolve([
-          Math.round(r / pixelCount),
-          Math.round(g / pixelCount),
-          Math.round(b / pixelCount)
-        ])
-      } catch (_err) {
-        // 如果 crossOrigin 没起作用，这里会抛出 SecurityError
-        reject(new Error('Canvas tainted: Cannot read pixel data from cross-origin image.'))
-      }
+      resolve({
+        accentColor: [Math.round(accentR), Math.round(accentG), Math.round(accentB)],
+        avgColor
+      })
     }
 
-    img.onerror = () => {
-      reject(new Error(`Failed to load image: ${imageUrl}`))
-    }
-
+    img.onerror = () => reject(new Error('Load error'))
     img.src = imageUrl
   })
 }

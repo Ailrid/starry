@@ -16,7 +16,8 @@ export async function request<P, T>(
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params)
+        body: JSON.stringify(params),
+        credentials: 'include'
       })
 
       // 成功拿到数据
@@ -50,7 +51,7 @@ export async function request<P, T>(
 
     // 指数退避逻辑
     const delay = baseDelay * Math.pow(2, attempt)
-    await new Promise((resolve) => setTimeout(resolve, delay))
+    await new Promise(resolve => setTimeout(resolve, delay))
   }
 
   return Err('[Request] Completely Failed: Request failed after maximum retries')

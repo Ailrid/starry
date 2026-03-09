@@ -1,5 +1,6 @@
 <template>
   <div class="drag flex w-full items-center justify-between px-2">
+    
     <div class="flex-1 h-full"></div>
     <div class="no-drag flex items-center">
       <button

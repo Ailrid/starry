@@ -9,7 +9,8 @@ export interface ThemeConfig {
   url: string // 图片地址
   opacity: number // 背景亮度/透明度控制
   blur: number // 模糊程度
-  imgAvgColor: Array<number> | null //从图片中提取的主色调
+  imgAccentColor: Array<number> | null //从图片中提取的主色调
+  imgAvgColor: Array<number> | null
   primaryColor: Array<number> | null //用户自定义的
   // 字体系统
   fontSizeScale: number // 字体缩放比例，控制全局 REM
@@ -26,6 +27,7 @@ export class SettingComponent {
     url: '',
     opacity: 0.15, // 稍微降一点，配合背景色会有通透感
     blur: 0, // 默认给点模糊更高级
+    imgAccentColor: null,
     imgAvgColor: null,
     primaryColor: null, // 默认一个蓝色的 accent
     fontSizeScale: 1, // 100% 缩放

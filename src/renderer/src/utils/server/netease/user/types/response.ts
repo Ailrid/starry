@@ -21,7 +21,9 @@ export interface UserProfile {
   createDays?: number
 }
 
-/** 1. 登录账户信息响应 */
+/** 
+ * *登录账户信息响应 
+ */
 export interface UserAccountResponse {
   code: number
   profile: UserProfile
@@ -32,7 +34,9 @@ export interface UserAccountResponse {
   }
 }
 
-/** 2. 用户详情响应 (主页用) */
+/** 
+ ** 用户详情响应 (主页用)
+ */
 export interface UserDetailResponse {
   code: number
   profile: UserProfile

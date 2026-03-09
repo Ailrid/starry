@@ -2,7 +2,7 @@ import { Controller } from '@virid/core'
 import { SettingComponent } from './component'
 import { Project } from '@virid/vue'
 // 辅助函数：将 [r, g, b] 转换为 "rgb(r, g, b)"
-const toRgb = (arr: number[]) => `rgb(${arr[0]}, ${arr[1]}, ${arr[2]})`
+const toRgba = (arr: number[], a = 1) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]},${a})`
 
 @Controller()
 export class SettingController {
@@ -17,63 +17,46 @@ export class SettingController {
   @Project<SettingController>()
   get rootStyle() {
     const config = this.setting.theme
-    const styles: Record<string, string | number> = {
-      borderColor: 'var(--window-border)',
-      boxShadow: 'inset 0 0 4px var(--window-inset-shadow)'
-    }
+    const styles: Record<string, string | number> = {}
 
     // 字体与圆角
-    // styles['font-size'] = `${config.fontSizeScale * 16}px`
     document.documentElement.style.fontSize = `${config.fontSizeScale * 16}px`
     styles['--radius'] = `${config.borderRadius}px`
     styles['font-family'] = config.fontFamily
 
-    // 颜色映射：必须转换为字符串格式
+    // 颜色变量映射
     if (config.textColor && config.mode == 'image') {
       styles['--foreground'] =
         config.textColor == 'black' ? 'oklch(0.145 0 0)' : 'oklch(0.92 0.01 0)'
     }
-    if (config.primaryColor && Array.isArray(config.primaryColor)) {
-      styles['--primary'] = toRgb(config.primaryColor)
+    if (Array.isArray(config.primaryColor)) {
+      styles['--primary'] = toRgba(config.primaryColor)
     }
-    if (config.imgAvgColor && Array.isArray(config.imgAvgColor)) {
-      styles['--avg-color'] = toRgb(config.imgAvgColor)
+    if (Array.isArray(config.imgAccentColor) && Array.isArray(config.imgAvgColor)) {
+      styles['--img-accent-color'] = toRgba(config.imgAccentColor)
+      styles['--img-avg-color'] = toRgba(config.imgAvgColor)
     }
-    //配置边框颜色
-    if (config.mode === 'light') {
-      styles['--window-border'] = '#CFCFCF'
-      styles['--window-inset-shadow'] = '#CFCFCF'
-      styles['color'] = 'var(--foreground)'
-    } else if (config.mode === 'dark') {
-      styles['--window-border'] = '#141414'
-      styles['--window-inset-shadow'] = '#141414'
-      styles['color'] = 'var(--foreground)'
-    } else if (config.primaryColor) {
-      const color = toRgb(config.primaryColor)
-      styles['--window-border'] = color
-      styles['--window-inset-shadow'] = color
-      styles['color'] = config.textColor ? config.textColor : 'var(--foreground)'
-    }
-
-    // 模式逻辑
-    if (config.mode === 'image') {
+    //文字和边框颜色
+    if (config.mode === 'dark') {
+      document.documentElement.classList.add('dark')
+      styles['--border'] = 'rgba(255, 255, 255, 0.1)'
+      styles['boxShadow'] = 'inset 0 0 4px rgba(0, 0, 0, 0.5)'
+    } else if (config.mode === 'light') {
+      document.documentElement.classList.remove('dark')
+      styles['--border'] = 'oklch(0.145 0 0 / 0.2)'
+    } else if (config.mode === 'image') {
+      //图像模式更改颜色
+      document.documentElement.classList.remove('dark')
+      styles['--foreground'] = config.textColor || 'var(--foreground)'
+      styles['--border'] = toRgba(config.imgAccentColor!,0.2)
+      //清除本来的背景色
       styles['--background'] = 'transparent'
-      styles['--sidebar'] = 'transparent'
-      styles['--card'] = 'transparent'
+      styles['--card'] = toRgba(config.imgAvgColor!, 0.1)
+      styles['--sidebar'] = toRgba(config.imgAvgColor!, 0.1)
       styles['--bg-image'] = `url("${config.url}")`
     }
-    return styles
-  }
 
-  /**
-   * *返回 Tailwind 需要的 class
-   */
-  @Project<SettingController>()
-  get themeClasses() {
-    const mode = this.setting.theme.mode
-    return {
-      dark: mode === 'dark'
-    }
+    return styles
   }
 
   /**

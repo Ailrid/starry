@@ -158,7 +158,7 @@
               <Button
                 variant="outline"
                 class="h-8 flex-1 cursor-pointer gap-2 border-dashed"
-                @click="thc.setting.primaryColor = thc.setting.imgAvgColor"
+                @click="thc.setting.primaryColor = thc.setting.imgAccentColor"
               >
                 <span class="text-xs">提取背景色</span>
               </Button>

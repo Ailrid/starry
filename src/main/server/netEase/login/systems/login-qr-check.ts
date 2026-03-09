@@ -23,9 +23,8 @@ export class LoginQrCheckSystem {
       cookies,
       headers
     })
-
     return Ok(answer.data as LoginQrCheckResponse, {
-      'Set-Cookies': answer.cookies
+      'Set-Cookie': answer.cookies
     })
   }
 }

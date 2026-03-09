@@ -1,7 +1,8 @@
 import { PlayerComponent, PlaylistComponent } from '@/ccs/playback'
-import { SongDetail } from '@/utils/server/interfaces'
+import { SongDetail } from '@/utils/server'
 import { Controller } from '@virid/core'
 import { Project } from '@virid/vue'
+import record from '@assets/imgs/record.png'
 
 @Controller()
 export class SongCardController {
@@ -9,4 +10,8 @@ export class SongCardController {
   public currentSong: SongDetail | null = null
   @Project(PlayerComponent, i => i.player.isPlaying)
   public isPlaying: boolean = false
+  @Project()
+  public get cover() {
+    return this.currentSong ? this.currentSong?.album.cover + '?param128y128' : record
+  }
 }

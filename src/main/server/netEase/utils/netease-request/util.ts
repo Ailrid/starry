@@ -54,7 +54,7 @@ export function filterHeaders(
     'user-agent' // 加密函数会根据设备类型自动补全
   ]
 
-  Object.keys(rawHeaders).forEach((key) => {
+  Object.keys(rawHeaders).forEach(key => {
     const lowerKey = key.toLowerCase()
     // 只有不在黑名单里，且有值的头才保留
     if (!forbiddenKeys.includes(lowerKey) && rawHeaders[key] !== undefined) {
@@ -78,24 +78,28 @@ export function serializeCookie(cookie: Cookie): string {
     .join('; ')
 }
 
-export function sanitizeCookies(raw: string): string {
-  if (!raw) return ''
+/**
+ * 采保留原始 Cookie 的绝大多数属性，
+ *
+ */
+export function sanitizeCookies(raw: string): string[] {
+  if (!raw) return []
 
-  // 复杂的正则：匹配以逗号分隔的 Cookie 块，但排除掉 Expires 里的日期逗号
-  // 这是一个典型的“非捕获组”技巧
   const cookieBlocks = raw.split(/,(?=[^;]*=)/)
 
   return cookieBlocks
-    .map((block) => {
-      return block
-        .split(';')
-        .map((part) => part.trim())
-        .filter((part) => {
-          const key = part.split('=')[0].toLowerCase()
-          // 敲掉 Domain 和 Path，让它在 localhost 下变成本地可存储的
-          return !['domain', 'path', 'secure', 'samesite'].includes(key)
-        })
-        .join('; ')
+    .map(block => {
+      return (
+        block
+          .split(';')
+          .map(part => part.trim())
+          .filter(part => {
+            const key = part.split('=')[0].toLowerCase()
+            return !['domain', 'secure', 'samesite', 'path'].includes(key)
+          })
+          // 重新组装单个 Cookie，并统一加上 Path 和 SameSite 策略
+          .join('; ') + '; Path=/; SameSite=Lax'
+      )
     })
-    .join(', ') // 依然用逗号连接，交给外层处理
+    .filter(Boolean)
 }

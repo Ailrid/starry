@@ -1,5 +1,5 @@
 import { createRequest, CryptoMode } from '../../utils'
-import { Cookies, Headers, HttpSystem, Ok } from '@virid/express'
+import { Cookies, Headers, HttpSystem, Ok, InternalServerError } from '@virid/express'
 import { UserAccountRequestMessage } from '../message'
 import { type UserAccountResponse, type UserProfile } from '../types'
 
@@ -11,35 +11,45 @@ export class UserAccountSystem {
     @Cookies() cookies: Record<string, string>,
     @Headers() headers: Record<string, string>
   ) {
-    const answer = await createRequest(CryptoMode.weapi, {
+    const rawAnswer = await createRequest(CryptoMode.weapi, {
       url: '/nuser/account/get',
       data: {},
       cookies,
       headers
     })
-    const raw = answer.data
-    if (!raw.profile) return Ok({ code: raw.code, profile: null, account: null })
+    const rawData = rawAnswer.data
+    if (!rawData.account) return InternalServerError('Cannot get user account, account is null')
 
-    // 转换为标准 UserProfile
+    const answer = await createRequest(CryptoMode.weapi, {
+      url: `/v1/user/detail/${rawData.account.id}`,
+      data: {},
+      cookies,
+      headers
+    })
+    const data = answer.data
+    // 映射到统一的 UserProfile 模型
     const profile: UserProfile = {
-      userId: raw.profile.userId,
-      nickname: raw.profile.nickname,
-      avatar: raw.profile.avatarUrl,
-      background: raw.profile.backgroundUrl,
-      signature: raw.profile.signature,
-      gender: raw.profile.gender,
-      birthday: raw.profile.birthday,
-      vipType: raw.profile.vipType,
-      createTime: raw.profile.createTime
+      userId: data.profile.userId,
+      nickname: data.profile.nickname,
+      avatar: data.profile.avatarUrl,
+      background: data.profile.avatarUrl,
+      signature: data.profile.signature,
+      gender: data.profile.gender,
+      birthday: data.profile.birthday,
+      vipType: data.profile.vipType,
+      // Detail 接口特有的社交数据
+      followeds: data.profile.followeds || 0,
+      follows: data.profile.follows || 0,
+      followed: data.profile.followed || false,
+      // 详情特有的等级和成长数据
+      level: data.level,
+      listenSongs: data.listenSongs,
+      createTime: data.createTime,
+      createDays: data.createDays
     }
 
     return Ok({
       code: 200,
-      account: {
-        id: raw.account.id,
-        userName: raw.account.userName,
-        vipType: raw.account.vipType
-      },
       profile
     } as UserAccountResponse)
   }

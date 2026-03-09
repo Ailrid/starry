@@ -56,11 +56,7 @@ export const formatTime = (seconds: number): string => {
   const h = Math.floor(seconds / 3600)
   const m = Math.floor((seconds % 3600) / 60)
   const s = Math.floor(seconds % 60)
-
-  // 补零逻辑：padStart(2, '0') 是最优雅的现代 JS 写法
   const mm = m.toString().padStart(2, '0')
   const ss = s.toString().padStart(2, '0')
-
-  // 如果超过一小时，显示 HH:mm:ss；否则显示 mm:ss
   return h > 0 ? `${h.toString().padStart(2, '0')}:${mm}:${ss}` : `${mm}:${ss}`
 }

@@ -1,7 +1,7 @@
 import { Controller } from '@virid/core'
 import { SettingComponent, type ThemeConfig } from '@/ccs/settings'
 import { Listener, Project, Responsive, OnHook, Watch } from '@virid/vue'
-import { getAverageRGB } from '@/utils'
+import { getAccentRGB } from '@/utils'
 import { SaveSettingsMessage } from '@/ccs/settings/message'
 import { FromIpc, FromMainMessage, ToMainMessage } from '@virid/renderer'
 // 获得选择的文件的路径
@@ -115,8 +115,9 @@ export class ThemeController {
   public async chooseBgImageListener(message: ChooseBgImageMessage) {
     //更新路径
     this.setting.url = 'local-file://' + message.path
-    const rgb = await getAverageRGB(this.setting.url)
-    this.setting.imgAvgColor = rgb
+    const { accentColor, avgColor } = await getAccentRGB(this.setting.url)
+    this.setting.imgAccentColor = accentColor
+    this.setting.imgAvgColor = avgColor
   }
   /**
    * *  打开文件选择框
@@ -152,7 +153,7 @@ export class ThemeController {
     emerald: [16, 185, 129], // 160°
     green: [34, 197, 94], // 140°
     lime: [101, 163, 13], // 80°
-    yellow: [234, 179, 8], // 45° 
+    yellow: [234, 179, 8], // 45°
     amber: [245, 158, 11], // 35°
     orange: [249, 115, 22], // 25°
     warmOrange: [234, 88, 12], // 20°

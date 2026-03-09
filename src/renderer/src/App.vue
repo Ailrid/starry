@@ -1,5 +1,5 @@
 <template>
-  <div class="window" :class="stc.themeClasses" :style="stc.rootStyle">
+  <div class="window"  :style="stc.rootStyle">
     <!-- 图片背景 -->
     <div
       v-if="stc.setting.theme.mode === 'image'"
@@ -27,6 +27,7 @@ const stc = useController(SettingController)
 .window {
   @apply bg-card flex h-screen w-full flex-col overflow-hidden border;
   color: var(--foreground);
+
 }
 .image-bg {
   @apply pointer-events-none absolute inset-0;

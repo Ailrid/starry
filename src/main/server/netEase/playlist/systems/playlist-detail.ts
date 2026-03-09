@@ -24,7 +24,6 @@ export class PlaylistDetailSystem {
       cookies,
       headers
     })
-    console.log('answer :>> ', answer)
     const raw: RawPlaylistDetail = answer.data?.playlist || {}
 
     // 数据清洗：转换成标准的 PlaylistDetail 结构

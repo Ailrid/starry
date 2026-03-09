@@ -12,22 +12,3 @@ export interface LoginQrCheckRequest {
 export interface LoginQrCreateRequest {
   unikey: string
 }
-
-export interface LoginCellphoneRequest {
-  phone: number
-  password: string
-  md5_password?: string
-  captcha: number
-  countrycode: string
-}
-
-export interface SendCaptchaRequest {
-  phone: number
-  ctcode?: number
-}
-
-export interface VerifyCaptchaRequest {
-  phone: number
-  captcha: number
-  ctcode: string
-}

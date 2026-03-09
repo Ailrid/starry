@@ -8,6 +8,7 @@ import {
   PlaylistComponent
 } from '../playback'
 import { LoadSettingsMessage } from '../settings'
+import { FetchUserAccountMessage } from '../user'
 export class InitializationMessage extends SingleMessage {}
 
 export class InitSystem {
@@ -18,6 +19,7 @@ export class InitSystem {
   static initSetting() {
     //启动的时候自动加载一次设置
     LoadSettingsMessage.send()
+    FetchUserAccountMessage.send()
   }
   @System({
     priority: 999,

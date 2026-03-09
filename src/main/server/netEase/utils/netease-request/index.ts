@@ -64,7 +64,7 @@ export async function createRequest<T extends CryptoMode>(
   if ([201, 302, 400, 502, 800, 801, 802, 803].includes(status)) {
     status = 200
   }
-  const headerRecord: Record<string, string> = {}
+  const headerRecord: Record<string, string | string[]> = {}
   response.headers.forEach((value, key) => {
     headerRecord[key] = value
   })
@@ -76,7 +76,7 @@ export async function createRequest<T extends CryptoMode>(
   } as {
     status: number
     data: any
-    cookies: string // 这里你之前打成了 sting，纠正为 string
-    headers: Record<string, string>
+    cookies: string[] // 这里你之前打成了 sting，纠正为 string
+    headers: Record<string, string | string[]>
   }
 }

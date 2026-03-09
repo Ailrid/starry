@@ -44,6 +44,7 @@ import Sidebar from '@components/sidebar/SideBar.vue'
 import Player from '@components/player/Player.vue'
 import { useController } from '@virid/vue'
 import { SettingController } from '@/ccs/settings'
+
 const stc = useController(SettingController)
 </script>
 

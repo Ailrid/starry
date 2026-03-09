@@ -3,7 +3,7 @@
     <div class="absolute -top-13 left-1/2 z-50 -translate-x-1/2">
       <div class="group/cover relative h-24 w-24 shrink-0">
         <img
-          :src="sct.currentSong?.album.cover + '?param128y128'"
+          :src="sct.cover"
           class="cover h-full w-full"
           :class="['animate-spin-slow', { 'pause-animation': !sct.isPlaying }]"
         />
@@ -32,7 +32,7 @@
 
       <div class="flex w-full">
         <div class="flex-1" @click="PlayerControllerMessage.send($event, true)"></div>
-        <div class="flex max-w-[80%] items-center px-2 whitespace-nowrap">
+        <div v-if="sct.currentSong" class="flex max-w-[80%] items-center px-2 whitespace-nowrap">
           <span class="song-text text-right">
             {{ sct.currentSong?.name }}
           </span>
@@ -53,6 +53,7 @@ import { SkipBack, SkipForward, Play, Pause } from 'lucide-vue-next'
 import { PlayOrPauseMessage, NextSongMessage, PreviousSongMessage } from '@/ccs/playback'
 import { PlayerControllerMessage, SongCardController } from './controllers'
 import { useController } from '@virid/vue'
+
 const sct = useController(SongCardController)
 </script>
 

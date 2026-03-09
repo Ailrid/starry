@@ -32,7 +32,6 @@ export class IntelligenceListSystem {
       cookies,
       headers
     })
-    console.log('listAnswer :>> ', listAnswer)
     // 提取歌曲 ID 列表
     const tracksID = listAnswer.data.data.map((item: any) => ({
       id: item.id || item.songInfo.id
@@ -45,7 +44,6 @@ export class IntelligenceListSystem {
       cookies,
       headers
     })
-    console.log('tracksAnswer :>> ', tracksAnswer)
     // 清洗
     const rawSongData: RawSongDetailResponse = tracksAnswer.data
     const formattedSongs = convertSongDetail(rawSongData)

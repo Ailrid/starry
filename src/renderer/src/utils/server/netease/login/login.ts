@@ -1,15 +1,14 @@
 import { request } from '../../request'
 import { Result } from 'ts-results'
+import { LoginQrCreateRequest, LoginQrCheckRequest, OpenLoginWindowResponse } from './types'
 import {
-  LoginQrCreateRequest,
-  LoginQrCheckRequest,
-  LoginCellphoneRequest,
-  SendCaptchaRequest,
-  VerifyCaptchaRequest
+  LoginQrCreateResponse,
+  LoginQrKeyResponse,
+  LoginQrCheckResponse,
+  CloseLoginWindowResponse
 } from './types'
-import { LoginQrCreateResponse, LoginQrKeyResponse, LoginQrCheckResponse } from './types'
 /**
- * * 登陆检查
+ * * 获取二维码状态
  */
 export async function loginQrCheck(
   params: LoginQrCheckRequest
@@ -17,7 +16,7 @@ export async function loginQrCheck(
   return await request<LoginQrCheckRequest, LoginQrCheckResponse>('/netease/login/qr/check', params)
 }
 /**
- * * 登陆检查
+ * * 获取二维码
  */
 export async function loginQrCreate(
   params: LoginQrCreateRequest
@@ -28,35 +27,22 @@ export async function loginQrCreate(
   )
 }
 /**
- * * 登陆检查
+ * * 获取二维码key
  */
 export async function loginQrKey(): Promise<Result<LoginQrKeyResponse, string>> {
-  return await request<object, LoginQrKeyResponse>('/netease/login/qrcode/key', {})
+  return await request<object, LoginQrKeyResponse>('/netease/login/qr/key', {})
 }
 /**
- * * 登陆状态
+ * * 打开登陆窗口
  */
-export async function loginCellphone(
-  params: LoginCellphoneRequest
-): Promise<Result<LoginCellphoneRequest, string>> {
-  return await request<LoginCellphoneRequest, any>('/netease/login/cellphone', params)
+export async function openLoginWindow(): Promise<Result<OpenLoginWindowResponse, string>> {
+  return await request<object, OpenLoginWindowResponse>('/netease/login/window/open', {})
 }
 /**
- * * 登陆状态
+ * * 关闭登陆窗口
  */
-export async function sendCaptcha(
-  params: SendCaptchaRequest
-): Promise<Result<SendCaptchaRequest, string>> {
-  return await request<SendCaptchaRequest, any>('/netease/login/captcha/sent', params)
-}
-
-/**
- * * 登陆状态
- */
-export async function verifyCaptcha(
-  params: VerifyCaptchaRequest
-): Promise<Result<VerifyCaptchaRequest, string>> {
-  return await request<VerifyCaptchaRequest, any>('/netease/login/captcha/verify', params)
+export async function closeLoginWindow(): Promise<Result<CloseLoginWindowResponse, string>> {
+  return await request<object, CloseLoginWindowResponse>('/netease/login/window/close', {})
 }
 
 /**

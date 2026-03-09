@@ -1,6 +1,6 @@
 import { Component } from '@virid/core'
 import { Responsive } from '@virid/vue'
-import { type LyricDetail } from '@/utils/server/interfaces'
+import { type LyricDetail } from '@/utils/server'
 
 @Component()
 export class LyricComponent {

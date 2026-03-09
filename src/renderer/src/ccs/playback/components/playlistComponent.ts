@@ -1,6 +1,6 @@
 import { Component } from '@virid/core'
 import { Responsive } from '@virid/vue'
-import { type PlaylistDetail, type SongDetail } from '@/utils/server/interfaces'
+import { type PlaylistDetail, type SongDetail } from '@/utils/server'
 @Component()
 export class PlaylistComponent {
   // 当前播放列表的信息

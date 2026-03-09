@@ -33,3 +33,11 @@ export interface LoginQrKeyResponse {
   code: number
   unikey: string
 }
+export interface OpenLoginWindowResponse {
+  code: 200 | 500 //成功或者窗口已存在
+  message: string
+}
+export interface CloseLoginWindowResponse {
+  code: 200 | 500
+  message: string
+}

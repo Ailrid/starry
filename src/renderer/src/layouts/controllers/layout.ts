@@ -6,12 +6,12 @@ export class LayoutController {
   @Use(() => useRoute())
   public router!: ReturnType<typeof useRoute>
   @Responsive()
-  public transitionName: string = 'fly-up'
+  public transitionName: string = ''
   @Watch<LayoutController>(i => i.router.name)
-  public onRouteChange(toName: string) {
-    if (toName === 'player') {
+  public onRouteChange(toName: string, fromName: string) {
+    if (fromName === 'home' && toName === 'player') {
       this.transitionName = 'fly-up'
-    } else {
+    } else if (fromName === 'player' && toName === 'home') {
       this.transitionName = 'fly-down'
     }
   }
