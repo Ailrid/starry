@@ -3,7 +3,7 @@ const routes = [
   {
     path: '/',
     component: () => import('@/layouts/Layout.vue'),
-    redirect: '/home',
+    redirect: '/main',
     children: [
       {
         path: '/player',
@@ -11,11 +11,41 @@ const routes = [
         component: () => import('@/layouts/PlayerLayout.vue')
       },
       {
-        path: '/home',
-        name: 'home',
-        redirect: '/setting',
+        path: '/main',
+        name: 'main',
+        redirect: '/home',
         component: () => import('@/layouts/MainLayout.vue'),
         children: [
+          {
+            path: '/account/:id',
+            name: 'account',
+            component: () => import('@/pages/Account.vue')
+          },
+          {
+            path: '/album/:id',
+            name: 'album',
+            component: () => import('@/pages/Album.vue')
+          },
+          {
+            path: '/artist/:id',
+            name: 'artist',
+            component: () => import('@/pages/Artist.vue')
+          },
+          {
+            path: '/home',
+            name: 'home',
+            component: () => import('@/pages/Home.vue')
+          },
+          {
+            path: '/playlist/:id',
+            name: 'playlist',
+            component: () => import('@/pages/Playlist.vue')
+          },
+          {
+            path: '/search/:keywords',
+            name: 'search',
+            component: () => import('@/pages/Search.vue')
+          },
           {
             path: '/setting',
             name: 'setting',

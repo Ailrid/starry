@@ -4,14 +4,14 @@ import { useRoute } from 'vue-router'
 @Controller()
 export class LayoutController {
   @Use(() => useRoute())
-  public router!: ReturnType<typeof useRoute>
+  public route!: ReturnType<typeof useRoute>
   @Responsive()
   public transitionName: string = ''
-  @Watch<LayoutController>(i => i.router.name)
+  @Watch<LayoutController>(i => i.route.name)
   public onRouteChange(toName: string, fromName: string) {
-    if (fromName === 'home' && toName === 'player') {
+    if (toName == 'player') {
       this.transitionName = 'fly-up'
-    } else if (fromName === 'player' && toName === 'home') {
+    } else if (fromName == 'player') {
       this.transitionName = 'fly-down'
     }
   }

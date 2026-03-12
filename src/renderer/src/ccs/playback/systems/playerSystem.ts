@@ -20,7 +20,9 @@ export class PlayerSystem {
   /**
    * 播放这首歌
    */
-  @System()
+  @System({
+    priority: -1
+  })
   async playSong(
     @Message(PlaySongMessage) message: PlaySongMessage,
     playerComponent: PlayerComponent,
@@ -29,7 +31,6 @@ export class PlayerSystem {
   ) {
     const { song } = message
     const list = playlistComponent.currentList
-
     // 更新播放列表
     let index = list.findIndex(item => item.id === song.id)
     if (index === -1) {
@@ -195,6 +196,15 @@ export class PlayerSystem {
     playerComponent: PlayerComponent
   ) {
     playerComponent.player.seek(message.newTime)
+    //更新MediaSession
+    navigator.mediaSession.setPositionState({
+      // 总时长
+      duration: playerComponent.player.duration,
+      // 播放速率
+      playbackRate: 1,
+      // 当前播放到的时间
+      position: message.newTime
+    })
   }
   /**
    * 设置播放模式

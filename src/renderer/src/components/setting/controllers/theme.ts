@@ -111,7 +111,9 @@ export class ThemeController {
   /**
    * *  监听选择对话框的消息，并调整自己的路径
    */
-  @Listener(ChooseBgImageMessage)
+  @Listener({
+    messageClass: ChooseBgImageMessage
+  })
   public async chooseBgImageListener(message: ChooseBgImageMessage) {
     //更新路径
     this.setting.url = 'local-file://' + message.path

@@ -46,14 +46,19 @@ export class LoginCellphoneSystem {
     // 加载官方登录入口
     loginWindow.loadURL('https://music.163.com/#/login')
     // 监听并绑定事件
+    // 防止重复发送
+    let key = false
     loginWindow.webContents.session.cookies.on(
       'changed',
       async (_event, _cookie, _cause, removed) => {
-        if (removed || !loginWindow) return
-        const allCookies = await loginWindow.webContents.session.cookies.get({})
+        if (removed || !loginWindow || !key) return
+        const allCookies = await loginWindow.webContents.session.cookies.get({
+          domain: '.music.163.com'
+        })
         const hasCsrf = allCookies.find(c => c.name === '__csrf')
         const hasMusicU = allCookies.find(c => c.name === 'MUSIC_U')
         if (hasCsrf && hasMusicU) {
+          key = true
           NeteaseWindowMessage.send()
         }
       }
@@ -104,14 +109,9 @@ export class LoginCellphoneSystem {
             cookieStr += ` Max-Age=${maxAge};`
           }
         } else {
-          // 如果没有 expirationDate，手动给个一年，防止变成 Session Cookie
           cookieStr += ` Max-Age=31536000;`
         }
-
-        // 安全与策略限制
         if (c.secure) cookieStr += ' Secure;'
-        if (c.httpOnly) cookieStr += ' HttpOnly;'
-
         return cookieStr
       })
     loginWindow.close()

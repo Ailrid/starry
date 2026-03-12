@@ -22,10 +22,10 @@
       </aside>
       <main class="bg-background flex flex-1 flex-col overflow-hidden">
         <TitleBarRight class="h-12 shrink-0" />
-        <div class="flex flex-1 flex-col overflow-hidden">
-          <router-view v-slot="{ Component }">
-            <Transition>
-              <component :is="Component" />
+        <div class="relative flex flex-1 flex-col overflow-hidden">
+          <router-view v-slot="{ Component, route }">
+            <Transition name="slide">
+              <component :is="Component" :key="route.fullPath" />
             </Transition>
           </router-view>
         </div>
@@ -62,5 +62,44 @@ const stc = useController(SettingController)
 }
 .player {
   @apply bg-card z-50 border-t border-black/5 shadow-[0_-8px_20px_-6px_rgba(0,0,0,0.08)] backdrop-blur-md dark:border-white/10 dark:shadow-none;
+}
+
+/* 1. 基础过渡定义 */
+.slide-enter-active,
+.slide-leave-active {
+  /* 增加 transition-property 明确化，确保浏览器优化路径 */
+  transition:
+    transform 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    clip-path 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.slide-enter-from {
+  transform: translateX(100%);
+  width: 100%;
+}
+
+.slide-enter-to {
+  transform: translateX(0);
+  width: 100%;
+}
+.slide-enter-active {
+  position: absolute;
+  width: 100%;
+  z-index: 50;
+}
+
+.slide-leave-active {
+  position: absolute;
+  width: 100%;
+  z-index: 0;
+}
+
+.slide-leave-from {
+  transform: translateY(0);
+  width: 100%;
+}
+
+.slide-leave-to {
+  transform: translateY(100%);
 }
 </style>

@@ -31,7 +31,7 @@ export class VirtualListController<T> {
       // 初始计算高度
       this.containerHeight = this.containerRef.value.clientHeight
       // 容器尺寸变化时，自动更新 containerHeight
-      this.observer = new ResizeObserver((entries) => {
+      this.observer = new ResizeObserver(entries => {
         for (const entry of entries) {
           this.containerHeight = entry.contentRect.height
         }
@@ -51,29 +51,29 @@ export class VirtualListController<T> {
   /**
    * *当前可视区域内的数据的开始索引
    */
-  @Project<VirtualListController<T>>((i) => {
-    const start = Math.floor(i.scrollTop / i.itemHeight)
-    return Math.max(0, start - i.buffer)
-  })
-  public actualStartIndex!: number
+  @Project()
+  get actualStartIndex() {
+    const start = Math.floor(this.scrollTop / this.itemHeight)
+    return Math.max(0, start - this.buffer)
+  }
 
   /**
    * *当前可视区域内的数据的结束索引
    */
-  @Project<VirtualListController<T>>((i) => {
+  @Project()
+  get actualEndIndex() {
     const visibleCount =
-      Math.ceil((i.containerRef.value?.clientHeight || 0) / i.itemHeight) ||
-      Math.ceil(parseInt(i.containerHeight.toString()) / i.itemHeight)
+      Math.ceil((this.containerRef.value?.clientHeight || 0) / this.itemHeight) ||
+      Math.ceil(parseInt(this.containerHeight.toString()) / this.itemHeight)
 
-    const end = Math.floor(i.scrollTop / i.itemHeight) + visibleCount
-    return Math.min(i.listData.length, end + i.buffer)
-  })
-  public actualEndIndex!: number
+    const end = Math.floor(this.scrollTop / this.itemHeight) + visibleCount
+    return Math.min(this.listData.length, end + this.buffer)
+  }
 
   /**
    * *当前可视区域内的数据
    */
-  @Project<VirtualListController<T>>((i) => {
+  @Project<VirtualListController<T>>(i => {
     return i.listData.slice(i.actualStartIndex, i.actualEndIndex)
   })
   public visibleData!: T[]
@@ -81,20 +81,16 @@ export class VirtualListController<T> {
   /*
    * *计算当前的填充区域的padding高度
    */
-  @Project<VirtualListController<T>>((i) => {
-    const paddingTop = i.actualStartIndex * i.itemHeight
-    const paddingBottom = (i.listData.length - i.actualEndIndex) * i.itemHeight
+  @Project()
+  get wrapperStyle() {
+    const paddingTop = this.actualStartIndex * this.itemHeight
+    const paddingBottom = (this.listData.length - this.actualEndIndex) * this.itemHeight
 
     return {
       paddingTop: `${paddingTop}px`,
       paddingBottom: `${paddingBottom}px`,
       boxSizing: 'border-box' as const
     }
-  })
-  public wrapperStyle!: {
-    paddingTop: string
-    paddingBottom: string
-    boxSizing: 'border-box'
   }
 
   /**

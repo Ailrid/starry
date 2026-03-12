@@ -19,38 +19,38 @@
             variant="ghost"
             size="icon"
             class="theme-toggle-btn h-8 w-8 transition-all"
-            :class="thc.activatedBtnClass(item.mode)"
-            @click="thc.toggleTheme(item.mode)"
+            :class="tch.activatedBtnClass(item.mode)"
+            @click="tch.toggleTheme(item.mode)"
           >
             <component
               :is="item.icon"
               class="h-4 w-4 transition-transform duration-300"
-              :class="thc.activeBtn === item.mode ? item.effect : 'opacity-50'"
+              :class="tch.activeBtn === item.mode ? item.effect : 'opacity-50'"
             />
           </Button>
         </div>
         <div class="flex-1"></div>
-        <div v-if="thc.setting.url" class="prompt-text path-line" @click="thc.openDialog">
-          {{ thc.setting.url.split('/').pop() }}
+        <div v-if="tch.setting.url" class="prompt-text path-line" @click="tch.openDialog">
+          {{ tch.setting.url.split('/').pop() }}
         </div>
       </div>
       <!-- Image Settings -->
       <Transition name="panel-slide">
-        <div v-if="thc.themeSetting.mode === 'image'" class="flex flex-row items-center gap-4">
+        <div v-if="tch.themeSetting.mode === 'image'" class="flex flex-row items-center gap-4">
           <div class="flex-1 space-y-2">
             <div class="flex justify-between">
               <label class="setting-item-title">透明度 (Opacity)</label>
               <span class="text-primary font-mono"
-                >{{ (thc.setting.opacity * 100).toFixed(0) }}%</span
+                >{{ (tch.setting.opacity * 100).toFixed(0) }}%</span
               >
             </div>
-            <Slider v-model="thc.opacityArray" :min="0" :max="1" :step="0.01" class="w-full" />
+            <Slider v-model="tch.opacityArray" :min="0" :max="1" :step="0.01" class="w-full" />
           </div>
           <div class="w-40 space-y-2">
             <label class="setting-item-title">模糊半径 (Blur)</label>
             <div class="flex items-center gap-2">
               <Input
-                v-model.number="thc.setting.blur"
+                v-model.number="tch.setting.blur"
                 type="number"
                 min="0"
                 max="100"
@@ -70,11 +70,11 @@
           <div class="flex justify-between">
             <label class="setting-item-title">UI缩放 (Scale)</label>
             <span class="text-primary font-mono"
-              >{{ (thc.setting.fontSizeScale * 100).toFixed(0) }}%</span
+              >{{ (tch.setting.fontSizeScale * 100).toFixed(0) }}%</span
             >
           </div>
           <Slider
-            v-model="thc.fontSizeScaleArray"
+            v-model="tch.fontSizeScaleArray"
             :min="0.5"
             :max="1.5"
             :step="0.01"
@@ -84,14 +84,14 @@
         <div class="space-y-3">
           <div class="flex justify-between">
             <label class="setting-item-title">全局圆角 (Radius)</label>
-            <span class="text-primary font-mono">{{ thc.setting.borderRadius }}px</span>
+            <span class="text-primary font-mono">{{ tch.setting.borderRadius }}px</span>
           </div>
-          <Slider v-model="thc.borderRadiusArray" :min="0" :max="24" :step="2" class="w-full" />
+          <Slider v-model="tch.borderRadiusArray" :min="0" :max="24" :step="2" class="w-full" />
         </div>
         <div class="space-y-3">
           <label class="setting-item-title block">字体族 (Family)</label>
           <div class="flex gap-2">
-            <Select @update:model-value="v => (thc.setting.fontFamily = v as string)">
+            <Select @update:model-value="v => (tch.setting.fontFamily = v as string)">
               <SelectTrigger class="select-trigger"> 预置字体 </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -107,7 +107,7 @@
 
             <div class="relative flex-1">
               <Input
-                v-model="thc.setting.fontFamily"
+                v-model="tch.setting.fontFamily"
                 placeholder="手动输入字体名..."
                 class="h-8 w-full pr-8 text-sm font-medium"
               />
@@ -126,14 +126,14 @@
             <Button
               variant="ghost"
               class="font-color-btn bg-white shadow"
-              @click="thc.setting.textColor = 'black'"
+              @click="tch.setting.textColor = 'black'"
             >
               <span class="text-xs text-black">深色文字</span>
             </Button>
             <Button
               variant="ghost"
               class="font-color-btn bg-black shadow hover:bg-zinc-900"
-              @click="thc.setting.textColor = 'white'"
+              @click="tch.setting.textColor = 'white'"
             >
               <span class="text-xs text-white">浅色文字</span>
             </Button>
@@ -147,8 +147,8 @@
               <div
                 class="h-8 w-16 rounded-md border border-black/10 shadow-inner transition-transform dark:border-white/20"
                 :style="{
-                  backgroundColor: thc.setting.primaryColor
-                    ? `rgb(${thc.setting.primaryColor.join(',')})`
+                  backgroundColor: tch.setting.primaryColor
+                    ? `rgb(${tch.setting.primaryColor.join(',')})`
                     : 'var(--primary)'
                 }"
               ></div>
@@ -158,7 +158,7 @@
               <Button
                 variant="outline"
                 class="h-8 flex-1 cursor-pointer gap-2 border-dashed"
-                @click="thc.setting.primaryColor = thc.setting.imgAccentColor"
+                @click="tch.setting.primaryColor = tch.setting.imgAccentColor"
               >
                 <span class="text-xs">提取背景色</span>
               </Button>
@@ -168,15 +168,21 @@
               <label class="prompt-text block">Palette</label>
               <div class="grid grid-cols-8 gap-2">
                 <button
-                  v-for="(rgb, name) in thc.colors"
+                  v-for="(rgb, name) in tch.colors"
                   :key="name"
                   type="button"
                   class="palette-item"
                   :style="{ backgroundColor: `rgb(${rgb.join(',')})` }"
-                  @click="thc.setting.primaryColor = rgb"
+                  @click="tch.setting.primaryColor = rgb"
                 ></button>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <label class="setting-item-title block">自动音频色 (Wave Color)</label>
+          <div class="space-y-4">
+            <Switch v-model="tch.setting.enableSliderAutoColor" />
           </div>
         </div>
       </div>
@@ -190,6 +196,7 @@ import { ThemeController } from './controllers'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import {
   Select,
   SelectTrigger,
@@ -198,7 +205,7 @@ import {
   SelectGroup
 } from '@/components/ui/select'
 import { Sun, Moon, Image as ImageIcon, Type as FontIcon } from 'lucide-vue-next'
-const thc = useController(ThemeController)
+const tch = useController(ThemeController)
 </script>
 
 <style scoped>

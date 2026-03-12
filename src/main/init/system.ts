@@ -1,6 +1,6 @@
 import { System, MessageWriter, Message } from '@virid/core'
 import { CreateMainWindowMessage, BootStrapElectronMessage } from './message'
-import { electronApp, optimizer } from '@electron-toolkit/utils'
+import { electronApp } from '@electron-toolkit/utils'
 import { app, shell, net, BrowserWindow, protocol } from 'electron'
 import { pathToFileURL } from 'url'
 import { join, normalize, isAbsolute } from 'path'
@@ -46,9 +46,6 @@ export class InitSystem {
     })
     //配置设置
     electronApp.setAppUserModelId('starry')
-    app.on('browser-window-created', (_, window) => {
-      optimizer.watchWindowShortcuts(window)
-    })
     //创建窗口
     CreateMainWindowMessage.send(message.port)
     //mac用的东西
@@ -80,7 +77,7 @@ export class InitSystem {
       ...(process.platform === 'linux' ? { icon } : {}),
       webPreferences: {
         preload: join(__dirname, '../preload/index.js'),
-        sandbox: false
+        sandbox: false,
       }
     })
 

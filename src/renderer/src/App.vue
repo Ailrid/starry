@@ -53,17 +53,14 @@ body {
 
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
-  /* 使用你主题中的 muted-foreground (灰色文字色) */
-  /* 在亮色模式下它是深灰，暗色下是浅灰，完美适配 */
   background: color-mix(in srgb, var(--muted-foreground), transparent 70%);
 
   border: 2px solid transparent;
   background-clip: padding-box;
   border-radius: 10px;
 }
-/* 悬停时，使用强调色 (primary) */
+
 ::-webkit-scrollbar-thumb:hover {
-  /* 直接用你主题定义的 primary 橙色/黑色 */
   background: color-mix(in srgb, var(--primary), transparent 40%);
 }
 </style>

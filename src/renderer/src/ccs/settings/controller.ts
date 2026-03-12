@@ -1,8 +1,11 @@
 import { Controller } from '@virid/core'
 import { SettingComponent } from './component'
-import { Project } from '@virid/vue'
+import { Project, Responsive, Watch } from '@virid/vue'
+import { PlaylistComponent } from '../playback'
+import { type SongDetail, getAccentRGB } from '@/utils'
 // 辅助函数：将 [r, g, b] 转换为 "rgb(r, g, b)"
 const toRgba = (arr: number[], a = 1) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]},${a})`
+let _coverColor: number[] = []
 
 @Controller()
 export class SettingController {
@@ -10,7 +13,8 @@ export class SettingController {
     return i
   })
   public setting!: SettingComponent
-
+  @Responsive()
+  public coverColor: number[] = _coverColor
   /**
    * *计算根部样式
    */
@@ -36,6 +40,9 @@ export class SettingController {
       styles['--img-accent-color'] = toRgba(config.imgAccentColor)
       styles['--img-avg-color'] = toRgba(config.imgAvgColor)
     }
+    if (this.coverColor.length > 0) {
+      styles['--cover-color'] = toRgba(this.coverColor)
+    }
     //文字和边框颜色
     if (config.mode === 'dark') {
       document.documentElement.classList.add('dark')
@@ -48,7 +55,7 @@ export class SettingController {
       //图像模式更改颜色
       document.documentElement.classList.remove('dark')
       styles['--foreground'] = config.textColor || 'var(--foreground)'
-      styles['--border'] = toRgba(config.imgAccentColor!,0.2)
+      styles['--border'] = toRgba(config.imgAccentColor!, 0.2)
       //清除本来的背景色
       styles['--background'] = 'transparent'
       styles['--card'] = toRgba(config.imgAvgColor!, 0.1)
@@ -68,6 +75,14 @@ export class SettingController {
       backgroundColor: `rgba(0, 0, 0, ${this.setting.theme.opacity})`,
       backdropFilter: `blur(${this.setting.theme.blur}px)`,
       webkitBackdropFilter: `blur(${this.setting.theme.blur}px)` // 为了更好的兼容性
+    }
+  }
+  @Watch(PlaylistComponent, i => i.currentSong)
+  public async onCurrentSongChange(song: SongDetail | null) {
+    if (song) {
+      const { avgColor } = await getAccentRGB(song.album.cover)
+      _coverColor = avgColor
+      this.coverColor = avgColor
     }
   }
 }

@@ -7,7 +7,7 @@
         :src="cct.userProfile.avatar"
         class="h-full w-full object-cover object-top opacity-60 transition-transform duration-1000 group-hover:scale-105"
       />
-      <div class="absolute inset-0 bg-white/10 backdrop-blur-xs"></div>
+      <div class="absolute inset-0 bg-white/10"></div>
       <div
         class="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent"
       ></div>

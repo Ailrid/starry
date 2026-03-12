@@ -11,11 +11,7 @@
           v-for="(val, i) in sct.slider"
           :key="i"
           class="wave-bar"
-          :class="[
-            sct.sliderMask[i]
-              ? 'scale-y-100 opacity-100 shadow-[0_0_15px_rgba(var(--primary-rgb),0.6)]'
-              : 'bg-primary scale-y-75 opacity-50'
-          ]"
+          :class="sct.waveBarStyle(sct.sliderMask[i])"
           :style="{
             height: `${val * 1.5 + 0.5}rem`
           }"
@@ -30,14 +26,18 @@
 
 <script setup lang="ts">
 import { useController } from '@virid/vue'
-import { SliderController, SliderControllerMessage, formatTime } from './controllers'
+import { SliderController, SliderControllerMessage } from './controllers'
+import { formatTime } from '@/utils'
 const sct = useController(SliderController)
 </script>
 <style scoped>
 @reference "@assets/main.css";
 .wave-bar {
-  @apply bg-primary shrink-0 rounded-full transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] will-change-[height,opacity,transform] hover:z-10 hover:scale-x-110 hover:scale-y-125 hover:opacity-100 hover:brightness-150;
+  @apply shrink-0 rounded-full transition-all duration-300 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] will-change-[height,opacity,transform] hover:z-10 hover:scale-x-110 hover:scale-y-125 hover:opacity-100 hover:brightness-150;
   width: 0.4rem;
+}
+.bg-cover-color {
+  background-color: var(--cover-color, var(--primary));
 }
 .time-text {
   font-size: 0.8rem;

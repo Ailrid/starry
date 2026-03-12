@@ -3,7 +3,7 @@ import { CacheSongDataRequestMessage } from '../message'
 import { CacheSongUrlSystem } from './song-url'
 import fs from 'fs'
 import path from 'path'
-import { PassThrough, Readable } from 'stream'
+import { Readable } from 'stream'
 import { MessageWriter, Message } from '@virid/core'
 import {
   Headers,
@@ -13,7 +13,7 @@ import {
   type RequestId,
   Query,
   StreamFile,
-  StreamResponse
+  Stream
 } from '@virid/express'
 
 class DataFromLocalMessage extends HttpRequestMessage {
@@ -49,9 +49,13 @@ export class CacheSongDataSystem {
     // 如果是本地歌曲的url，转发http请求
     const requestId = message.requestId
     if (source == 'local') return new DataFromLocalMessage(requestId, id)
-
+    // 没有缓存，开始边传输边下载
+    const realUrl = CacheSongUrlSystem.urlMap.get(id)
+    if (!realUrl) return InternalServerError('URL Expired')
+    if (CacheSongUrlSystem.urlMap.size > 100) {
+      CacheSongUrlSystem.urlMap.clear()
+    }
     // 否则是网易云的，开始处理
-
     // 查数据库记录
     const stmt = dbComponent.db.prepare(
       'SELECT local_path FROM song_cache WHERE id = ? AND md5 = ?'
@@ -59,13 +63,8 @@ export class CacheSongDataSystem {
     const cacheRecord = stmt.get(id, md5) as { local_path: string } | undefined
     const localPath = cacheRecord?.local_path
 
-    //  本地有缓存
+    //  走缓存
     if (localPath) return new DataFromCacheMessage(requestId, localPath)
-
-    // 没有缓存，开始边传输边下载
-    const realUrl = CacheSongUrlSystem.urlMap.get(id)
-    if (!realUrl) return InternalServerError('URL Expired')
-    CacheSongUrlSystem.urlMap.delete(id)
 
     const proxyHeaders: Record<string, string> = {
       Range: headers.range || 'bytes=0-',
@@ -93,42 +92,50 @@ export class CacheSongDataSystem {
       'Last-Modified': fetchResponse.headers.get('last-modified') || ''
     }
     // 将 Web Stream 转为 Node Readable Stream
-    const remoteNodeStream = Readable.fromWeb(fetchResponse.body as any)
+    const webStream = Readable.fromWeb(fetchResponse.body as any)
+    const isFullStart = headers.range == 'bytes=0-'
 
-    const isFullStart = !headers.range || headers.range.startsWith('bytes=0-')
-    const canCache = isFullStart && fetchResponse.status === 200
-
-    let finalStream: Readable = remoteNodeStream
-
-    if (canCache) {
-      cleanupCache(dbComponent.db, 2 * 1024 * 1024 * 1024)
-      const savePath = path.join(dbComponent.cachePath, `${id}-${md5}`)
-      const writer = fs.createWriteStream(savePath)
-      const passThrough = new PassThrough()
-
-      // 一分为二
-      remoteNodeStream.pipe(writer)
-      remoteNodeStream.pipe(passThrough)
-
-      finalStream = passThrough
-
-      writer.on('finish', () => {
-        const size = parseInt(fetchResponse.headers.get('content-length') || '0')
-        dbComponent.db
-          .prepare(
-            'INSERT OR REPLACE INTO song_cache (id, md5, local_path, size, last_accessed_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
+    if (isFullStart) {
+      // 定义后台下载函数（不要 await 它，让它在后台跑）
+      const startBackgroundCache = async () => {
+        try {
+          const savePath = path.join(dbComponent.cachePath, `${id}-${md5}`)
+          // 检查是否已经在下载或已存在，避免竞态
+          if (fs.existsSync(savePath)) return
+          const downloadRes = await fetch(realUrl, { headers: proxyHeaders })
+          if (!downloadRes.ok) return
+          const writer = fs.createWriteStream(savePath)
+          const downloadStream = Readable.fromWeb(downloadRes.body as any)
+          downloadStream.pipe(writer)
+          writer.on('finish', () => {
+            const size = fs.statSync(savePath).size
+            dbComponent.db
+              .prepare(
+                'INSERT OR REPLACE INTO song_cache (id, md5, local_path, size, last_accessed_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
+              )
+              .run(id, md5, savePath, size)
+            cleanupCache(dbComponent.db, 2 * 1024 * 1024 * 1024)
+          })
+          writer.on('error', err => {
+            MessageWriter.error(
+              err,
+              '[Express CacheSongDataSystem] Error when saving song to cache'
+            )
+            fs.unlink(savePath, () => {})
+          })
+        } catch (e) {
+          MessageWriter.error(
+            e as Error,
+            '[Express CacheSongDataSystem] Error when downloading song'
           )
-          .run(id, md5, savePath, size)
-      })
-
-      writer.on('error', err => {
-        fs.unlink(savePath, () => {})
-        MessageWriter.error(err, `[Song Cache] Write Error: ${savePath}`)
-      })
+        }
+      }
+      // 启动下载，但不阻塞当前响应
+      startBackgroundCache()
     }
 
     // 返回流对象
-    return new StreamResponse(finalStream, {
+    return Stream(webStream, {
       status: fetchResponse.status,
       headers: responseHeaders
     })

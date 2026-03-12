@@ -5,7 +5,7 @@
         <template v-if="lct.userProfile">
           <img
             :src="lct.userProfile.avatar"
-            class="h-9 w-9 rounded-full border border-slate-200/50 shadow-sm"
+            class="h-7 w-7 rounded-full border border-slate-200/50 shadow-sm"
           />
         </template>
         <Button v-else variant="outline">登录</Button>

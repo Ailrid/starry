@@ -2,7 +2,7 @@ import { Component } from '@virid/core'
 import { Responsive } from '@virid/vue'
 
 // 定义背景模式
-export type BackgroundMode = 'light' | 'dark' | 'image' | 'shader'
+export type BackgroundMode = 'light' | 'dark' | 'image'
 
 export interface ThemeConfig {
   mode: BackgroundMode
@@ -17,6 +17,7 @@ export interface ThemeConfig {
   fontFamily: string // 字体名称或分类 (sans-serif, serif, mono)
   borderRadius: number // 全局圆角大小 (px)
   textColor: string | null // 文字颜色
+  enableSliderAutoColor: boolean
 }
 
 @Component()
@@ -33,6 +34,7 @@ export class SettingComponent {
     fontSizeScale: 1, // 100% 缩放
     fontFamily: 'Inter, system-ui, sans-serif',
     textColor: null, // 为空时使用 Controller 逻辑自动计算
-    borderRadius: 12 // 适中的圆角
+    borderRadius: 12, // 适中的圆角
+    enableSliderAutoColor: true
   }
 }

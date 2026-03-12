@@ -31,13 +31,13 @@ export class PlaylistDetailSystem {
       id: raw.id,
       name: raw.name,
       cover: raw.coverImgUrl,
-      description: raw.description || '',
+      description: raw.description || getRandomDescription(),
       songCount: raw.trackCount || 0,
       playCount: raw.playCount || 0,
       createTime: raw.createTime,
       creator: {
         id: raw.creator?.userId,
-        name: raw.creator?.nickname || '',
+        name: raw.creator?.nickname || 'Unknown',
         avatar: raw.creator?.avatarUrl || ''
       },
       songsIds: (raw.trackIds || []).map((t: any) => t.id),
@@ -50,6 +50,25 @@ export class PlaylistDetailSystem {
       playlist: playlistDetail
     } as PlaylistDetailResponse)
   }
+}
+
+function getRandomDescription(): string {
+  const magicLines = [
+    '万籁俱寂，唯有旋律在流淌。',
+    '在此频率中，捕捉到了一段纯粹的数字印记。',
+    '乐至深处，无需多言。',
+    '元数据已就绪，等待音频流注入核心。',
+    '一段关于灵魂与声音的精选序列。',
+    '在比特的间隙里，藏着旧时光的回响。',
+    '让听觉在无限的二进制森林中自由漫步。',
+    '这里的每一组波动，都是对时空的无声存档。',
+    '有些旋律，注定只能在此时此刻相遇。',
+    '沉浸于此，感受声波编织的数字梦境。'
+  ]
+
+  // 纯随机抽取
+  const randomIndex = Math.floor(Math.random() * magicLines.length)
+  return magicLines[randomIndex]
 }
 
 interface RawPlaylistDetail {

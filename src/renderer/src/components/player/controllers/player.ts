@@ -21,7 +21,9 @@ export class PlayerController {
   public container!: ShallowRef<HTMLElement | null>
   @Project(PlaylistComponent, i => i.currentSong)
   public currentSong!: SongDetail | null
-  @Listener(PlayerControllerMessage)
+  @Listener({
+    messageClass: PlayerControllerMessage
+  })
   public onPlayerController(message: PlayerControllerMessage) {
     if (!this.currentSong) return
     if (message.mark || message.event.target === this.container.value)

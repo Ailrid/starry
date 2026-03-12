@@ -56,19 +56,30 @@
     "vue-router": "^5.0.1"
   },
   "build": {
-    "appId": "Template",
-    "productName": "Template",
-    "copyright": "Copyright © 2025 Template",
+    "appId": "com.starry.music",
+    "productName": "starry",
+    "executableName": "starry",
+    "copyright": "Copyright © 2026 Starry",
     "compression": "maximum",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "out/**/*",
+      "package.json",
+      "node_modules/better-sqlite3/**/*"
+    ],
     "win": {
       "target": "nsis"
     },
     "linux": {
-      "target": "deb",
-      "category": "Utility",
-      "desktop": {
-        "Name": "Template"
-      }
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "category": "Music"
     },
     "nsis": {
       "oneClick": false,

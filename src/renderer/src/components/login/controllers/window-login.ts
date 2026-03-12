@@ -70,8 +70,11 @@ export class WindowLoginController {
   /**
    * *监听登录窗口消息
    */
-  @Listener(NeteaseWindowMessage)
+  @Listener({
+    messageClass: NeteaseWindowMessage
+  })
   public onNeteaseWindowMessage() {
     this.closeWindow()
   }
 }
+

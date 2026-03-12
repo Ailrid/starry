@@ -1,5 +1,6 @@
-import { createRequest, CryptoMode } from '../../utils'
-import { Cookies, Headers, HttpSystem, Ok } from '@virid/express'
+// import { createRequest, CryptoMode } from '../../utils'
+// import { Cookies, Headers, HttpSystem, Ok } from '@virid/express'
+import {  HttpSystem, Ok } from '@virid/express'
 import { LogoutRequestMessage } from '../message'
 
 export class LogoutSystem {
@@ -7,8 +8,8 @@ export class LogoutSystem {
     messageClass: LogoutRequestMessage
   })
   public static async logout(
-    @Cookies() cookies: Record<string, string>,
-    @Headers() headers: Record<string, string>
+    // @Cookies() cookies: Record<string, string>,
+    // @Headers() headers: Record<string, string>
   ) {
     //   // 发起请求：去掉 /api，使用 weapi 模式
     //   const answer = await createRequest(CryptoMode.weapi, {
