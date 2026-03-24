@@ -21,23 +21,23 @@ importers:
         specifier: ^4.1.18
         version: 4.1.18(vite@7.3.1(@types/node@22.19.8)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.2))
       '@virid/bridge':
-        specifier: link:../../virid/packages/bridge
-        version: link:../../virid/packages/bridge
+        specifier: ^0.1.0
+        version: 0.1.0(electron@39.5.1)
       '@virid/core':
-        specifier: link:../../virid/packages/core
-        version: link:../../virid/packages/core
+        specifier: ^0.1.1
+        version: 0.1.1(reflect-metadata@0.2.2)
       '@virid/express':
-        specifier: link:../../virid/packages/express
-        version: link:../../virid/packages/express
+        specifier: ^0.1.0
+        version: 0.1.0(@types/express@5.0.6)(@virid/core@0.1.1(reflect-metadata@0.2.2))(express@5.2.1)
       '@virid/main':
-        specifier: link:../../virid/packages/main
-        version: link:../../virid/packages/main
+        specifier: ^0.1.0
+        version: 0.1.0(@virid/core@0.1.1(reflect-metadata@0.2.2))(electron@39.5.1)
       '@virid/renderer':
-        specifier: link:../../virid/packages/renderer
-        version: link:../../virid/packages/renderer
+        specifier: ^0.1.0
+        version: 0.1.0(@virid/core@0.1.1(reflect-metadata@0.2.2))
       '@virid/vue':
-        specifier: link:../../virid/packages/vue
-        version: link:../../virid/packages/vue
+        specifier: ^0.1.0
+        version: 0.1.0(@virid/core@0.1.1(reflect-metadata@0.2.2))(vue@3.5.27(typescript@5.9.3))
       '@vueuse/core':
         specifier: ^14.2.1
         version: 14.2.1(vue@3.5.27(typescript@5.9.3))
@@ -1331,6 +1331,40 @@ packages:
   '@typescript-eslint/visitor-keys@8.54.0':
     resolution: {integrity: sha512-VFlhGSl4opC0bprJiItPQ1RfUhGDIBokcPwaFH4yiBCaNPeld/9VeXbiPO1cLyorQi1G1vL+ecBk1x8o1axORA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@virid/bridge@0.1.0':
+    resolution: {integrity: sha512-EKXpuujfiytnxzOlQwAiCGzUg1d/mNAFJnQNJ/HtauqalgRv4Ps6Ne04dFLEDxbu0mQIE8VmMYTQxaYqAfJF4w==}
+    peerDependencies:
+      electron: ^30.0.0
+
+  '@virid/core@0.1.1':
+    resolution: {integrity: sha512-/wZjNfdg6Gv+nndXGFputZ19K0N+hY4zEX9tky+xzDWDDtnADiIgZKmiiFY/rwQOVlceOTLsntNxtoUKaAjKlg==}
+    peerDependencies:
+      reflect-metadata: ^0.2.2
+
+  '@virid/express@0.1.0':
+    resolution: {integrity: sha512-vNO0ENjkolCbdnkZjQCv4pvHPA5XJxs/HREDXuyaLpRRhCS2UHlRXuQpV1RNSeu4EefyxlCo352bIQcDWbMLdg==}
+    peerDependencies:
+      '@types/express': ^5.0.6
+      '@virid/core': 0.1.0
+      express: ^4.17.1 || ^5.0.0
+
+  '@virid/main@0.1.0':
+    resolution: {integrity: sha512-lrg+V0+1KFrrDEonHnqoIEBoeKfqiMCs2F06acTPBHP+cELB3i4viyzynwtQkk+XvUGVb8zvn39YAnjqKumm9A==}
+    peerDependencies:
+      '@virid/core': 0.1.0
+      electron: ^30.0.0
+
+  '@virid/renderer@0.1.0':
+    resolution: {integrity: sha512-d+jaraKmiLh1n7BP1vVmeaXEvUIZ1l3njwUTacXIvr1NLcy1HLpTeyCpYL/djTa57YEOeVdtN1zIH8VOeVspeQ==}
+    peerDependencies:
+      '@virid/core': 0.1.0
+
+  '@virid/vue@0.1.0':
+    resolution: {integrity: sha512-dT/yvOPpQ0mSldCwC/23hTx/KfvQk0bafimB8qeYZq90NGkGf+WwlFm+Yzb1XvYG9ogdDPNBJb5NTRBOyHNpvg==}
+    peerDependencies:
+      '@virid/core': 0.1.0
+      vue: ^3.4.0
 
   '@vitejs/plugin-vue@6.0.4':
     resolution: {integrity: sha512-uM5iXipgYIn13UUQCZNdWkYk+sysBeA97d5mHsAoAt1u/wpN3+zxOmsVJWosuzX+IMGRzeYUNytztrYznboIkQ==}
@@ -4815,6 +4849,34 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.54.0
       eslint-visitor-keys: 4.2.1
+
+  '@virid/bridge@0.1.0(electron@39.5.1)':
+    dependencies:
+      electron: 39.5.1
+
+  '@virid/core@0.1.1(reflect-metadata@0.2.2)':
+    dependencies:
+      reflect-metadata: 0.2.2
+
+  '@virid/express@0.1.0(@types/express@5.0.6)(@virid/core@0.1.1(reflect-metadata@0.2.2))(express@5.2.1)':
+    dependencies:
+      '@types/express': 5.0.6
+      '@virid/core': 0.1.1(reflect-metadata@0.2.2)
+      express: 5.2.1
+
+  '@virid/main@0.1.0(@virid/core@0.1.1(reflect-metadata@0.2.2))(electron@39.5.1)':
+    dependencies:
+      '@virid/core': 0.1.1(reflect-metadata@0.2.2)
+      electron: 39.5.1
+
+  '@virid/renderer@0.1.0(@virid/core@0.1.1(reflect-metadata@0.2.2))':
+    dependencies:
+      '@virid/core': 0.1.1(reflect-metadata@0.2.2)
+
+  '@virid/vue@0.1.0(@virid/core@0.1.1(reflect-metadata@0.2.2))(vue@3.5.27(typescript@5.9.3))':
+    dependencies:
+      '@virid/core': 0.1.1(reflect-metadata@0.2.2)
+      vue: 3.5.27(typescript@5.9.3)
 
   '@vitejs/plugin-vue@6.0.4(vite@7.3.1(@types/node@22.19.8)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.2))(vue@3.5.27(typescript@5.9.3))':
     dependencies:

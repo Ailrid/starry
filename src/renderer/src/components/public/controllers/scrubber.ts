@@ -18,8 +18,6 @@ export class ScrubberController {
 
   getTickStyle(index: number) {
     const diff = Math.abs(index - this.pageIndex)
-    console.log('index :>> ', index)
-    console.log('this.pageIndex :>> ', this.pageIndex)
     let width = 4
     let height = 2
     let opacity = 0.2

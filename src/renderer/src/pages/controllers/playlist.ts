@@ -2,7 +2,7 @@ import { PlaySongMessage, SetPlaylistMessage } from '@/ccs/playback'
 import { FetchUserPlaylistSongMessage, UserComponent } from '@/ccs/user'
 import { SongDetail, type PlaylistDetail } from '@/utils'
 import { Controller, SingleMessage } from '@virid/core'
-import { Project, Responsive, Use, Listener, Watch } from '@virid/vue'
+import { Project, Responsive, Use, Listener, Watch, OnHook } from '@virid/vue'
 import { useRoute } from 'vue-router'
 
 let _isSidebarOpen = true
@@ -62,14 +62,14 @@ export class PlaylistPageController {
     return Math.ceil(count / 200) || 1
   }
   //每次page变化，去获取新的songs
-  @Watch<PlaylistPageController>(i => [i.pageIndex, i.currentPlaylistId], {
-    immediate: true
-  })
-  public updatePlaylist() {
-    const playlist = this.currentPlaylistId
-    if (!playlist) return
-    FetchUserPlaylistSongMessage.send(playlist, this.pageIndex)
-  }
+  // @Watch<PlaylistPageController>(i => [i.pageIndex, i.currentPlaylistId], {
+  //   immediate: true
+  // })
+  // public updatePlaylist() {
+  //   const playlist = this.currentPlaylistId
+  //   if (!playlist) return
+  //   FetchUserPlaylistSongMessage.send(playlist, this.pageIndex)
+  // }
   setPlaylist(song: SongDetail | null) {
     if (!this.currentPlaylistSong || !this.currentPlaylist || !song) return
     const playlistDetail = JSON.parse(JSON.stringify(this.currentPlaylist))
@@ -83,5 +83,12 @@ export class PlaylistPageController {
   })
   public onPageChange(message: PageChangeMessage) {
     this.pageIndex = message.pageIndex
+    //顺便拉取一下新的页面数据
+    this.initPageData()
+  }
+  @OnHook('onSetup')
+  public initPageData() {
+    if (!this.currentPlaylistId) return
+    FetchUserPlaylistSongMessage.send(this.currentPlaylistId, this.pageIndex)
   }
 }
