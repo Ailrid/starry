@@ -52,6 +52,7 @@ export interface SongDetail {
     name: string
     cover: string // 统一叫 cover
   }
+  like: boolean
   // 播放属性
   duration: number // 统一毫秒或秒
   url?: string // 预留给播放地址

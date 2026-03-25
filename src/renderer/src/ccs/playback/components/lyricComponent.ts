@@ -6,6 +6,6 @@ import { type LyricDetail } from '@/utils/server'
 export class LyricComponent {
   @Responsive()
   public lyric: LyricDetail | null = null
-  @Responsive(true)
+  @Responsive()
   public currentIndex: number = 0
 }

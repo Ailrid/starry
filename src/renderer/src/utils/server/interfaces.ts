@@ -60,6 +60,7 @@ export interface SongDetail {
   isAvailable: boolean // 是否有版权/文件是否存在
   localPath?: string // 本地歌曲专用
   raw?: any // 仍然保留一份原始数据
+  like: boolean
 }
 
 /** 歌单基础信息 (用于列表展示、磁贴、预览) */

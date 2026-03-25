@@ -3,11 +3,13 @@ import {
   PlaySongMessage,
   SetPlaylistMessage,
   LoadFMPlaylistMessage,
-  LoadIntelligencePlaylistMessage
+  LoadIntelligencePlaylistMessage,
+  SongLikeMessage
 } from '../messages'
 import { PlaylistComponent } from '../components'
-import { personalFm, intelligence } from '@/utils/server'
+import { personalFm, intelligence, songLike } from '@/utils/server'
 import { match } from 'ts-pattern'
+import { AddSongMessage, DeleteSongMessage, UserComponent } from '@/ccs/user'
 
 export class PlaylistSystem {
   /**
@@ -71,9 +73,40 @@ export class PlaylistSystem {
     @Message(SetPlaylistMessage) message: SetPlaylistMessage,
     playlistComponent: PlaylistComponent
   ) {
+    //数据脱水
+    const playlistDetail = JSON.parse(JSON.stringify(message.detail))
+    const playlistSongs = JSON.parse(JSON.stringify(message.songs))
     //更新列表和索引
-    playlistComponent.currentList = message.songs
-    playlistComponent.playlistDetail = message.detail
+    playlistComponent.currentList = playlistSongs
+    playlistComponent.playlistDetail = playlistDetail
     playlistComponent.currentIndex = 0
+  }
+  /**
+   * *喜欢/取消喜欢这首歌
+   */
+  @System({
+    messageClass: SongLikeMessage
+  })
+  async songLike(playlistComponent: PlaylistComponent, userComponent: UserComponent) {
+    if (!playlistComponent.currentSong) return
+    const currentSong = playlistComponent.currentSong
+    const newState = !currentSong.like
+    //第一步，把网易云的状态改了
+    const res = await songLike({
+      id: currentSong.id,
+      like: newState
+    })
+    match(res)
+      .with({ ok: true }, () => {
+        //第二步，更改当前歌曲的喜欢状态
+        currentSong.like = newState
+        playlistComponent.currentList.find(song => song.id === currentSong.id)!.like = newState
+        //第三步，从“喜欢“列表里删除这首歌，如果有的话
+        if (!newState) DeleteSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong!.id)
+        else AddSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong)
+      })
+      .with({ ok: false }, ({ val }) => {
+        MessageWriter.error(new Error(val), '[Playlist System] ')
+      })
   }
 }

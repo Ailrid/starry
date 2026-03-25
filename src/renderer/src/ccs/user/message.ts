@@ -1,5 +1,5 @@
-import { EventMessage } from '@virid/core'
-
+import { EventMessage, SingleMessage } from '@virid/core'
+import { type SongDetail } from '@/utils'
 export class FetchUserAccountMessage extends EventMessage {}
 export class FetchUserPlaylistMessage extends EventMessage {}
 export class FetchUserPlaylistDetailMessage extends EventMessage {
@@ -15,4 +15,29 @@ export class FetchUserPlaylistSongMessage extends EventMessage {
     super()
   }
 }
+
+export class DeleteSongMessage extends SingleMessage {
+  constructor(
+    public playlistId: number,
+    public songId: number
+  ) {
+    super()
+  }
+}
+
+export class AddSongMessage extends SingleMessage {
+  constructor(
+    public playlistId: number,
+    public songDetail: SongDetail
+  ) {
+    super()
+  }
+}
+
 export class LogoutMessage extends EventMessage {}
+
+export class FlashPageDataMessage extends SingleMessage {
+  constructor(public playlistId: number) {
+    super()
+  }
+}

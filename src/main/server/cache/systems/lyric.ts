@@ -77,7 +77,7 @@ export class CacheLyricSystem {
       // 合并对齐原词与翻译
       lyrics = Array.from(lrcMap.keys())
         .sort((a, b) => a - b)
-        .map((time) => ({
+        .map(time => ({
           time,
           text: lrcMap.get(time),
           trans: tlyricMap.get(time) || ''
@@ -139,7 +139,7 @@ const parseTime = (timeStr: string): number => {
 const extractLyricMap = (lrc: string = ''): Map<number, string> => {
   const map = new Map<number, string>()
   const lines = lrc.split(/\r?\n/)
-  lines.forEach((line) => {
+  lines.forEach(line => {
     const timeMatch = line.match(/\[\d+:\d+(?:[.:]\d+)?\]/g)
     // 替换制表符为空格，剔除时间戳
     const content = line
@@ -147,7 +147,7 @@ const extractLyricMap = (lrc: string = ''): Map<number, string> => {
       .replace(/\t/g, ' ')
       .trim()
     if (timeMatch && content) {
-      timeMatch.forEach((t) => map.set(parseTime(t), content))
+      timeMatch.forEach(t => map.set(parseTime(t), content))
     }
   })
   return map

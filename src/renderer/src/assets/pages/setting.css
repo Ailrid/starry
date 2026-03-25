@@ -16,7 +16,7 @@
   @apply flex w-full flex-col gap-4;
 }
 .setting-sheet-title {
-  @apply text-base font-bold tracking-wider uppercase ;
+  @apply text-base font-bold tracking-wider uppercase;
 }
 .setting-item-title {
   @apply text-sm font-medium opacity-70;

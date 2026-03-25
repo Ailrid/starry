@@ -37,7 +37,7 @@ export class SettingSystem {
     messageClass: LoadSettingsMessage
   })
   static LoadSetting(settings: SettingComponent) {
-    ;(Object.keys(settings) as Array<keyof SettingComponent>).forEach((key) => {
+    ;(Object.keys(settings) as Array<keyof SettingComponent>).forEach(key => {
       this.loadConfig(key, settings)
     })
     MessageWriter.info('[Setting System] LoadSetting: Load all settings completed')
@@ -53,7 +53,7 @@ export class SettingSystem {
   ) {
     msg.modify(settings)
     const keys = Object.keys(settings) as Array<keyof SettingComponent>
-    keys.forEach((key) => {
+    keys.forEach(key => {
       this.saveConfig(key, settings)
     })
   }

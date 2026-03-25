@@ -1,7 +1,10 @@
 import { type ViridApp } from '@virid/core'
-import { PlaylistPageController } from './playlist'
+import { UserPlaylistPageController } from './user-playlist'
+import { PlayerPageController } from './player'
 export function bindPageControllers(app: ViridApp) {
-  app.bindController(PlaylistPageController)
+  app.bindController(UserPlaylistPageController)
+  app.bindController(PlayerPageController)
 }
 
-export * from './playlist'
+export * from './user-playlist'
+export * from './player'

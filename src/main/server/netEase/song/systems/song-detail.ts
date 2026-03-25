@@ -15,7 +15,7 @@ export class SongDetailSystem {
     const { ids } = body
 
     // 格式化 ID 为网易云要求的 [{id: 123}, {id: 456}] 格式
-    const trackIds = ids.map((id) => ({ id }))
+    const trackIds = ids.map(id => ({ id }))
 
     const answer = await createRequest(CryptoMode.weapi, {
       url: '/v3/song/detail',
@@ -28,7 +28,19 @@ export class SongDetailSystem {
 
     const rawData = answer.data as RawSongDetailResponse
     const formattedSongs = convertSongDetail(rawData)
-
+    const res = await createRequest(CryptoMode.eapi, {
+      url: '/song/like/check',
+      data: {
+        trackIds: formattedSongs.map(i => i.id)
+      },
+      cookies,
+      headers
+    })
+    const likedIdSet = new Set(res.data.ids || res.data.data || [])
+    // 返回一个和输入 ids 等长的布尔数组
+    formattedSongs.forEach(song => {
+      song.like = likedIdSet.has(song.id)
+    })
     return Ok({
       code: 200,
       songs: formattedSongs

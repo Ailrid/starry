@@ -1,11 +1,7 @@
 import { Controller } from '@virid/core'
 import { UserComponent } from './component'
 import { Project } from '@virid/vue'
-import {
-  type UserProfile,
-  type PlaylistInfo,
-  type PlaylistDetail,
-} from '@/utils/server'
+import { type UserProfile, type PlaylistInfo, type PlaylistDetail } from '@/utils/server'
 
 @Controller()
 export class UserController {

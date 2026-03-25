@@ -32,7 +32,7 @@ export class AlbumDetailSystem {
     const rawData = albumAnswer.data as RawAlbumDetailResponse
     const rawAlbum = rawData.album
 
-    const tracksID = (rawData.songs || []).map((s) => ({ id: s.id }))
+    const tracksID = (rawData.songs || []).map(s => ({ id: s.id }))
     const tracksAnswer = await createRequest(CryptoMode.weapi, {
       url: '/v3/song/detail',
       data: { c: JSON.stringify(tracksID) },
@@ -43,6 +43,20 @@ export class AlbumDetailSystem {
     const formattedSongs: SongDetail[] = convertSongDetail(
       tracksAnswer.data as RawSongDetailResponse
     )
+    // 检查歌曲喜欢的状态
+    const answer = await createRequest(CryptoMode.eapi, {
+      url: '/api/song/like/check',
+      data: {
+        trackIds: formattedSongs.map(i => i.id)
+      },
+      cookies,
+      headers
+    })
+    const likedIdSet = new Set(answer.data.ids || answer.data.data || [])
+    // 返回一个和输入 ids 等长的布尔数组
+    formattedSongs.forEach(song => {
+      song.like = likedIdSet.has(song.id)
+    })
 
     const albumDetail: AlbumDetail = {
       id: rawAlbum.id,
@@ -51,13 +65,13 @@ export class AlbumDetailSystem {
       publishTime: rawAlbum.publishTime,
       size: rawAlbum.size,
       // 专辑歌手：统一极简格式
-      artists: (rawAlbum.artists || []).map((ar) => ({
+      artists: (rawAlbum.artists || []).map(ar => ({
         id: ar.id,
         name: ar.name
       })),
       description: rawAlbum.description || rawAlbum.briefDesc || '',
       // 详情扩展字段
-      songsIds: formattedSongs.map((s) => s.id),
+      songsIds: formattedSongs.map(s => s.id),
       commentCount: rawAlbum.info?.commentCount || 0,
       shareCount: rawAlbum.info?.shareCount || 0,
       isSubscribed: rawAlbum.info?.isSubscribed || false

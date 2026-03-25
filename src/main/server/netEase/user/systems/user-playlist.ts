@@ -29,7 +29,7 @@ export class UserPlaylistSystem {
     const raw = answer.data as RawUserPlaylistResponse
 
     // 统一转换为 PlaylistInfo
-    const playlists: PlaylistInfo[] = (raw.playlist || []).map((pl) => ({
+    const playlists: PlaylistInfo[] = (raw.playlist || []).map(pl => ({
       id: pl.id,
       name: pl.name,
       cover: pl.coverImgUrl,

@@ -4,7 +4,7 @@ import {
   MinimizeWindowMessage,
   MaximizeWindowMessage,
   OpenDialogMessage,
-  RenderDialogMessage,
+  RenderDialogMessage
 } from './message'
 import { System, Message } from '@virid/core'
 

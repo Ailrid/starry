@@ -1,7 +1,5 @@
 <template>
-  <div class="w-full h-full">
-    recent play
-  </div>
+  <div class="h-full w-full">recent play</div>
 </template>
 
 <script setup lang="ts"></script>

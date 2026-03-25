@@ -26,8 +26,8 @@ export class UserRecordSystem {
     const rawList = (isWeek ? rawData.weekData : rawData.allData) || []
 
     const formattedSongs: SongDetail[] = convertSongDetail({
-      songs: rawList.map((item) => item.song),
-      privileges: rawList.map((item) => item.song.privilege || { id: item.song.id }),
+      songs: rawList.map(item => item.song),
+      privileges: rawList.map(item => item.song.privilege || { id: item.song.id }),
       code: 200
     } as any)
 

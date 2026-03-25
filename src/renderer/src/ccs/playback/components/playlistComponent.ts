@@ -13,7 +13,7 @@ export class PlaylistComponent {
   @Responsive()
   public currentIndex: number = 0
   // 当前播放的歌曲详情
-  @Responsive(true)
+  @Responsive()
   public currentSong: SongDetail | null = null
 
   // 当前列表的id

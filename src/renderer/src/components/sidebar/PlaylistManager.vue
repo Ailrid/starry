@@ -5,7 +5,7 @@
       :key="item.id"
       class="group relative flex cursor-pointer items-center gap-4 rounded-xl p-2 transition-all duration-200 hover:bg-black/5 active:scale-[0.98] dark:hover:bg-white/5"
       :class="{ 'playlist-active': pct.currentPlaylistId === item.id }"
-      @click="$router.push({ name: 'playlist', params: { id: item.id } })"
+      @click="$router.push({ name: 'user-playlist', params: { id: item.id } })"
     >
       <div
         class="bg-primary absolute left-0 h-4 w-1 rounded-full opacity-0 transition-all duration-300"

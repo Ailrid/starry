@@ -32,7 +32,7 @@ export class SliderController {
   }
 
   waveBarStyle(active: boolean) {
-    if (!this.theme.enableSliderAutoColor ) {
+    if (!this.theme.enableSliderAutoColor) {
       return active
         ? 'bg-primary scale-y-100 opacity-90 shadow-[0_0_15px_rgba(var(--primary),0.6)]'
         : 'bg-primary scale-y-75 opacity-50'

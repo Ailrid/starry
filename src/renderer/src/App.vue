@@ -1,5 +1,5 @@
 <template>
-  <div class="window"  :style="stc.rootStyle">
+  <div class="window" :style="stc.rootStyle" :class="{ border: $route.name != 'player' }">
     <!-- 图片背景 -->
     <div
       v-if="stc.setting.theme.mode === 'image'"
@@ -25,9 +25,8 @@ const stc = useController(SettingController)
 <style lang="css">
 @reference "@/assets/main.css";
 .window {
-  @apply bg-card flex h-screen w-full flex-col overflow-hidden border;
+  @apply bg-card flex h-screen w-full flex-col overflow-hidden;
   color: var(--foreground);
-
 }
 .image-bg {
   @apply pointer-events-none absolute inset-0;

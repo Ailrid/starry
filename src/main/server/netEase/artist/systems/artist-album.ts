@@ -38,14 +38,14 @@ export class ArtistAlbumsSystem {
     }
 
     // 转换专辑列表
-    const hotAlbums: AlbumInfo[] = (rawData.hotAlbums || []).map((album) => ({
+    const hotAlbums: AlbumInfo[] = (rawData.hotAlbums || []).map(album => ({
       id: album.id,
       name: album.name,
       cover: album.picUrl,
       publishTime: album.publishTime,
       size: album.size,
       // 将原始的 artists 阵列简化为 id 和 name
-      artists: (album.artists || []).map((ar) => ({
+      artists: (album.artists || []).map(ar => ({
         id: ar.id,
         name: ar.name
       })),

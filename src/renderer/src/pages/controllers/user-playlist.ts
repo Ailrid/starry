@@ -1,8 +1,8 @@
 import { PlaySongMessage, SetPlaylistMessage } from '@/ccs/playback'
-import { FetchUserPlaylistSongMessage, UserComponent } from '@/ccs/user'
+import { FetchUserPlaylistSongMessage, UserComponent, FlashPageDataMessage } from '@/ccs/user'
 import { SongDetail, type PlaylistDetail } from '@/utils'
 import { Controller, SingleMessage } from '@virid/core'
-import { Project, Responsive, Use, Listener, Watch, OnHook } from '@virid/vue'
+import { Project, Responsive, Use, Listener, OnHook } from '@virid/vue'
 import { useRoute } from 'vue-router'
 
 let _isSidebarOpen = true
@@ -14,7 +14,7 @@ export class PageChangeMessage extends SingleMessage {
 }
 
 @Controller()
-export class PlaylistPageController {
+export class UserPlaylistPageController {
   @Responsive()
   public isSidebarOpen: boolean = _isSidebarOpen
 
@@ -61,23 +61,18 @@ export class PlaylistPageController {
     const count = this.currentPlaylist?.songCount || 0
     return Math.ceil(count / 200) || 1
   }
-  //每次page变化，去获取新的songs
-  // @Watch<PlaylistPageController>(i => [i.pageIndex, i.currentPlaylistId], {
-  //   immediate: true
-  // })
-  // public updatePlaylist() {
-  //   const playlist = this.currentPlaylistId
-  //   if (!playlist) return
-  //   FetchUserPlaylistSongMessage.send(playlist, this.pageIndex)
-  // }
+  /**
+   * * 设置播放列表为此页
+   */
   setPlaylist(song: SongDetail | null) {
     if (!this.currentPlaylistSong || !this.currentPlaylist || !song) return
-    const playlistDetail = JSON.parse(JSON.stringify(this.currentPlaylist))
-    const playlistSongs = JSON.parse(JSON.stringify(this.currentPlaylistSong))
     //替换歌单并播放第一首
-    SetPlaylistMessage.send(playlistSongs, playlistDetail)
+    SetPlaylistMessage.send(this.currentPlaylistSong, this.currentPlaylist)
     PlaySongMessage.send(song)
   }
+  /**
+   * * 改变页面的时候获取新的数据
+   */
   @Listener({
     messageClass: PageChangeMessage
   })
@@ -86,9 +81,24 @@ export class PlaylistPageController {
     //顺便拉取一下新的页面数据
     this.initPageData()
   }
+  /**
+   * * 页面加载时获得第一首
+   */
   @OnHook('onSetup')
   public initPageData() {
     if (!this.currentPlaylistId) return
+    FetchUserPlaylistSongMessage.send(this.currentPlaylistId, this.pageIndex)
+  }
+  /**
+   * * 页面强制刷新该页数据
+   */
+  @Listener({
+    messageClass: FlashPageDataMessage
+  })
+  public onFleshPageData(message: FlashPageDataMessage) {
+    //只有是自己的时候，才去刷新
+    if (!this.currentPlaylistId || this.currentPlaylistId !== message.playlistId) return
+    //重新获取当前页面的数据
     FetchUserPlaylistSongMessage.send(this.currentPlaylistId, this.pageIndex)
   }
 }

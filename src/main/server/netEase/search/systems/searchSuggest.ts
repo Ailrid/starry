@@ -32,7 +32,7 @@ export class SearchSuggestSystem {
     const raw = (answer.data as RawSearchSuggestResponse).result || {}
 
     // Songs (搜索建议的歌曲信息是不全的，但要强行转为 SongDetail 结构)
-    const songs: SongDetail[] = (raw.songs || []).map((s) => ({
+    const songs: SongDetail[] = (raw.songs || []).map(s => ({
       id: s.id,
       platformId: String(s.id),
       source: 'netease',
@@ -48,11 +48,12 @@ export class SearchSuggestSystem {
       },
       duration: s.duration,
       isAvailable: true, // 建议阶段默认给 true，点击播放时再校验
-      raw: s
+      raw: s,
+      like: false
     }))
 
     // Albums
-    const albums: AlbumInfo[] = (raw.albums || []).map((al) => ({
+    const albums: AlbumInfo[] = (raw.albums || []).map(al => ({
       id: al.id,
       name: al.name,
       cover: al.artist?.picUrl || '', // 借用歌手图作为临时封面
@@ -62,7 +63,7 @@ export class SearchSuggestSystem {
     }))
 
     // Artists
-    const artists: ArtistInfo[] = (raw.artists || []).map((ar) => ({
+    const artists: ArtistInfo[] = (raw.artists || []).map(ar => ({
       id: ar.id,
       name: ar.name,
       avatar: ar.img1v1Url || ar.picUrl || '',
@@ -72,7 +73,7 @@ export class SearchSuggestSystem {
     }))
 
     // Playlists
-    const playlists: PlaylistInfo[] = (raw.playlists || []).map((pl) => ({
+    const playlists: PlaylistInfo[] = (raw.playlists || []).map(pl => ({
       id: pl.id,
       name: pl.name,
       cover: pl.coverImgUrl,

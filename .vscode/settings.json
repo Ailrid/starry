@@ -7,7 +7,7 @@
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  }
   // "editor.parameterHints.enabled": true,
   // "editor.quickSuggestions": {
   //   "other": true,

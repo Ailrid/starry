@@ -29,14 +29,15 @@ export class PlayerSystem {
     playlistComponent: PlaylistComponent,
     lyricComponent: LyricComponent
   ) {
-    const { song } = message
     const list = playlistComponent.currentList
     // 更新播放列表
-    let index = list.findIndex(item => item.id === song.id)
+    let index = list.findIndex(item => item.id === message.song.id)
     if (index === -1) {
+      const song = JSON.parse(JSON.stringify(message.song))
       list.push(song)
       index = list.length - 1
     }
+    const song = list[index]
     playlistComponent.currentIndex = index
     playlistComponent.currentSong = song
     playerComponent.player.duration = song.duration

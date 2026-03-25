@@ -15,7 +15,7 @@ export class SongLikeCheckSystem {
     const { ids } = body // 比如输入 [101, 102, 103]
 
     const answer = await createRequest(CryptoMode.eapi, {
-      url: '/api/song/like/check',
+      url: '/song/like/check',
       data: {
         trackIds: ids
       },
@@ -25,7 +25,7 @@ export class SongLikeCheckSystem {
     const rawData = answer.data as RawSongLikeCheckResponse
     const likedIdSet = new Set(rawData.ids || rawData.data || [])
     // 返回一个和输入 ids 等长的布尔数组
-    const checkList: boolean[] = ids.map((id) => likedIdSet.has(id))
+    const checkList: boolean[] = ids.map(id => likedIdSet.has(id))
 
     return Ok({
       code: 200,

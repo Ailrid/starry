@@ -54,3 +54,5 @@ export class MediaSessionMessage extends SingleMessage {
     super()
   }
 }
+
+export class SongLikeMessage extends SingleMessage {}

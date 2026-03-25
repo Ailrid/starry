@@ -77,4 +77,3 @@ export class WindowLoginController {
     this.closeWindow()
   }
 }
-

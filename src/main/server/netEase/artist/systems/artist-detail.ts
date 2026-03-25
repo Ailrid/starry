@@ -44,7 +44,7 @@ export class ArtistDetailSystem {
     }
 
     // 处理热门歌曲：再次走 v3/song/detail 补全逻辑
-    const hotSongIds = (rawData.hotSongs || []).map((s) => ({ id: s.id }))
+    const hotSongIds = (rawData.hotSongs || []).map(s => ({ id: s.id }))
 
     let formattedHotSongs: SongDetail[] = []
     if (hotSongIds.length > 0) {
@@ -56,7 +56,19 @@ export class ArtistDetailSystem {
       })
       formattedHotSongs = convertSongDetail(tracksAnswer.data as RawSongDetailResponse)
     }
-
+    const res = await createRequest(CryptoMode.eapi, {
+      url: '/api/song/like/check',
+      data: {
+        trackIds: formattedHotSongs.map(i => i.id)
+      },
+      cookies,
+      headers
+    })
+    const likedIdSet = new Set(res.data.ids || res.data.data || [])
+    // 返回一个和输入 ids 等长的布尔数组
+    formattedHotSongs.forEach(song => {
+      song.like = likedIdSet.has(song.id)
+    })
     // 4. 返回标准响应
     return Ok({
       code: 200,

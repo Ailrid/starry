@@ -10,7 +10,7 @@ export class Player {
   @Responsive() public isPlaying: boolean = false
   @Responsive() public currentTime: number = 0.0
   @Responsive() public duration: number = 0.0
-  @Responsive(true) public buffered: TimeRanges | null = null
+  // @Responsive(true) public buffered: TimeRanges | null = null
   @Responsive()
   public slider: Array<number> = Array(60).fill(0)
   @Responsive()
@@ -48,9 +48,9 @@ export class Player {
       this.duration = this.audio.duration
     })
 
-    this.audio.addEventListener('progress', () => {
-      this.buffered = this.audio.buffered
-    })
+    // this.audio.addEventListener('progress', () => {
+    //   this.buffered = this.audio.buffered
+    // })
     // 默认的内部同步：只负责更新响应式数据
     this.audio.addEventListener('timeupdate', () => {
       this.currentTime = this.audio.currentTime

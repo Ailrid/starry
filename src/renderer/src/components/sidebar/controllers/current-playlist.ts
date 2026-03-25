@@ -9,6 +9,4 @@ export class CurrentPlaylistController {
 
   @Project(PlaylistComponent, i => i.currentList)
   public currentList: SongDetail[] = []
-    
-
 }
