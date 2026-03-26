@@ -1,6 +1,6 @@
 import { Controller } from '@virid/core'
 import { Project, Use } from '@virid/vue'
-import { type SongDetail, type PlaylistInfo } from '@/utils'
+import { type SongDetail, type PlaylistInfo, PlaylistDetail } from '@/utils'
 import {
   PlayerComponent,
   PlaylistComponent,
@@ -15,6 +15,9 @@ export class PlayerButtonController {
   //当前正在播放的歌曲
   @Project(PlaylistComponent, i => i.currentSong)
   public currentSong: SongDetail | null = null
+  //用户歌单信息
+  @Project(PlaylistComponent, i => i.playlistDetail)
+  public playListDetail: PlaylistDetail | null = null
 
   //用户当前喜欢歌曲的列表
   @Project(UserComponent, i => i.userPlaylists)
@@ -53,11 +56,21 @@ export class PlayerButtonController {
     SetVolumeMessage.send(this.volume === 0 ? this._volume : 0)
     this._volume = this.volume
   }
-  public modeList: string[] = ['order', 'random', 'loop', 'intelligence']
-  changeMode() {
-    const index = this.modeList.findIndex(i => i == this.playMode)
-    const nextIndex = (index + 1) % this.modeList.length
-    const nextMode = this.modeList[nextIndex] as 'order' | 'random' | 'loop' | 'intelligence'
-    SetPlayModeMessage.send(nextMode)
+  public modeList: string[] = ['order', 'random', 'loop']
+  changeMode(mode: string = '') {
+    if (!this.currentSong) return
+    //左键点击
+    if (!mode) {
+      const index = this.modeList.findIndex(i => i == this.playMode)
+      const nextIndex = (index + 1) % this.modeList.length
+      const nextMode = this.modeList[nextIndex] as 'order' | 'random' | 'loop'
+      SetPlayModeMessage.send(nextMode)
+    }
+    //右键点击
+    else {
+      if (!this.playListDetail) return
+      if (this.playMode === 'intelligence') SetPlayModeMessage.send('order')
+      else SetPlayModeMessage.send('intelligence')
+    }
   }
 }

@@ -8,7 +8,7 @@
       <div
         v-for="(item, index) in vlc.visibleData"
         :key="vlc.getItemKey(item, index)"
-        :style="{ height: `${itemHeight}px` }"
+        :style="{ height: `${itemHeight}rem` }"
       >
         <slot name="item" :item="item" :index="vlc.actualStartIndex + index"></slot>
       </div>
@@ -23,11 +23,14 @@ import { VirtualListController } from './controllers'
 const props = withDefaults(
   defineProps<{
     listData: T[]
-    itemHeight: number
+    itemHeight?: number
     buffer?: number
     keyField?: keyof T
   }>(),
-  { buffer: 5 }
+  {
+    buffer: 5,
+    itemHeight: 4
+  }
 )
 
 const vlc = useController(VirtualListController<T>, { context: props })

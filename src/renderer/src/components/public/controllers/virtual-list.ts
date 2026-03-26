@@ -48,12 +48,27 @@ export class VirtualListController<T> {
     this.observer?.disconnect()
     this.observer = null
   }
+
+  /**
+   * 将 rem 数值转换为当前环境的真实 px
+   */
+  private remToPx(rem: number): number {
+    const fontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
+    return rem * fontSize
+  }
+
+  @Project()
+  get actualItemHeight(): number {
+    // 假设你传入的是 4 (代表 4rem)
+    return this.remToPx(this.itemHeight)
+  }
+
   /**
    * *当前可视区域内的数据的开始索引
    */
   @Project()
   get actualStartIndex() {
-    const start = Math.floor(this.scrollTop / this.itemHeight)
+    const start = Math.floor(this.scrollTop / this.actualItemHeight)
     return Math.max(0, start - this.buffer)
   }
 
@@ -63,10 +78,10 @@ export class VirtualListController<T> {
   @Project()
   get actualEndIndex() {
     const visibleCount =
-      Math.ceil((this.containerRef.value?.clientHeight || 0) / this.itemHeight) ||
-      Math.ceil(parseInt(this.containerHeight.toString()) / this.itemHeight)
+      Math.ceil((this.containerRef.value?.clientHeight || 0) / this.actualItemHeight) ||
+      Math.ceil(parseInt(this.containerHeight.toString()) / this.actualItemHeight)
 
-    const end = Math.floor(this.scrollTop / this.itemHeight) + visibleCount
+    const end = Math.floor(this.scrollTop / this.actualItemHeight) + visibleCount
     return Math.min(this.listData.length, end + this.buffer)
   }
 
@@ -83,8 +98,8 @@ export class VirtualListController<T> {
    */
   @Project()
   get wrapperStyle() {
-    const paddingTop = this.actualStartIndex * this.itemHeight
-    const paddingBottom = (this.listData.length - this.actualEndIndex) * this.itemHeight
+    const paddingTop = this.actualStartIndex * this.actualItemHeight
+    const paddingBottom = (this.listData.length - this.actualEndIndex) * this.actualItemHeight
 
     return {
       paddingTop: `${paddingTop}px`,
@@ -113,8 +128,8 @@ export class VirtualListController<T> {
     // 边界检查
     const targetIndex = Math.max(0, Math.min(index, this.listData.length - 1))
     // 计算位移：目标索引 * 每个条目的高度
-    const targetTop = targetIndex * this.itemHeight
+    const targetTop = targetIndex * this.actualItemHeight
     container.scrollTop = targetTop
-    container.scrollTo({ top: targetTop, behavior: 'smooth' });
+    container.scrollTo({ top: targetTop, behavior: 'smooth' })
   }
 }

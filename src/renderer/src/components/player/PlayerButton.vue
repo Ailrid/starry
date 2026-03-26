@@ -18,6 +18,7 @@
       size="icon"
       class="group/like h-9 w-9 rounded-full transition-all"
       @click="pct.changeMode()"
+      @contextmenu.prevent="pct.changeMode('intelligence')"
     >
       <Repeat
         v-if="pct.playMode == 'order'"

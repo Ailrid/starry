@@ -26,7 +26,6 @@
       ref="current-playlist"
       :buffer="3"
       :list-data="cct.currentList"
-      :item-height="64"
       :key-field="'id'"
     >
       <template #item="{ item, index }">

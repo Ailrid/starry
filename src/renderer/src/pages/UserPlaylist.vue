@@ -91,7 +91,6 @@
             :key-field="'id'"
             :buffer="3"
             :list-data="pct.currentPlaylistSong"
-            :item-height="64"
           >
             <template #item="{ item, index }">
               <div
