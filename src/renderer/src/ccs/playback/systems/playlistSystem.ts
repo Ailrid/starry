@@ -4,8 +4,7 @@ import {
   SetPlaylistMessage,
   LoadFMPlaylistMessage,
   LoadIntelligencePlaylistMessage,
-  SongLikeMessage,
-  SetPlayModeMessage
+  SongLikeMessage
 } from '../messages'
 import { PlayerComponent, PlaylistComponent } from '../components'
 import { personalFm, intelligence, songLike } from '@/utils/server'

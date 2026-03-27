@@ -1,5 +1,5 @@
 <template>
-  <div class="drag flex w-full items-center justify-between px-2">
+  <div class="drag z-50 flex w-full items-center justify-between px-2">
     <div class="no-drag flex items-center">
       <button
         class="hover:text-primary flex h-10 w-10 cursor-pointer items-center justify-center transition-colors active:opacity-50"

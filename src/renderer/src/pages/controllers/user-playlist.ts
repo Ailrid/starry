@@ -89,5 +89,4 @@ export class UserPlaylistPageController {
     if (!this.currentPlaylistId) return
     FetchUserPlaylistSongMessage.send(this.currentPlaylistId, this.pageIndex)
   }
- 
 }

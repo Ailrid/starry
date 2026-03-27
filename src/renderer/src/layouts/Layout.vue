@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-10 h-screen w-full overflow-hidden">
+  <div class="relative h-screen w-full overflow-hidden">
     <router-view v-slot="{ Component }">
       <Transition :name="lct.transitionName">
         <component :is="Component" />

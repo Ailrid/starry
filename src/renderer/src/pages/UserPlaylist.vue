@@ -93,49 +93,61 @@
             :list-data="pct.currentPlaylistSong"
           >
             <template #item="{ item, index }">
-              <div
-                class="group flex h-14 items-center gap-1 rounded-xl px-1 transition-all hover:bg-current/5 active:scale-[0.98]"
-                @click="PlaySongMessage.send(item)"
-                @dblclick="pct.setPlaylist(item)"
-              >
-                <!-- 序号 -->
+              <div class="flex h-full w-full items-center justify-center">
                 <div
-                  class="group-hover:text-primary mr-1 ml-1 w-4 text-center font-mono text-xs transition-all group-hover:opacity-100"
+                  class="group flex h-14 w-full items-center gap-1 rounded-xl px-1 transition-all hover:bg-current/5 active:scale-[0.98]"
+                  @click="PlaySongMessage.send(item)"
+                  @dblclick="pct.setPlaylist(item)"
                 >
-                  {{ (pct.pageIndex * 200 + index + 1).toString().padStart(2, '0') }}
-                </div>
-                <!-- 封面 -->
-                <div class="h-13 w-13 shrink-0 overflow-hidden rounded-lg shadow-sm">
-                  <img
-                    :src="item.album.cover + '?param=64y64'"
-                    class="h-full w-full cursor-pointer object-cover transition-transform group-hover:scale-110"
-                  />
-                </div>
-                <!-- 歌曲信息，名字和歌手和专辑 -->
-                <div class="flex flex-1 flex-col truncate">
-                  <span class="truncate text-sm font-semibold tracking-tight">
-                    {{ item.name }}
-                  </span>
-                  <div class="mt-0.5 flex items-center gap-1 truncate text-sm opacity-60">
-                    <div class="flex shrink-0 items-center gap-1">
-                      <div class="flex flex-wrap gap-x-2">
-                        <span
-                          v-for="artist in item.artists"
-                          :key="artist.id"
-                          class="song-info-text"
-                          @click.stop="$router.push({ name: 'artist', params: { id: artist.id } })"
-                        >
-                          {{ artist.name }}
-                        </span>
-                      </div>
-                    </div>
-                    <span class="mx-1 shrink-0">-</span>
-                    <span
-                      class="song-info-text"
-                      @click.stop="$router.push({ name: 'artist', params: { id: item.album.id } })"
-                    >
-                      {{ item.album.name }}
+                  <!-- 序号 -->
+                  <div
+                    class="group-hover:text-primary mr-1 ml-1 w-4 text-center font-mono text-xs transition-all group-hover:opacity-100"
+                  >
+                    {{ (pct.pageIndex * 200 + index + 1).toString().padStart(2, '0') }}
+                  </div>
+                  <!-- 封面 -->
+                  <div class="h-13 w-13 shrink-0 overflow-hidden rounded-lg shadow-sm">
+                    <img
+                      :src="item.album.cover + '?param=64y64'"
+                      class="h-full w-full cursor-pointer object-cover transition-transform group-hover:scale-110"
+                    />
+                  </div>
+                  <!-- 歌曲信息，名字和歌手和专辑 -->
+                  <div class="flex flex-1 flex-col truncate">
+                    <span class="truncate text-sm font-semibold tracking-tight">
+                      {{ item.name }}
                     </span>
+                    <div class="mt-0.5 flex items-center gap-1 truncate text-sm opacity-60">
+                      <div class="flex shrink-0 items-center gap-1">
+                        <div class="flex flex-wrap gap-x-2">
+                          <span
+                            v-for="artist in item.artists"
+                            :key="artist.id"
+                            class="song-info-text"
+                            @click.stop="
+                              $router.push({
+                                name: 'artist',
+                                params: { id: artist.id }
+                              })
+                            "
+                          >
+                            {{ artist.name }}
+                          </span>
+                        </div>
+                      </div>
+                      <span class="mx-1 shrink-0">-</span>
+                      <span
+                        class="song-info-text"
+                        @click.stop="
+                          $router.push({
+                            name: 'artist',
+                            params: { id: item.album.id }
+                          })
+                        "
+                      >
+                        {{ item.album.name }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

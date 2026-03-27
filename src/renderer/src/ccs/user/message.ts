@@ -34,6 +34,4 @@ export class AddSongMessage extends EventMessage {
   }
 }
 
-
 export class LogoutMessage extends EventMessage {}
-

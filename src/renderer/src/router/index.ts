@@ -6,9 +6,17 @@ const routes = [
     redirect: '/main',
     children: [
       {
-        path: '/player',
-        name: 'player',
-        component: () => import('@/layouts/PlayerLayout.vue')
+        path: '/player-layout',
+        name: 'player-layout',
+        redirect: '/player',
+        component: () => import('@/layouts/PlayerLayout.vue'),
+        children: [
+          {
+            path: '/player',
+            name: 'player',
+            component: () => import('@/pages/Player.vue')
+          }
+        ]
       },
       {
         path: '/main',

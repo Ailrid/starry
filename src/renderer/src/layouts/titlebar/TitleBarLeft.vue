@@ -1,5 +1,5 @@
 <template>
-  <div class="drag flex w-full items-center justify-between px-2">
+  <div class="drag flex w-full items-center justify-between px-2 z-50">
     <div class="no-drag flex items-center gap-1">
       <LoginDialog class="h-10 w-10" />
       <DropdownMenu>

@@ -59,7 +59,6 @@ export class VirtualListController<T> {
 
   @Project()
   get actualItemHeight(): number {
-    // 假设你传入的是 4 (代表 4rem)
     return this.remToPx(this.itemHeight)
   }
 

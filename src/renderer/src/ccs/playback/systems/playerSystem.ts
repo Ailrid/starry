@@ -218,7 +218,7 @@ export class PlayerSystem {
     if (message.playMode === 'fm' || message.playMode === 'intelligence') {
       // 备份当前顺序列表到 staging
       playlistComponent.stagingList = [...playlistComponent.currentList]
-      // 重置当前状体啊
+      // 重置当前状体
       playlistComponent.currentList = []
       if (message.playMode === 'fm') LoadFMPlaylistMessage.send()
       if (message.playMode === 'intelligence') LoadIntelligencePlaylistMessage.send()
