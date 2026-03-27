@@ -94,6 +94,7 @@ export class ThemeController {
     setTimeout(() => {
       this.activeBtn = ''
     }, 500)
+    this.setting.immersiveMode = false
     //亮色和暗色主题
     if (mode === 'light' || mode === 'dark') {
       return SaveSettingsMessage.send(settings => {
@@ -107,11 +108,11 @@ export class ThemeController {
         this.openDialog()
         return
       }
+      await this.toggleUrl(this.setting.fileUrl)
       SaveSettingsMessage.send(settings => {
         settings.theme = this.setting
       })
     }
-    this.setting.immersiveMode = false
   }
   /**
    * *  监听选择对话框的消息，并调整自己的路径
