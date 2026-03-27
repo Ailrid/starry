@@ -20,24 +20,8 @@
       @click="pct.changeMode()"
       @contextmenu.prevent="pct.changeMode('intelligence')"
     >
-      <Repeat
-        v-if="pct.playMode == 'order'"
-        :size="18"
-        class="transition-transform group-active/like:scale-75"
-      />
-      <Repeat1
-        v-else-if="pct.playMode == 'loop'"
-        :size="18"
-        class="transition-transform group-active/like:scale-75"
-      />
-      <Shuffle
-        v-else-if="pct.playMode == 'random'"
-        :size="18"
-        class="transition-transform group-active/like:scale-75"
-      />
-      <Activity
-        v-else-if="pct.playMode == 'intelligence'"
-        :size="18"
+      <component
+        :is="icons[pct.playMode]"
         class="transition-transform group-active/like:scale-75"
       />
     </Button>
@@ -93,11 +77,18 @@ import {
   Shuffle,
   Repeat,
   Repeat1,
-  Activity
+  Activity,
+  AudioWaveform
 } from 'lucide-vue-next'
 import { useController } from '@virid/vue'
 import { PlayerButtonController } from './controllers'
 import { SongLikeMessage } from '@/ccs/playback'
-
+const icons = {
+  order: Repeat,
+  loop: Repeat1,
+  random: Shuffle,
+  intelligence: Activity,
+  fm: AudioWaveform
+}
 const pct = useController(PlayerButtonController)
 </script>

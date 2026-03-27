@@ -20,6 +20,16 @@ export interface ThemeConfig {
   enableSliderAutoColor: boolean
 }
 
+export interface PlayerConfig {
+  coverBackground: boolean // 使用专辑封面作为背景
+  opacity: number // 背景亮度/透明度控制
+  blur: number // 模糊程度
+  autoColor: boolean // 使用使用专辑封面颜色
+  mask: boolean // 启用歌词渐变遮罩
+  center: boolean // 歌词是否居中
+  lyricBlur: boolean // 歌词模糊
+}
+
 @Component()
 export class SettingComponent {
   @Responsive()
@@ -36,5 +46,15 @@ export class SettingComponent {
     textColor: null, // 为空时使用 Controller 逻辑自动计算
     borderRadius: 12, // 适中的圆角
     enableSliderAutoColor: true
+  }
+  @Responsive()
+  public player: PlayerConfig = {
+    coverBackground: true,
+    opacity: 0.3,
+    blur: 8,
+    autoColor: true,
+    mask: true,
+    center: false,
+    lyricBlur: false
   }
 }

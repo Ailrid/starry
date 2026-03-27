@@ -2,16 +2,12 @@
   <div class="window">
     <!-- 图片背景 -->
     <div
-      v-if="stc.setting.theme.mode === 'image'"
+      v-if="tct.theme.mode === 'image'"
       class="image-bg z-0"
       style="background-image: var(--bg-image); background-size: cover; background-position: center"
     ></div>
     <!-- 图片背景的遮罩，处理模糊程度和透明度 -->
-    <div
-      v-if="stc.setting.theme.mode === 'image'"
-      :style="stc.maskStyle"
-      class="image-bg z-1"
-    ></div>
+    <div v-if="tct.theme.mode === 'image'" :style="tct.maskStyle" class="image-bg z-1"></div>
     <!-- 上半部分-->
     <div class="z-10 flex flex-1 overflow-hidden">
       <aside class="side-bar flex w-64 flex-col">
@@ -41,11 +37,11 @@
 import TitleBarLeft from './titlebar/TitleBarLeft.vue'
 import TitleBarRight from './titlebar/TitleBarRight.vue'
 import Sidebar from '@components/sidebar/SideBar.vue'
-import Player from '@components/player/Player.vue'
+import Player from '@/components/player/PlayerBar.vue'
 import { useController } from '@virid/vue'
-import { SettingController } from '@/ccs/settings'
+import { SettingThemeController } from '@/ccs/settings'
 
-const stc = useController(SettingController)
+const tct = useController(SettingThemeController)
 </script>
 
 <style scoped>

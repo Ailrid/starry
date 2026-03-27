@@ -1,5 +1,5 @@
 import { Controller } from '@virid/core'
-import { SettingComponent } from './component'
+import { SettingComponent, type ThemeConfig } from './component'
 import { Project, Responsive, Watch } from '@virid/vue'
 import { PlaylistComponent } from '../playback'
 import { type SongDetail, getAccentRGB } from '@/utils'
@@ -8,19 +8,17 @@ const toRgba = (arr: number[], a = 1) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]},$
 let _coverColor: number[] = []
 
 @Controller()
-export class SettingController {
-  @Project(SettingComponent, i => {
-    return i
-  })
-  public setting!: SettingComponent
+export class SettingThemeController {
+  @Project(SettingComponent, i => i.theme)
+  public theme!: ThemeConfig
   @Responsive()
   public coverColor: number[] = _coverColor
   /**
    * *计算根部样式
    */
-  @Project<SettingController>()
+  @Project<SettingThemeController>()
   get rootStyle() {
-    const config = this.setting.theme
+    const config = this.theme
     const styles: Record<string, string | number> = {}
 
     // 字体与圆角
@@ -69,12 +67,11 @@ export class SettingController {
   /**
    * *控制遮罩的opacity和blur
    */
-  @Project<SettingController>()
+  @Project<SettingThemeController>()
   get maskStyle() {
     return {
-      backgroundColor: `rgba(0, 0, 0, ${this.setting.theme.opacity})`,
-      backdropFilter: `blur(${this.setting.theme.blur}px)`,
-      webkitBackdropFilter: `blur(${this.setting.theme.blur}px)` // 为了更好的兼容性
+      backgroundColor: `rgba(0, 0, 0, ${this.theme.opacity})`,
+      backdropFilter: `blur(${this.theme.blur}px)`
     }
   }
   @Watch(PlaylistComponent, i => i.currentSong)

@@ -13,7 +13,7 @@ export class PlayerControllerMessage extends SingleMessage {
   }
 }
 @Controller()
-export class PlayerController {
+export class PlayerBarController {
   @Use(() => useRouter())
   public router!: ReturnType<typeof useRouter>
 

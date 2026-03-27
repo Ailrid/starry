@@ -55,7 +55,7 @@ export class PersonalFmSystem {
     const rawSongData: RawSongDetailResponse = tracksAnswer.data
     const formattedSongs = convertSongDetail(rawSongData)
     const res = await createRequest(CryptoMode.eapi, {
-      url: '/api/song/like/check',
+      url: '/song/like/check',
       data: {
         trackIds: formattedSongs.map(i => i.id)
       },

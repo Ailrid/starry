@@ -9,7 +9,7 @@ export class Player {
   @Responsive() public volume: number = 1.0
   @Responsive() public isPlaying: boolean = false
   @Responsive() public currentTime: number = 0.0
-  @Responsive() public duration: number = 0.0
+  @Responsive() public duration: number = 999999.0
   // @Responsive(true) public buffered: TimeRanges | null = null
   @Responsive()
   public slider: Array<number> = Array(60).fill(0)
@@ -54,8 +54,6 @@ export class Player {
     // 默认的内部同步：只负责更新响应式数据
     this.audio.addEventListener('timeupdate', () => {
       this.currentTime = this.audio.currentTime
-      //更新音频柱
-      if (!this.duration) return
       // 计算当前播放进度占总长度的比例
       const progress = this.currentTime / this.duration
       const sliderIndex = Math.floor(progress * 60)

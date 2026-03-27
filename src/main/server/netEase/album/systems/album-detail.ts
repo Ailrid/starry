@@ -45,7 +45,7 @@ export class AlbumDetailSystem {
     )
     // 检查歌曲喜欢的状态
     const answer = await createRequest(CryptoMode.eapi, {
-      url: '/api/song/like/check',
+      url: '/song/like/check',
       data: {
         trackIds: formattedSongs.map(i => i.id)
       },

@@ -44,11 +44,12 @@ export class PlaylistSystem {
   })
   async loadIntelligencePlaylist(playlistComponent: PlaylistComponent) {
     if (!playlistComponent.currentSong || !playlistComponent.playlistDetail) return
+
     // 获取心动模式原始列表
     const intelRes = await intelligence({
       id: playlistComponent.currentSong.id, // 当前歌曲 id
       pid: playlistComponent.playlistDetail.id, // 歌单 id
-      sid: playlistComponent.currentSong.id // 起始歌曲 id
+      sid: playlistComponent.stagingList.at(0)?.id || playlistComponent.currentSong.id // 起始歌曲 id
     })
 
     await match(intelRes)

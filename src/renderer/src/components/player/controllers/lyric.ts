@@ -1,4 +1,5 @@
 import { LyricComponent } from '@/ccs/playback'
+import { SettingComponent, type PlayerConfig } from '@/ccs/settings'
 import { LyricDetail } from '@/utils'
 import { Controller } from '@virid/core'
 import { OnHook, Project, Responsive, Use, Watch } from '@virid/vue'
@@ -8,6 +9,9 @@ import { useTemplateRef, type ShallowRef, nextTick } from 'vue'
 export class LyricController {
   @Project(LyricComponent, i => i.lyric)
   public lyric: LyricDetail | null = null
+
+  @Project(SettingComponent, i => i.player)
+  public setting!: PlayerConfig
 
   @Project(LyricComponent, i => i.currentIndex)
   public currentIndex: number = 0
@@ -120,5 +124,41 @@ export class LyricController {
   private remToPx(rem: number): number {
     const fontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
     return rem * fontSize
+  }
+
+  @Project()
+  get lyricStyle() {
+    if (this.setting.autoColor)
+      return {
+        color: 'var(--cover-color)'
+      }
+    else
+      return {
+        color: 'var(--foreground)'
+      }
+  }
+
+  @Project()
+  get dashStyle() {
+    if (this.setting.autoColor)
+      return {
+        borderBottom: '1px dashed var(--cover-color)'
+      }
+    else
+      return {
+        borderBottom: '1px dashed var(--foreground)'
+      }
+  }
+
+  @Project()
+  get arrowStyle() {
+    if (this.setting.autoColor)
+      return {
+        borderLeftColor: 'var(--cover-color)'
+      }
+    else
+      return {
+        borderLeftColor: 'var(--foreground)'
+      }
   }
 }

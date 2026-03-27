@@ -1,5 +1,5 @@
 <template>
-  <div class="drag flex w-full items-center justify-between px-2 z-50">
+  <div class="drag z-50 flex w-full items-center justify-between px-2">
     <div class="no-drag flex items-center gap-1">
       <LoginDialog class="h-10 w-10" />
       <DropdownMenu>
@@ -16,7 +16,7 @@
         <DropdownMenuContent
           align="start"
           class="bg-card/50 w-48 border shadow-2xl backdrop-blur-3xl"
-          :style="sct.rootStyle"
+          :style="tcct.rootStyle"
         >
           <DropdownMenuLabel class="text-foreground text-sm tracking-widest uppercase opacity-50"
             >Select View</DropdownMenuLabel
@@ -85,10 +85,10 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useController } from '@virid/vue'
-import { SettingController } from '@/ccs/settings'
+import { SettingThemeController } from '@/ccs/settings'
 import { TitleBarLeftController, TitleBarLeftControllerMessage } from '../controllers'
 import { MoveToCurrentSongMessage } from '@/components/sidebar/controllers'
-const sct = useController(SettingController)
+const tcct = useController(SettingThemeController)
 const tct = useController(TitleBarLeftController, {
   id: 'title-bar-left'
 })

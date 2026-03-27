@@ -5,7 +5,7 @@ import { bindPlayback } from './playback'
 import { bindSetting } from './settings'
 import { bindUser } from './user'
 import { bindPublicControllers } from '@/components/public/controllers'
-import { bindSettingControllers } from '@/components/setting/controllers'
+import { bindSettingThemeControllers } from '@/components/setting/controllers'
 import { bindPlayerControllers } from '@/components/player/controllers'
 import { bindLoginControllers } from '@/components/login/controllers'
 import { bindSidebarControllers } from '@/components/sidebar/controllers'
@@ -28,7 +28,7 @@ export function bootstrapDI() {
   bindPlayback(app)
   //绑定各种组件的controller
   bindPublicControllers(app)
-  bindSettingControllers(app)
+  bindSettingThemeControllers(app)
   bindPlayerControllers(app)
   bindLayoutControllers(app)
   bindLoginControllers(app)

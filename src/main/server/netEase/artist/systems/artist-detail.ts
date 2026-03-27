@@ -57,7 +57,7 @@ export class ArtistDetailSystem {
       formattedHotSongs = convertSongDetail(tracksAnswer.data as RawSongDetailResponse)
     }
     const res = await createRequest(CryptoMode.eapi, {
-      url: '/api/song/like/check',
+      url: '/song/like/check',
       data: {
         trackIds: formattedHotSongs.map(i => i.id)
       },

@@ -94,7 +94,7 @@ export class CacheSongDataSystem {
     // 将 Web Stream 转为 Node Readable Stream
     const webStream = Readable.fromWeb(fetchResponse.body as any)
     const isFullStart = headers.range == 'bytes=0-'
-
+    // 是第一次，才下载
     if (isFullStart) {
       // 定义后台下载函数（不要 await 它，让它在后台跑）
       const startBackgroundCache = async () => {

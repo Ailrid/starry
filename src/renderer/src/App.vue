@@ -1,25 +1,21 @@
 <template>
-  <div class="window" :style="stc.rootStyle" :class="{ border: $route.name != 'player' }">
+  <div class="window" :style="tct.rootStyle" :class="{ border: $route.name != 'player' }">
     <!-- 图片背景 -->
     <div
-      v-if="stc.setting.theme.mode === 'image'"
+      v-if="tct.theme.mode === 'image'"
       class="image-bg -z-100"
       style="background-image: var(--bg-image); background-size: cover; background-position: center"
     ></div>
     <!-- 图片背景的遮罩，处理模糊程度和透明度 -->
-    <div
-      v-if="stc.setting.theme.mode === 'image'"
-      :style="stc.maskStyle"
-      class="image-bg -z-10"
-    ></div>
+    <div v-if="tct.theme.mode === 'image'" :style="tct.maskStyle" class="image-bg -z-10"></div>
     <Layout></Layout>
   </div>
 </template>
 <script setup lang="ts">
 import Layout from '@/layouts/Layout.vue'
 import { useController } from '@virid/vue'
-import { SettingController } from '@/ccs/settings'
-const stc = useController(SettingController)
+import { SettingThemeController } from '@/ccs/settings'
+const tct = useController(SettingThemeController)
 </script>
 
 <style lang="css">

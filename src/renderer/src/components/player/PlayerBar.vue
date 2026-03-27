@@ -16,6 +16,6 @@ import SongCard from './SongCard.vue'
 import Slider from './Slider.vue'
 import Volume from './PlayerButton.vue'
 import { useController } from '@virid/vue'
-import { PlayerController, PlayerControllerMessage } from './controllers'
-useController(PlayerController)
+import { PlayerBarController, PlayerControllerMessage } from './controllers'
+useController(PlayerBarController)
 </script>

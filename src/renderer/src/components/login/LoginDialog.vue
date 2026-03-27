@@ -12,7 +12,7 @@
       </div>
     </DialogTrigger>
     <DialogContent class="overflow-hidden p-0 sm:max-w-96">
-      <div class="flex flex-col" :style="sct.rootStyle">
+      <div class="flex flex-col" :style="tct.rootStyle">
         <Transition name="fade-slide" mode="out-in">
           <!-- 登录成功显示信息 -->
           <div v-if="lct.userProfile" :key="'user'">
@@ -44,12 +44,12 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { useController } from '@virid/vue'
 import { LoginDialogController } from './controllers'
-import { SettingController } from '@/ccs/settings'
+import { SettingThemeController } from '@/ccs/settings'
 import QrLogin from './QrLogin.vue'
 import UserCard from './UserCard.vue'
 import WindowLogin from './WindowLogin.vue'
 const lct = useController(LoginDialogController)
-const sct = useController(SettingController)
+const tct = useController(SettingThemeController)
 </script>
 
 <style scoped>
