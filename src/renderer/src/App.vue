@@ -1,13 +1,11 @@
 <template>
-  <div class="window" :style="tct.rootStyle" :class="{ border: $route.name != 'player' }">
-    <!-- 图片背景 -->
+  <div class="window" :style="tct.rootStyle" :class="{ border: tct.theme.mode !== 'image' }">
     <div
       v-if="tct.theme.mode === 'image'"
-      class="image-bg -z-100"
+      class="image-bg z-0"
       style="background-image: var(--bg-image); background-size: cover; background-position: center"
     ></div>
-    <!-- 图片背景的遮罩，处理模糊程度和透明度 -->
-    <div v-if="tct.theme.mode === 'image'" :style="tct.maskStyle" class="image-bg -z-10"></div>
+    <!-- <div v-if="tct.theme.mode === 'image'" :style="tct.maskStyle" class="image-bg z-1"></div> -->
     <Layout></Layout>
   </div>
 </template>
@@ -48,14 +46,15 @@ body {
 
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--muted-foreground), transparent 70%);
+  background: color-mix(in srgb, var(--primary), transparent 70%);
 
   border: 2px solid transparent;
   background-clip: padding-box;
   border-radius: 10px;
+  /* @apply transition-all duration-300; */
 }
 
-::-webkit-scrollbar-thumb:hover {
+/* ::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--primary), transparent 40%);
-}
+} */
 </style>

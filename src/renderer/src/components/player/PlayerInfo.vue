@@ -20,35 +20,33 @@
     <!-- 各种操作 -->
     <div class="flex w-full flex-col gap-2" :style="{ color: pct.textColor }">
       <!-- 歌曲信息 -->
-      <div class="flex w-full flex-col items-center justify-between truncate">
-        <div class="flex w-full items-center gap-1 overflow-hidden text-xl">
-          <div class="mr-2 h-8 w-1 rounded-xl" :style="{ backgroundColor: pct.textColor }"></div>
-          <span
-            class="hover:text-primary min-w-0 cursor-pointer truncate font-semibold transition-all duration-300"
-            @click.stop="
-              $router.push({
-                name: 'artist',
-                params: { id: pct.currentSong!.album.id }
-              })
-            "
-          >
-            {{ pct.currentSong!.name }}
-          </span>
-          -
-          <div class="flex min-w-0 flex-1 items-center gap-x-2">
-            <span
-              v-for="artist in pct.currentSong!.artists"
-              :key="artist.id"
-              @click.stop="
-                $router.push({
-                  name: 'artist',
-                  params: { id: artist.id }
-                })
-              "
-              class="hover:text-primary cursor-pointer truncate font-semibold transition-all duration-300"
-            >
-              {{ artist.name }}
-            </span>
+      <div class="flex w-full flex-col items-center justify-between overflow-hidden">
+        <div class="flex w-full items-center gap-2 overflow-hidden text-xl">
+          <!-- 装饰条-->
+          <div
+            class="h-6 w-1 shrink-0 rounded-xl"
+            :style="{ backgroundColor: pct.textColor }"
+          ></div>
+          <div class="flex w-full items-center gap-1 overflow-hidden">
+            <div class="flex min-w-0 flex-1 items-center gap-x-2 text-xl">
+              <span
+                class="hover:text-primary song-tag min-w-0 flex-1 cursor-pointer truncate font-semibold transition-all duration-300"
+                @click.stop="
+                  $router.push({ name: 'artist', params: { id: pct.currentSong!.album.id } })
+                "
+              >
+                {{ pct.currentSong!.name }}
+              </span>
+              <span class="shrink-0 opacity-60">-</span>
+              <span
+                v-for="artist in pct.currentSong!.artists"
+                :key="artist.id"
+                @click.stop="$router.push({ name: 'artist', params: { id: artist.id } })"
+                class="song-tag hover:text-primary cursor-pointer truncate font-semibold transition-all duration-300"
+              >
+                {{ artist.name }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -226,5 +224,15 @@ const pct = useController(PlayerInfoController)
 }
 .animate-heartbeat {
   animation: heartbeat 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@reference "@/assets/main.css";
+.song-tag {
+  flex: 0 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @apply hover:text-primary min-w-0 cursor-pointer underline-offset-2 transition-all duration-300 hover:scale-105;
 }
 </style>

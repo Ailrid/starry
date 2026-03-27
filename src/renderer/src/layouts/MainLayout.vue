@@ -1,14 +1,21 @@
 <template>
   <div class="window">
     <!-- 图片背景 -->
-    <div
-      v-if="tct.theme.mode === 'image'"
-      class="image-bg z-0"
-      style="background-image: var(--bg-image); background-size: cover; background-position: center"
-    ></div>
-    <!-- 图片背景的遮罩，处理模糊程度和透明度 -->
+    <div v-if="tct.theme.mode === 'image'" class="absolute inset-0 z-0 overflow-hidden">
+      <Transition name="bg-fade">
+        <div
+          :key="tct.theme.url"
+          class="image-bg absolute inset-0"
+          :style="{
+            backgroundImage: `url(${tct.theme.url})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }"
+        ></div>
+      </Transition>
+    </div>
     <div v-if="tct.theme.mode === 'image'" :style="tct.maskStyle" class="image-bg z-1"></div>
-    <!-- 上半部分-->
+    <!-- 上半部分 -->
     <div class="z-10 flex flex-1 overflow-hidden">
       <aside class="side-bar flex w-64 flex-col">
         <TitleBarLeft class="h-12 shrink-0" />
@@ -47,7 +54,7 @@ const tct = useController(SettingThemeController)
 <style scoped>
 @reference "@/assets/main.css";
 .window {
-  @apply flex h-screen w-full flex-col overflow-hidden border-0;
+  @apply flex h-screen w-full flex-col overflow-hidden;
   color: var(--foreground);
 }
 .image-bg {
@@ -97,5 +104,18 @@ const tct = useController(SettingThemeController)
 
 .slide-leave-to {
   transform: translateY(100%);
+}
+.bg-fade-enter-active,
+.bg-fade-leave-active {
+  transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bg-fade-leave-active {
+  position: absolute;
+}
+
+.bg-fade-enter-from,
+.bg-fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -6,7 +6,8 @@ export type BackgroundMode = 'light' | 'dark' | 'image'
 
 export interface ThemeConfig {
   mode: BackgroundMode
-  url: string // 图片地址
+  url: string // 当前使用的图片地址
+  fileUrl: string // 选中的图片文件地址
   opacity: number // 背景亮度/透明度控制
   blur: number // 模糊程度
   imgAccentColor: Array<number> | null //从图片中提取的主色调
@@ -18,6 +19,7 @@ export interface ThemeConfig {
   borderRadius: number // 全局圆角大小 (px)
   textColor: string | null // 文字颜色
   enableSliderAutoColor: boolean
+  immersiveMode: boolean
 }
 
 export interface PlayerConfig {
@@ -36,6 +38,7 @@ export class SettingComponent {
   public theme: ThemeConfig = {
     mode: 'light',
     url: '',
+    fileUrl: '',
     opacity: 0.15, // 稍微降一点，配合背景色会有通透感
     blur: 0, // 默认给点模糊更高级
     imgAccentColor: null,
@@ -45,7 +48,8 @@ export class SettingComponent {
     fontFamily: 'Inter, system-ui, sans-serif',
     textColor: null, // 为空时使用 Controller 逻辑自动计算
     borderRadius: 12, // 适中的圆角
-    enableSliderAutoColor: true
+    enableSliderAutoColor: true,
+    immersiveMode: false
   }
   @Responsive()
   public player: PlayerConfig = {

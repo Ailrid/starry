@@ -1,9 +1,10 @@
 import { Controller } from '@virid/core'
 import { SettingComponent, type ThemeConfig } from '@/ccs/settings'
 import { Listener, Project, Responsive, OnHook, Watch } from '@virid/vue'
-import { getAccentRGB } from '@/utils'
+import { getAccentRGB, type SongDetail } from '@/utils'
 import { SaveSettingsMessage } from '@/ccs/settings/message'
 import { FromIpc, FromMainMessage, ToMainMessage } from '@virid/renderer'
+import { PlaylistComponent } from '@/ccs/playback'
 // 获得选择的文件的路径
 @FromIpc('file-dialog')
 class ChooseBgImageMessage extends FromMainMessage {
@@ -30,6 +31,9 @@ class OpenDialogMessage extends ToMainMessage {
 export class ThemeController {
   @Project(SettingComponent, setting => setting.theme)
   public themeSetting!: ThemeConfig
+
+  @Project(PlaylistComponent, i => i.currentSong)
+  public currentSong!: SongDetail | null
   /**
    * *这一堆只是给组件用的,他要一个数组
    */
@@ -107,6 +111,7 @@ export class ThemeController {
         settings.theme = this.setting
       })
     }
+    this.setting.immersiveMode = false
   }
   /**
    * *  监听选择对话框的消息，并调整自己的路径
@@ -117,10 +122,37 @@ export class ThemeController {
   public async chooseBgImageListener(message: ChooseBgImageMessage) {
     //更新路径
     this.setting.url = 'local-file://' + message.path
+    this.setting.fileUrl = this.setting.url
     const { accentColor, avgColor } = await getAccentRGB(this.setting.url)
     this.setting.imgAccentColor = accentColor
     this.setting.imgAvgColor = avgColor
+    this.setting.primaryColor = accentColor
   }
+  /**
+   * *  切换沉浸模式
+   */
+  @Watch<ThemeController>(i => i.setting.immersiveMode)
+  public async onImmersiveModeChange() {
+    // 仅在图像模式下有效
+    if (this.setting.mode !== 'image') return
+    //切换回来的时候要看看变回什么原来的模式
+    if (!this.setting.immersiveMode) {
+      //重新获取颜色
+      await this.toggleUrl(this.setting.fileUrl)
+    } else {
+      // 使用当前专辑封面颜色
+      if (this.currentSong) await this.toggleUrl(this.currentSong.album.cover)
+    }
+  }
+
+  public async toggleUrl(url) {
+    const { avgColor, accentColor } = await getAccentRGB(url)
+    this.setting.url = url
+    this.setting.imgAccentColor = accentColor
+    this.setting.imgAvgColor = avgColor
+    this.setting.primaryColor = accentColor
+  }
+
   /**
    * *  打开文件选择框
    */

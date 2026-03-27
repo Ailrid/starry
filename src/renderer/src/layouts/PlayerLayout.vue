@@ -6,9 +6,7 @@
       class="image-bg z-0"
       style="background-image: var(--bg-image); background-size: cover; background-position: center"
     ></div>
-    <!-- 图片背景的遮罩，处理模糊程度和透明度 -->
     <div v-if="tct.theme.mode === 'image'" :style="tct.maskStyle" class="image-bg z-1"></div>
-    <div v-if="tct.theme.mode === 'image'" class="image-bg z-1 backdrop-blur-md"></div>
     <div class="relative z-10 flex h-full w-full flex-col">
       <TitleBarRight class="absolute z-50 h-12 w-full"></TitleBarRight>
       <router-view v-slot="{ Component, route }">

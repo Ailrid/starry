@@ -163,7 +163,6 @@
                 <span class="text-xs">提取背景色</span>
               </Button>
             </div>
-
             <div class="space-y-2">
               <label class="prompt-text block">Palette</label>
               <div class="grid grid-cols-8 gap-2">
@@ -180,9 +179,15 @@
           </div>
         </div>
         <div class="space-y-3">
-          <label class="setting-item-title block">自动音频色 (Wave Color)</label>
-          <div class="space-y-4">
-            <Switch v-model="tch.setting.enableSliderAutoColor" />
+          <div class="grid w-full grid-cols-2 gap-x-8 gap-y-4">
+            <div class="space-y-3">
+              <label class="setting-item-title block">自动音频色 (Wave Color)</label>
+              <Switch v-model="tch.setting.enableSliderAutoColor" />
+            </div>
+            <div class="space-y-3">
+              <label class="setting-item-title block">沉浸模式 (Immersive)</label>
+              <Switch v-model="tch.setting.immersiveMode" />
+            </div>
           </div>
         </div>
       </div>

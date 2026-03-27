@@ -3,6 +3,7 @@ import { SettingComponent, type ThemeConfig } from './component'
 import { Project, Responsive, Watch } from '@virid/vue'
 import { PlaylistComponent } from '../playback'
 import { type SongDetail, getAccentRGB } from '@/utils'
+import { SaveSettingsMessage } from './message'
 // 辅助函数：将 [r, g, b] 转换为 "rgb(r, g, b)"
 const toRgba = (arr: number[], a = 1) => `rgba(${arr[0]}, ${arr[1]}, ${arr[2]},${a})`
 let _coverColor: number[] = []
@@ -77,9 +78,18 @@ export class SettingThemeController {
   @Watch(PlaylistComponent, i => i.currentSong)
   public async onCurrentSongChange(song: SongDetail | null) {
     if (song) {
-      const { avgColor } = await getAccentRGB(song.album.cover)
+      const cover = song.album.cover
+      const { avgColor, accentColor } = await getAccentRGB(cover)
       _coverColor = avgColor
       this.coverColor = avgColor
+      if (this.theme.immersiveMode) {
+        SaveSettingsMessage.send(settings => {
+          settings.theme.url = song.album.cover
+          settings.theme.imgAccentColor = accentColor
+          settings.theme.imgAvgColor = avgColor
+          settings.theme.primaryColor = accentColor
+        })
+      }
     }
   }
 }
