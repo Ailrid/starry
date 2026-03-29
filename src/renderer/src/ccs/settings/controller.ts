@@ -54,11 +54,15 @@ export class SettingThemeController {
       //图像模式更改颜色
       document.documentElement.classList.remove('dark')
       styles['--foreground'] = config.textColor || 'var(--foreground)'
-      styles['--border'] = toRgba(config.imgAccentColor!, 0.2)
+      if (Array.isArray(config.imgAccentColor)) {
+        styles['--border'] = toRgba(config.imgAccentColor, 0.2)
+      }
       //清除本来的背景色
       styles['--background'] = 'transparent'
-      styles['--card'] = toRgba(config.imgAvgColor!, 0.1)
-      styles['--sidebar'] = toRgba(config.imgAvgColor!, 0.1)
+      if (Array.isArray(config.imgAvgColor)) {
+        styles['--card'] = toRgba(config.imgAvgColor, 0.1)
+        styles['--sidebar'] = toRgba(config.imgAvgColor, 0.1)
+      }
       styles['--bg-image'] = `url("${config.url}")`
     }
 
