@@ -12,6 +12,6 @@ export class SongCardController {
   public isPlaying: boolean = false
   @Project()
   public get cover() {
-    return this.currentSong ? this.currentSong?.album.cover + '?param128y128' : record
+    return this.currentSong ? this.currentSong?.album.cover + '?param=128y128' : record
   }
 }

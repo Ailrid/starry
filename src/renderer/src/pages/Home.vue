@@ -19,13 +19,14 @@
               @click="item.click()"
               :style="{ '--card-color': hct.colors.get(index) }"
             >
-              <div
-                class="bg-muted relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md"
+              <!-- <div
+                class="bg-primary relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md"
               >
                 <Transition name="bg-fade">
                   <img
                     v-if="item.cover"
                     :src="item.cover"
+                    :key="item.cover"
                     class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                     alt="Cover"
                   />
@@ -34,8 +35,24 @@
                   v-if="!item.cover"
                   class="bg-primary inset-0 flex h-full w-full animate-pulse items-center justify-center opacity-30"
                 ></div>
+              </div> -->
+              <div
+                class="bg-primary relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md"
+              >
+                <Transition name="bg-fade">
+                  <img
+                    v-if="item.cover"
+                    :key="item.cover"
+                    :src="item.cover"
+                    class="h-full w-full object-cover duration-700 ease-out group-hover:scale-110"
+                    alt="Cover"
+                  />
+                </Transition>
+                <div
+                  v-if="!item.cover"
+                  class="bg-primary flex h-full w-full animate-pulse items-center justify-center opacity-30"
+                ></div>
               </div>
-
               <div class="group relative mt-4 flex w-full flex-col px-1">
                 <div class="mb-1 flex items-center justify-between">
                   <div class="flex items-center gap-2">
@@ -254,7 +271,7 @@ const hct = useController(HomePageController)
 
 .bg-fade-enter-active,
 .bg-fade-leave-active {
-  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .bg-fade-leave-active {

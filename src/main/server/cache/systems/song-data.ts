@@ -75,9 +75,9 @@ export class CacheSongDataSystem {
     )
     const cacheRecord = stmt.get(id, md5) as { local_path: string } | undefined
     const localPath = cacheRecord?.local_path
-
-    //  走缓存
+    //  缓存
     if (localPath) return new DataFromCacheMessage(requestId, localPath)
+    else DownloadCacheMessage.send(realUrl, id, md5)
 
     const proxyHeaders: Record<string, string> = {
       Range: headers.range || 'bytes=0-',
@@ -106,9 +106,9 @@ export class CacheSongDataSystem {
     }
     // 将 Web Stream 转为 Node Readable Stream
     const webStream = Readable.fromWeb(fetchResponse.body as any)
-    const isFullStart = headers.range == 'bytes=0-'
-    // 不是第一次，才下载
-    if (!isFullStart) DownloadCacheMessage.send(realUrl, id, md5)
+    // const isFullStart = headers.range == 'bytes=0-'
+    // // 第一次，才下载
+    // if (isFullStart) DownloadCacheMessage.send(realUrl, id, md5)
 
     // 返回流对象
     return Stream(webStream, {
@@ -154,6 +154,8 @@ export class CacheSongDataSystem {
       }
     })
   }
+
+  static fileLock = new Set()
   @System()
   public async downloadCache(
     @Message(DownloadCacheMessage) message: DownloadCacheMessage,
@@ -162,29 +164,42 @@ export class CacheSongDataSystem {
     const { url, id, md5 } = message
     const finalPath = path.join(dbComponent.cachePath, `${id}-${md5}`)
     const tempPath = `${finalPath}.downloading`
+    // 在这里上锁
+    CacheSongDataSystem.fileLock.add(finalPath)
 
-    if (fs.existsSync(finalPath) || fs.existsSync(tempPath)) return
+    if (
+      fs.existsSync(finalPath) ||
+      fs.existsSync(tempPath) ||
+      CacheSongDataSystem.fileLock.has(finalPath)
+    )
+      return
 
     try {
       const downloadRes = await fetch(url)
       if (!downloadRes?.ok || !downloadRes.body) return
       const writer = fs.createWriteStream(tempPath)
       await pipeline(Readable.fromWeb(downloadRes.body as any), writer)
+      
+      // 重命名
+      if (fs.existsSync(finalPath)) fs.unlinkSync(finalPath)
       fs.renameSync(tempPath, finalPath)
+      
       const size = fs.statSync(finalPath).size
-
       dbComponent.db
         .prepare(
           'INSERT OR REPLACE INTO song_cache (id, md5, local_path, size, last_accessed_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
         )
         .run(id, md5, finalPath, size)
-
+      // 解锁
+      CacheSongDataSystem.fileLock.delete(finalPath)
       cleanupCache(dbComponent.db, CATCH_CACHE_SIZE)
     } catch (e) {
       MessageWriter.error(e as Error, '[Express CacheSongDataSystem] Download failed')
       if (fs.existsSync(tempPath)) {
         try {
           fs.unlinkSync(tempPath)
+          // 解锁
+          CacheSongDataSystem.fileLock.delete(finalPath)
         } catch {}
       }
     }

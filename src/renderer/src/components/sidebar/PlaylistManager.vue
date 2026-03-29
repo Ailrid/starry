@@ -15,7 +15,7 @@
           class="h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-black/5 shadow-sm dark:border-white/5"
         >
           <img
-            :src="item.cover"
+            :src="item.cover + '?param=128y128'"
             class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         </div>

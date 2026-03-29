@@ -2,12 +2,15 @@
   <div class="relative flex shrink-0 flex-col items-center justify-center">
     <div class="absolute -top-13 left-1/2 z-50 -translate-x-1/2">
       <div class="group/cover relative h-24 w-24 shrink-0">
-        <img
-          :src="sct.cover"
-          class="cover h-full w-full"
-          :class="['animate-spin-slow', { 'pause-animation': !sct.isPlaying }]"
-        />
-
+        <Transition name="bg-fade">
+          <div
+            :key="sct.cover"
+            class="h-full w-full"
+            :class="['animate-spin-slow', { 'pause-animation': !sct.isPlaying }]"
+          >
+            <img :src="sct.cover" class="cover h-full w-full" alt="Cover" />
+          </div>
+        </Transition>
         <div
           class="play-btn-container absolute inset-0 flex items-center justify-center"
           @click="PlayOrPauseMessage.send(!sct.isPlaying)"
@@ -66,7 +69,12 @@ const sct = useController(SongCardController)
 <style scoped>
 @reference "@/assets/main.css";
 .cover {
-  @apply border-background rounded-full border-4 object-cover shadow-2xl transition-transform duration-500 group-hover/cover:rotate-12;
+  @apply border-background rounded-full border-4 object-cover shadow-2xl;
+  transition: transform 0.5s ease-out;
+}
+
+.group\/cover:hover .cover {
+  transform: rotate(12deg);
 }
 .play-btn-container {
   @apply cursor-pointer rounded-full opacity-0 backdrop-blur-sm transition-all duration-300 group-hover/cover:opacity-100;
@@ -102,5 +110,19 @@ const sct = useController(SongCardController)
 
 .pause-animation {
   animation-play-state: paused;
+}
+
+.bg-fade-enter-active,
+.bg-fade-leave-active {
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bg-fade-leave-active {
+  position: absolute;
+}
+
+.bg-fade-enter-from,
+.bg-fade-leave-to {
+  opacity: 0;
 }
 </style>

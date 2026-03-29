@@ -1,4 +1,4 @@
-import { Component, Safe } from '@virid/core'
+import { Component, MessageWriter, Safe } from '@virid/core'
 import { Responsive } from '@virid/vue'
 import { NextSongMessage } from '../messages'
 export class Player {
@@ -47,7 +47,27 @@ export class Player {
     this.audio.addEventListener('loadedmetadata', () => {
       this.duration = this.audio.duration
     })
+    // 出错的时候重新发起请求
+    this.audio.addEventListener('error', () => {
+      const errorCode = this.audio.error?.code
+      const currentTime = this.audio.currentTime
 
+      MessageWriter.error(new Error(`[Player] Play Error：Attempt to reload, code: ${errorCode}`))
+
+      setTimeout(() => {
+        // 重新加载当前的 src
+        this.audio.load()
+        // 监听可以播放的事件
+        this.audio.oncanplay = () => {
+          this.audio.currentTime = currentTime
+          this.audio.play().catch(e => {
+            MessageWriter.error(new Error(`[Player] Play Error：${e}`), '[Oncanplay]')
+          })
+          // 防止重复触发
+          this.audio.oncanplay = null
+        }
+      }, 500)
+    })
     // this.audio.addEventListener('progress', () => {
     //   this.buffered = this.audio.buffered
     // })
