@@ -1,4 +1,4 @@
-import { createRequest, CryptoMode } from '../../utils'
+import { createRequest, CryptoMode, type PlaylistDetail } from '../../utils'
 import { Body, Cookies, Headers, HttpSystem, Ok } from '@virid/express'
 import { PlaylistDetailRequestMessage } from '../message'
 import { type PlaylistDetailRequest, type PlaylistDetailResponse } from '../types'
@@ -25,9 +25,8 @@ export class PlaylistDetailSystem {
       headers
     })
     const raw: RawPlaylistDetail = answer.data?.playlist || {}
-
     // 数据清洗：转换成标准的 PlaylistDetail 结构
-    const playlistDetail = {
+    const playlistDetail: PlaylistDetail = {
       id: raw.id,
       name: raw.name,
       cover: raw.coverImgUrl,
@@ -42,7 +41,8 @@ export class PlaylistDetailSystem {
       },
       songsIds: (raw.trackIds || []).map((t: any) => t.id),
       subscribedCount: raw.subscribedCount,
-      shareCount: raw.shareCount
+      shareCount: raw.shareCount,
+      firstSongCover: raw.tracks?.[0]?.al?.picUrl || ''
     }
 
     return Ok({

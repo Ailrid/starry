@@ -38,9 +38,13 @@ export class PlayerInfoController {
   @Project(PlayerComponent, i => i.playMode)
   public playMode!: string
 
-  //用户当前喜欢歌曲的列表
+  //用户所有的歌单信息
   @Project(UserComponent, i => i.userPlaylists)
   public userPlaylists: PlaylistInfo[] = []
+
+  //用户歌单详情
+  @Project(UserComponent, i => i.userPlaylistsDetail)
+  public userPlaylistsDetail!: Map<number, PlaylistDetail>
 
   @Use(() => useTemplateRef('volumeBar'))
   public volumeBar!: ShallowRef<HTMLDivElement>
@@ -110,7 +114,8 @@ export class PlayerInfoController {
     }
     //右键点击
     else {
-      if (!this.playListDetail || this.playListDetail.id !== this.userPlaylists.at(0)?.id) return
+      if (!this.userPlaylists.at(0) || !this.userPlaylistsDetail.get(this.userPlaylists.at(0)!.id))
+        return
       if (this.playMode === 'intelligence') SetPlayModeMessage.send('order')
       else SetPlayModeMessage.send('intelligence')
     }

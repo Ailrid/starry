@@ -6,7 +6,9 @@ import {
   MvUrlRequest,
   IntelligenceRequest,
   VipInfoRequest,
-  PersonalFmRequest
+  PersonalFmRequest,
+  HomepageRequest,
+  HomepageResponse
 } from './types'
 import {
   MvDetailResponse,
@@ -60,7 +62,7 @@ export async function recommendPlaylist(): Promise<Result<RecommendPlaylistRespo
  * * 每日推荐
  */
 export async function recommendSong(): Promise<Result<RecommendSongResponse, string>> {
-  return await request<object, RecommendSongResponse>('/netease/recommend/song', {})
+  return await request<object, RecommendSongResponse>('/netease/recommend/songs', {})
 }
 
 /**
@@ -81,3 +83,11 @@ export async function intelligence(
 export async function vipInfo(params: VipInfoRequest): Promise<Result<VipInfoResponse, string>> {
   return await request<VipInfoRequest, VipInfoResponse>('/netease/vip/info', params)
 }
+
+/**
+ * * 主页信息
+ */
+export async function homepage(params: HomepageRequest): Promise<Result<HomepageResponse, string>> {
+  return await request<HomepageRequest, HomepageResponse>('/netease/homepage', params)
+}
+

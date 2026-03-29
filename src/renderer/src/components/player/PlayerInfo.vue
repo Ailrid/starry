@@ -39,7 +39,7 @@
               </span>
               <span class="shrink-0 opacity-60">-</span>
               <span
-                v-for="artist in pct.currentSong!.artists"
+                v-for="artist in pct.currentSong!.artists.slice(0, 4)"
                 :key="artist.id"
                 @click.stop="$router.push({ name: 'artist', params: { id: artist.id } })"
                 class="song-tag hover:text-primary cursor-pointer truncate font-semibold transition-all duration-300"

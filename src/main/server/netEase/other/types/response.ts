@@ -148,15 +148,18 @@ export interface HomepagePlaylist {
   }[]
 }
 
+export interface HomepageSong {
+  title: string
+  subTitle: string
+  detail: SongDetail[]
+}
+
+
 export interface HomepageResponse {
   code: number
   data: {
     playlist: HomepagePlaylist
-    songs: {
-      title: string
-      subTitle: string
-      detail: SongDetail
-    }[]
+    songs: HomepageSong[]
     radar: HomepagePlaylist
   }
 }

@@ -124,6 +124,7 @@ export interface ArtistDetail extends ArtistInfo {
 
 export interface PlaylistDetail extends PlaylistInfo {
   songsIds: number[]
+  firstSongCover: string
   subscribedCount?: number
   shareCount?: number
 }

@@ -38,8 +38,25 @@ export class SetPlayModeMessage extends SingleMessage {
   }
 }
 
-export class LoadFMPlaylistMessage extends SingleMessage {}
-export class LoadIntelligencePlaylistMessage extends SingleMessage {}
+// 加载fm和心动模式的歌单消息
+export class LoadFMPlaylistMessage extends SingleMessage {
+  // 是否立刻播放和强制刷新
+  constructor(
+    public playImmediately: boolean = false,
+    public forceRefresh: boolean = false
+  ) {
+    super()
+  }
+}
+export class LoadIntelligencePlaylistMessage extends SingleMessage {
+  // 是否立刻播放和强制刷新
+  constructor(
+    public playImmediately: boolean = false,
+    public forceRefresh: boolean = false
+  ) {
+    super()
+  }
+}
 
 export class MediaSessionMessage extends SingleMessage {}
 

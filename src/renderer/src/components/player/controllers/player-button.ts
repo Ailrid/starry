@@ -15,13 +15,14 @@ export class PlayerButtonController {
   //当前正在播放的歌曲
   @Project(PlaylistComponent, i => i.currentSong)
   public currentSong: SongDetail | null = null
-  //用户歌单信息
-  @Project(PlaylistComponent, i => i.playlistDetail)
-  public playListDetail: PlaylistDetail | null = null
 
-  //用户当前喜欢歌曲的列表
+  //用户所有的歌单信息
   @Project(UserComponent, i => i.userPlaylists)
   public userPlaylists: PlaylistInfo[] = []
+
+  //用户歌单详情
+  @Project(UserComponent, i => i.userPlaylistsDetail)
+  public userPlaylistsDetail!: Map<number, PlaylistDetail>
 
   //当前的音量
   @Project(PlayerComponent, i => i.player.volume)
@@ -68,7 +69,9 @@ export class PlayerButtonController {
     }
     //右键点击
     else {
-      if (!this.playListDetail || this.playListDetail.id !== this.userPlaylists.at(0)?.id) return
+      // “我喜欢的歌单”必须已经加载好了
+      if (!this.userPlaylists.at(0) || !this.userPlaylistsDetail.get(this.userPlaylists.at(0)!.id))
+        return
       if (this.playMode === 'intelligence') SetPlayModeMessage.send('order')
       else SetPlayModeMessage.send('intelligence')
     }

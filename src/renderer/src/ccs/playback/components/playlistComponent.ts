@@ -9,16 +9,18 @@ export class PlaylistComponent {
   // 当前播放列表的歌曲
   @Responsive()
   public currentList: SongDetail[] = []
+  // 暂存列表
+  public stagingList: SongDetail[] = []
+
   // 当前播放的歌曲的索引
   @Responsive()
   public currentIndex: number = 0
   // 当前播放的歌曲详情
   @Responsive()
   public currentSong: SongDetail | null = null
-
-  // 暂存列表
-  public stagingList: SongDetail[] = []
+  @Responsive()
   // fm和心动模式的缓冲列表
   public fmList: SongDetail[] = []
+  @Responsive()
   public intelligenceList: SongDetail[] = []
 }

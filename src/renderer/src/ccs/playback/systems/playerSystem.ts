@@ -121,25 +121,14 @@ export class PlayerSystem {
 
       // FM
       .with('fm', () => {
-        // 判断当前是不是已经处于历史记录的末尾
-        if (currentIndex < currentList.length - 1) {
-          // 如果后面还有存过的历史歌，直接播下一首
-          PlaySongMessage.send(currentList[currentIndex + 1])
-        } else {
-          // 如果已经到了尽头，去 buffer 要货
-          this.consumeBuffer(fmList, () => LoadFMPlaylistMessage.send())
-        }
+        this.consumeBuffer(fmList, () => LoadFMPlaylistMessage.send())
       })
 
       // 心动模式
       .with('intelligence', () => {
-        if (currentIndex < currentList.length - 1) {
-          PlaySongMessage.send(currentList[currentIndex + 1])
-        } else {
-          this.consumeBuffer(intelligenceList, () => {
-            LoadIntelligencePlaylistMessage.send()
-          })
-        }
+        this.consumeBuffer(intelligenceList, () => {
+          LoadIntelligencePlaylistMessage.send()
+        })
       })
       .exhaustive()
   }
@@ -151,7 +140,7 @@ export class PlayerSystem {
     const next = buffer.shift()
     if (next) {
       PlaySongMessage.send(next)
-      //剩 1 首就开始拉取
+      //没有了就开始拉取
       if (buffer.length <= 1) refillAction()
     } else {
       // 同步触发拉取
@@ -220,8 +209,10 @@ export class PlayerSystem {
       playlistComponent.stagingList = [...playlistComponent.currentList]
       // 重置当前状体
       playlistComponent.currentList = []
-      if (message.playMode === 'fm') LoadFMPlaylistMessage.send()
-      if (message.playMode === 'intelligence') LoadIntelligencePlaylistMessage.send()
+      // 加载并立即播放
+      if (message.playMode === 'fm') LoadFMPlaylistMessage.send(true)
+      if (message.playMode === 'intelligence') LoadIntelligencePlaylistMessage.send(true)
+      return
     }
 
     // 如果切换到随机模式：生成洗牌列表
@@ -254,6 +245,7 @@ export class PlayerSystem {
       // 清空备份
       playlistComponent.stagingList = []
     }
+    // 从fm或者心动模式切回,恢复原列表
     if (oldMode === 'fm' || oldMode === 'intelligence') {
       if (playlistComponent.stagingList.length == 0) return
       // 还原备份的顺序列表

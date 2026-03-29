@@ -21,4 +21,7 @@ export class UserComponent {
   // 用户歌单歌曲(一开始为空，只有点开时缓存),第一个是playlist的id号，第二个是page的index
   @Responsive()
   userPlaylistsSongs: Map<number, Map<number, SongDetail[]>> = new Map()
+  // 标记用户初始化是否完成
+  @Responsive()
+  initialize: boolean = false
 }

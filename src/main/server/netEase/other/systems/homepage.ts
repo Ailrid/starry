@@ -1,4 +1,4 @@
-import { createRequest, CryptoMode, getSongDetail } from '../../utils'
+import { createRequest, CryptoMode, getSongDetail, SongDetail } from '../../utils'
 import { Body, Cookies, Headers, HttpSystem, InternalServerError, Ok } from '@virid/express'
 import { HomepageRequestMessage } from '../message'
 import { type HomepageRequest, type HomepagePlaylist, HomepageResponse } from '../types'
@@ -15,7 +15,7 @@ export class HomepageSystem {
     const answer = await createRequest(CryptoMode.eapi, {
       url: '/homepage/block/page',
       data: {
-        refresh: body.refresh || false
+        refresh: body.refresh || true
       },
       cookies,
       headers
@@ -38,11 +38,14 @@ export class HomepageSystem {
     const radarData = convertToHomepagePlaylist(radar)
     const songsIds = songs.resourceIdList.map(id => Number(id))
     const formattedSongs = await getSongDetail(songsIds, cookies, headers)
-    const songData = songs.creatives.map((info, index) => {
+    const formattedSongsMap = new Map(formattedSongs.map(song => [song.id, song]))
+    const songData = songs.creatives.map(info => {
       return {
         title: info.resources[0].uiElement.mainTitle.title,
-        subTitle: info.resources[0].uiElement.subTitle?.title || '',
-        detail: formattedSongs[index]
+        subTitle: info.resources[0].uiElement.subTitle?.title || randomGetSubTitle(),
+        detail: info.resources.map(
+          item => formattedSongsMap.get(Number(item.resourceId)) as SongDetail
+        )
       }
     })
 
@@ -157,11 +160,28 @@ function convertToHomepagePlaylist(resource: PlaylistResource | RadarResource): 
         return {
           id: Number(res.resourceId),
           title: ui.mainTitle.title,
-          subTitle: ui.subTitle?.title || '',
+          subTitle: ui.subTitle?.title ||'',
           cover: ui.image.imageUrl,
           labels: ui.labelTexts || []
         }
       })
     )
   }
+}
+
+function randomGetSubTitle() {
+  const subTitles = [
+    '独家呈现',
+    '私藏好音乐',
+    '懂你的耳朵',
+    '音乐灵感',
+    '发现遗珠',
+    '猜你喜欢',
+    '好听不腻',
+    '你的专属',
+    '灵感碎片',
+    '心动频率',
+    '音乐脉搏'
+  ]
+  return subTitles[Math.floor(Math.random() * subTitles.length)]
 }

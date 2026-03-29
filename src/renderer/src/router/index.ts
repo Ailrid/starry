@@ -63,6 +63,11 @@ const routes = [
             path: '/setting',
             name: 'setting',
             component: () => import('@/pages/Setting.vue')
+          },
+          {
+            path: '/recommend',
+            name: 'recommend',
+            component: () => import('@/pages/Recommend.vue')
           }
         ]
       }

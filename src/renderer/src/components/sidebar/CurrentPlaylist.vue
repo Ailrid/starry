@@ -70,7 +70,7 @@
               <div class="flex w-full items-center gap-1 overflow-hidden">
                 <div class="flex min-w-0 flex-1 items-center gap-x-2">
                   <span
-                    v-for="artist in item.artists"
+                    v-for="artist in item.artists.slice(0, 4)"
                     :key="artist.id"
                     class="artist-tag"
                     @click.stop="

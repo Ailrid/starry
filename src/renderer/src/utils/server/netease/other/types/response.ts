@@ -129,3 +129,29 @@ export interface IntelligenceResponse {
   songs: SongDetail[]
   code: number
 }
+
+export interface HomepagePlaylist {
+  title: string
+  playlist: {
+    id: number
+    title: string
+    subTitle: string
+    cover: string
+    labels: string[]
+  }[]
+}
+
+export interface HomepageSong {
+  title: string
+  subTitle: string
+  detail: SongDetail[]
+}
+
+export interface HomepageResponse {
+  code: number
+  data: {
+    playlist: HomepagePlaylist
+    songs: HomepageSong[]
+    radar: HomepagePlaylist
+  }
+}

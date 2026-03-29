@@ -67,6 +67,8 @@ export class UserSystem {
     match(playlist)
       .with({ ok: true }, ({ val }) => {
         userComponent.userPlaylists = val.playlists
+        // 自动去拿第一个歌单的详情（我喜欢列表）
+        FetchUserPlaylistDetailMessage.send(val.playlists[0].id)
       })
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(new Error(val), '[User System] Failed To Fetch User Playlist')
@@ -92,8 +94,11 @@ export class UserSystem {
     match(detail)
       .with({ ok: true }, ({ val }) => {
         userComponent.userPlaylistsDetail.set(message.playlistId, val.playlist)
+
         //自动去拿第0页
         FetchUserPlaylistSongMessage.send(message.playlistId, 0)
+        // 到这里可以认为用户的初始化完成了（用户信息和“我喜欢”歌单信息是必须的，其他都是可选的），可以展示界面了
+        userComponent.initialize = true
       })
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(

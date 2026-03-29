@@ -16,10 +16,22 @@ export class PlaylistSystem {
   /**
    * *加载FM模式歌曲的buffer
    */
-  @System({
-    messageClass: LoadFMPlaylistMessage
-  })
-  async loadFmPlaylist(playlistComponent: PlaylistComponent) {
+  @System()
+  async loadFmPlaylist(
+    @Message(LoadFMPlaylistMessage) message: LoadFMPlaylistMessage,
+    playlistComponent: PlaylistComponent
+  ) {
+    // 如果不为空，先不加载
+    if (playlistComponent.fmList.length > 0 && !message.forceRefresh) {
+      if (message.playImmediately) {
+        const nextSong = playlistComponent.fmList.shift()!
+        PlaySongMessage.send(nextSong)
+      }
+      return
+    }
+    // 强制清空并刷新
+    if (message.forceRefresh) playlistComponent.fmList = []
+
     // 获取 FM 原始数据
     const fmRes = await personalFm({} as any)
 
@@ -28,8 +40,10 @@ export class PlaylistSystem {
       .with({ ok: true }, async ({ val }) => {
         // 填充
         playlistComponent.fmList.push(...val.songs)
-        const nextSong = playlistComponent.fmList.shift()!
-        PlaySongMessage.send(nextSong)
+        if (message.playImmediately) {
+          const nextSong = playlistComponent.fmList.shift()!
+          PlaySongMessage.send(nextSong)
+        }
       })
       .with({ ok: false }, ({ val: err }) => {
         MessageWriter.error(new Error(err))
@@ -40,26 +54,47 @@ export class PlaylistSystem {
   /**
    * *加载心动模式歌曲的buffer
    */
-  @System({
-    messageClass: LoadIntelligencePlaylistMessage
-  })
-  async loadIntelligencePlaylist(playlistComponent: PlaylistComponent) {
-    if (!playlistComponent.currentSong || !playlistComponent.playlistDetail) return
+  @System()
+  async loadIntelligencePlaylist(
+    @Message(LoadIntelligencePlaylistMessage) message: LoadIntelligencePlaylistMessage,
+    playlistComponent: PlaylistComponent,
+    userComponent: UserComponent
+  ) {
+    // 如果不为空，先不加载
+    if (playlistComponent.intelligenceList.length > 0 && !message.forceRefresh) {
+      if (message.playImmediately) {
+        const next = playlistComponent.intelligenceList.shift()!
+        PlaySongMessage.send(next)
+      }
+      return
+    }
+    // 强制清空并刷新
+    if (message.forceRefresh) playlistComponent.intelligenceList = []
+
+    const likeListId = userComponent.userPlaylists.at(0)?.id
+    const userPlaylist = userComponent.userPlaylistsDetail.get(likeListId || 0)
+    if (!likeListId || !userPlaylist) return
+    // 随机选一个sid当起始点
+    const playlistSongs = userPlaylist.songsIds
+    const randomSong = () => {
+      return playlistSongs[Math.floor(Math.random() * playlistSongs.length)]
+    }
 
     // 获取心动模式原始列表
     const intelRes = await intelligence({
-      id: playlistComponent.currentSong.id, // 当前歌曲 id
-      pid: playlistComponent.playlistDetail.id, // 歌单 id
-      sid: playlistComponent.stagingList.at(0)?.id || playlistComponent.currentSong.id // 起始歌曲 id
+      id: playlistComponent.currentSong?.id || randomSong(), // 当前歌曲 id
+      pid: likeListId, // 歌单 id
+      sid: randomSong() // 起始歌曲 id
     })
 
     await match(intelRes)
       .with({ ok: true }, async ({ val }) => {
         // 填充心动模式 Buffer
         playlistComponent.intelligenceList.push(...val.songs)
-        // 立刻激活第一首
-        const next = playlistComponent.intelligenceList.shift()!
-        PlaySongMessage.send(next)
+        if (message.playImmediately) {
+          const next = playlistComponent.intelligenceList.shift()!
+          PlaySongMessage.send(next)
+        }
       })
       .with({ ok: false }, ({ val: err }) => {
         MessageWriter.error(new Error(err))
@@ -81,6 +116,7 @@ export class PlaylistSystem {
     //数据脱水
     const playlistDetail = JSON.parse(JSON.stringify(message.detail))
     const playlistSongs = JSON.parse(JSON.stringify(message.songs))
+
     //更新列表和索引
     playlistComponent.currentList = playlistSongs
     playlistComponent.playlistDetail = playlistDetail
