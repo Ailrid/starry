@@ -4,7 +4,8 @@ import { CacheSongUrlSystem } from './song-url'
 import fs from 'fs'
 import path from 'path'
 import { Readable } from 'stream'
-import { MessageWriter, Message } from '@virid/core'
+import { pipeline } from 'node:stream/promises'
+import { MessageWriter, Message, System, SingleMessage } from '@virid/core'
 import {
   Headers,
   HttpSystem,
@@ -32,6 +33,18 @@ class DataFromCacheMessage extends HttpRequestMessage {
     super(requestId)
   }
 }
+
+class DownloadCacheMessage extends SingleMessage {
+  constructor(
+    public url: string,
+    public id: number,
+    public md5: string
+  ) {
+    super()
+  }
+}
+
+const CATCH_CACHE_SIZE = 2 * 1024 * 1024 * 1024
 
 export class CacheSongDataSystem {
   //用于暂存url的map
@@ -94,45 +107,8 @@ export class CacheSongDataSystem {
     // 将 Web Stream 转为 Node Readable Stream
     const webStream = Readable.fromWeb(fetchResponse.body as any)
     const isFullStart = headers.range == 'bytes=0-'
-    // 是第一次，才下载
-    if (isFullStart) {
-      // 定义后台下载函数（不要 await 它，让它在后台跑）
-      const startBackgroundCache = async () => {
-        try {
-          const savePath = path.join(dbComponent.cachePath, `${id}-${md5}`)
-          // 检查是否已经在下载或已存在，避免竞态
-          if (fs.existsSync(savePath)) return
-          const downloadRes = await fetch(realUrl, { headers: proxyHeaders })
-          if (!downloadRes.ok) return
-          const writer = fs.createWriteStream(savePath)
-          const downloadStream = Readable.fromWeb(downloadRes.body as any)
-          downloadStream.pipe(writer)
-          writer.on('finish', () => {
-            const size = fs.statSync(savePath).size
-            dbComponent.db
-              .prepare(
-                'INSERT OR REPLACE INTO song_cache (id, md5, local_path, size, last_accessed_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
-              )
-              .run(id, md5, savePath, size)
-            cleanupCache(dbComponent.db, 2 * 1024 * 1024 * 1024)
-          })
-          writer.on('error', err => {
-            MessageWriter.error(
-              err,
-              '[Express CacheSongDataSystem] Error when saving song to cache'
-            )
-            fs.unlink(savePath, () => {})
-          })
-        } catch (e) {
-          MessageWriter.error(
-            e as Error,
-            '[Express CacheSongDataSystem] Error when downloading song'
-          )
-        }
-      }
-      // 启动下载，但不阻塞当前响应
-      startBackgroundCache()
-    }
+    // 不是第一次，才下载
+    if (!isFullStart) DownloadCacheMessage.send(realUrl, id, md5)
 
     // 返回流对象
     return Stream(webStream, {
@@ -178,6 +154,41 @@ export class CacheSongDataSystem {
       }
     })
   }
+  @System()
+  public async downloadCache(
+    @Message(DownloadCacheMessage) message: DownloadCacheMessage,
+    dbComponent: DatabaseComponent
+  ) {
+    const { url, id, md5 } = message
+    const finalPath = path.join(dbComponent.cachePath, `${id}-${md5}`)
+    const tempPath = `${finalPath}.downloading`
+
+    if (fs.existsSync(finalPath) || fs.existsSync(tempPath)) return
+
+    try {
+      const downloadRes = await fetch(url)
+      if (!downloadRes?.ok || !downloadRes.body) return
+      const writer = fs.createWriteStream(tempPath)
+      await pipeline(Readable.fromWeb(downloadRes.body as any), writer)
+      fs.renameSync(tempPath, finalPath)
+      const size = fs.statSync(finalPath).size
+
+      dbComponent.db
+        .prepare(
+          'INSERT OR REPLACE INTO song_cache (id, md5, local_path, size, last_accessed_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
+        )
+        .run(id, md5, finalPath, size)
+
+      cleanupCache(dbComponent.db, CATCH_CACHE_SIZE)
+    } catch (e) {
+      MessageWriter.error(e as Error, '[Express CacheSongDataSystem] Download failed')
+      if (fs.existsSync(tempPath)) {
+        try {
+          fs.unlinkSync(tempPath)
+        } catch {}
+      }
+    }
+  }
 }
 
 function cleanupCache(db: any, maxSizeBytes: number) {
@@ -187,8 +198,8 @@ function cleanupCache(db: any, maxSizeBytes: number) {
 
   // 如果超标了（2GB）
   if (currentSize > maxSizeBytes) {
-    // 每次清理出 20% 的空间
-    const targetSize = maxSizeBytes * 0.8
+    // 每次清理出 50% 的空间
+    const targetSize = maxSizeBytes * 0.5
     const oldestSongs = db.prepare('SELECT * FROM song_cache ORDER BY last_accessed_at ASC').all()
 
     for (const song of oldestSongs) {
