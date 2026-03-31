@@ -2,7 +2,10 @@ import { SingleMessage } from '@virid/core'
 import { PlaylistDetail, SongDetail } from '@/utils/server'
 
 export class PlaySongMessage extends SingleMessage {
-  constructor(public song: SongDetail) {
+  constructor(
+    public song: SongDetail,
+    public playImmediately: boolean = true
+  ) {
     super()
   }
 }

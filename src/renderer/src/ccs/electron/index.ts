@@ -1,2 +1,2 @@
-export * from './fromMainMessage'
-export * from './toMainMessage'
+export * from './fromMain'
+export * from './toMain'

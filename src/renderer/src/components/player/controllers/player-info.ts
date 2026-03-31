@@ -10,7 +10,7 @@ import { Controller } from '@virid/core'
 import { Project, Responsive, Use, Watch } from '@virid/vue'
 import { type PlaylistInfo, type PlaylistDetail, type SongDetail } from '@/utils'
 import { type ShallowRef, useTemplateRef } from 'vue'
-import { type PlayerConfig, SettingComponent } from '@/ccs/settings'
+import { type PlayerConfig, SaveSettingsMessage, SettingComponent } from '@/ccs/settings'
 import { UserComponent } from '@/ccs/user'
 
 @Controller()
@@ -64,6 +64,7 @@ export class PlayerInfoController {
     let percentage = offsetX / width
     const newVolume = Math.max(0, Math.min(1, percentage))
     SetVolumeMessage.send(newVolume)
+    SaveSettingsMessage.send(i => (i.player.volume = newVolume))
   }
   /**
    * * 滑轮更改音量
@@ -73,6 +74,7 @@ export class PlayerInfoController {
     const delta = e.deltaY > 0 ? -0.01 : 0.01
     const newVolume = Math.max(0, Math.min(1, this.volume + delta))
     SetVolumeMessage.send(newVolume)
+    SaveSettingsMessage.send(i => (i.player.volume = newVolume))
   }
   /**
    * * 点击更改进度
@@ -102,7 +104,7 @@ export class PlayerInfoController {
   /**
    * * 改变播放模式
    */
-  public modeList: string[] = ['order', 'random', 'loop']
+  public modeList: string[] = ['order', 'loop', 'random']
   changeMode(mode: string = '') {
     if (!this.currentSong) return
     //左键点击

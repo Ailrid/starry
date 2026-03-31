@@ -19,21 +19,21 @@
     <div class="no-drag flex items-center">
       <button
         class="hover:text-primary flex h-10 w-10 cursor-pointer items-center justify-center transition-colors active:opacity-50"
-        @click="() => MinimizeWindowMessage.send()"
+        @click="MinimizeWindowMessage.send()"
       >
         <Minus :size="16" :stroke-width="1.2" />
       </button>
 
       <button
         class="hover:text-primary flex h-10 w-10 cursor-pointer items-center justify-center transition-colors active:opacity-50"
-        @click="() => MaximizeWindowMessage.send()"
+        @click="MaximizeWindowMessage.send()"
       >
         <Square :size="14" :stroke-width="1.2" />
       </button>
 
       <button
         class="hover:text-primary flex h-10 w-10 cursor-pointer items-center justify-center transition-colors active:opacity-50"
-        @click="() => CloseWindowMessage.send()"
+        @click="BackupPlaybackSignalMessage.send()"
       >
         <X :size="18" :stroke-width="1.2" />
       </button>
@@ -43,7 +43,11 @@
 
 <script setup lang="ts">
 import { Minus, Square, X, ArrowLeft, ArrowRight } from 'lucide-vue-next'
-import { CloseWindowMessage, MinimizeWindowMessage, MaximizeWindowMessage } from '@/ccs/electron'
+import {
+  BackupPlaybackSignalMessage,
+  MinimizeWindowMessage,
+  MaximizeWindowMessage
+} from '@/ccs/electron'
 </script>
 
 <style scoped>

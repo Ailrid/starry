@@ -49,6 +49,18 @@ export class InitServerSystem {
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `)
+
+    // 初始化播放记录快照表
+    dbComp.db.exec(`
+  CREATE TABLE IF NOT EXISTS playback_snap (
+    id INTEGER PRIMARY KEY DEFAULT 1,
+    playlist_detail TEXT,   -- PlaylistDetail JSON
+    songs_list TEXT,       -- SongDetail[]  JSON
+    current_song TEXT,      -- SongDetail  JSON
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`)
+
     MessageWriter.info('[Express] Database: Database and Cache path bound successfully.')
   }
   /*

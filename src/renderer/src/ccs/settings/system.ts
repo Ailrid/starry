@@ -1,6 +1,7 @@
 import { System, Message, MessageWriter } from '@virid/core'
 import { SettingComponent } from './component'
 import { LoadSettingsMessage, SaveSettingsMessage } from './message'
+import { SetVolumeMessage } from '../playback'
 
 export class SettingSystem {
   /**
@@ -34,12 +35,14 @@ export class SettingSystem {
    * *加载所有配置
    */
   @System({
-    messageClass: LoadSettingsMessage
+    messageClass: LoadSettingsMessage,
+    priority: 1000
   })
   static LoadSetting(settings: SettingComponent) {
     ;(Object.keys(settings) as Array<keyof SettingComponent>).forEach(key => {
       this.loadConfig(key, settings)
     })
+    SetVolumeMessage.send(settings.player.volume)
     MessageWriter.info('[Setting System] LoadSetting: Load all settings completed')
   }
 

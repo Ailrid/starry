@@ -13,6 +13,7 @@ import { bindLayoutControllers } from '@/layouts/controllers'
 import { bindPageControllers } from '@/pages/controllers'
 import { InitializationMessage } from './init'
 import * as _ from './utils'
+export * from './electron'
 const app = createVirid()
 app.use(VuePlugin, {})
 app.use(RenderPlugin, {

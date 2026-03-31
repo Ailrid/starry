@@ -7,7 +7,7 @@ import { join, normalize, isAbsolute } from 'path'
 import icon from '../../../resources/icon.png?asset'
 import fs from 'fs'
 import path from 'path'
-import { PlaySongMessage, SetPlaylistMessage } from '@main/windows'
+import { PlaySongMessage, RecoverPlaybackSignalMessage, SetPlaylistMessage } from '@main/windows'
 
 export class InitSystem {
   public static mainWindow: BrowserWindow | null = null
@@ -165,7 +165,18 @@ export class InitSystem {
     MessageWriter.info('[Main] MainWindow: Initialize window and mount page completed.')
   }
 
-  private static commandQueue: Map<string, Array<() => void>> = new Map()
+  private static commandQueue: Map<string, Array<() => void>> = new Map([
+    [
+      'mainWindow',
+      [
+        // 第一个动作：恢复上次的歌单
+        () => {
+          RecoverPlaybackSignalMessage.send()
+        }
+      ]
+    ]
+  ])
+
   @System()
   static mainWindowReady(@Message(CommandQueueMessage) message: CommandQueueMessage) {
     // 执行所有暂存的命令

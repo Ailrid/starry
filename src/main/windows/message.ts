@@ -1,3 +1,5 @@
+import { type PlaylistDetail, type SongDetail } from '@main/server/netEase'
+import { SingleMessage } from '@virid/core'
 import { FromRenderMessage, FromRender, ToRenderMessage } from '@virid/main'
 @FromRender('close-window')
 export class CloseWindowMessage extends FromRenderMessage {}
@@ -40,6 +42,31 @@ export class SetPlaylistMessage extends ToRenderMessage {
   __virid_target: string = 'renderer'
   __virid_messageType: string = 'set-playlist'
   constructor(public id: string) {
+    super()
+  }
+}
+
+export class RecoverPlaybackSignalMessage extends SingleMessage {}
+
+export class RecoverPlaybackMessage extends ToRenderMessage {
+  __virid_target: string = 'renderer'
+  __virid_messageType: string = 'recover-playback'
+  constructor(
+    public playlistDetail: PlaylistDetail,
+    public playlistSongs: SongDetail[],
+    public currentSong: SongDetail
+  ) {
+    super()
+  }
+}
+
+@FromRender('backup-playback')
+export class BackupPlaybackMessage extends FromRenderMessage {
+  constructor(
+    public playlistDetail: PlaylistDetail,
+    public playlistSongs: SongDetail[],
+    public currentSong: SongDetail
+  ) {
     super()
   }
 }

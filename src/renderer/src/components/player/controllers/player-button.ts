@@ -9,6 +9,7 @@ import {
 } from '@/ccs/playback'
 import { UserComponent } from '@/ccs/user'
 import { useTemplateRef, type ShallowRef } from 'vue'
+import { SaveSettingsMessage } from '@/ccs/settings'
 
 @Controller()
 export class PlayerButtonController {
@@ -45,19 +46,21 @@ export class PlayerButtonController {
     let percentage = offsetY / height
     const newVolume = Math.max(0, Math.min(1, percentage))
     SetVolumeMessage.send(newVolume)
+    SaveSettingsMessage.send(i => (i.player.volume = newVolume))
   }
   onWheel(e: WheelEvent) {
     //根据方向判断增加还是减少音量
     const delta = e.deltaY > 0 ? -0.01 : 0.01
     const newVolume = Math.max(0, Math.min(1, this.volume + delta))
     SetVolumeMessage.send(newVolume)
+    SaveSettingsMessage.send(i => (i.player.volume = newVolume))
   }
   public _volume: number = 0
   mute() {
     SetVolumeMessage.send(this.volume === 0 ? this._volume : 0)
     this._volume = this.volume
   }
-  public modeList: string[] = ['order', 'random', 'loop']
+  public modeList: string[] = ['order', 'loop', 'random']
   changeMode(mode: string = '') {
     if (!this.currentSong) return
     //左键点击

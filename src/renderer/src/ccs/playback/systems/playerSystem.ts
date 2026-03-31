@@ -69,7 +69,7 @@ export class PlayerSystem {
         const url = val.data.url
         playerComponent.player.setSrc(url)
         //转交播放权并通知MediaSession
-        PlayOrPauseMessage.send(true)
+        if (message.playImmediately) PlayOrPauseMessage.send(true)
         MediaSessionMessage.send()
       })
       .with({ ok: false }, ({ val }) => {

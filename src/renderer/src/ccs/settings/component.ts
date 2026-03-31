@@ -30,6 +30,7 @@ export interface PlayerConfig {
   mask: boolean // 启用歌词渐变遮罩
   center: boolean // 歌词是否居中
   lyricBlur: boolean // 歌词模糊
+  volume: number // 音量
 }
 
 @Component()
@@ -59,6 +60,7 @@ export class SettingComponent {
     autoColor: true,
     mask: true,
     center: false,
-    lyricBlur: false
+    lyricBlur: false,
+    volume: 1
   }
 }
