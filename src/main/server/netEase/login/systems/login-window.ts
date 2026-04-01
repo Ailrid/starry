@@ -3,11 +3,11 @@ import { OpenLoginWindowRequestMessage, CloseLoginWindowRequestMessage } from '.
 import { BrowserWindow } from 'electron'
 import { Message } from '@virid/core'
 import { type OpenLoginWindowResponse, type CloseLoginWindowResponse } from '../types'
-import { ToRenderMessage } from '@virid/main'
+import { ToRendererMessage } from '@virid/main'
 
 let loginWindow: BrowserWindow | null = null
 //发送登陆完成消息
-class NeteaseWindowMessage extends ToRenderMessage {
+class NeteaseWindowMessage extends ToRendererMessage {
   __virid_messageType: string = 'login-netease-window'
   __virid_target: string = 'renderer'
 }

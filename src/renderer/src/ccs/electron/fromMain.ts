@@ -1,4 +1,4 @@
-import { FromIpc, ToMainMessage, FromMainMessage } from '@virid/renderer'
+import { FromMain, ToMainMessage, FromMainMessage } from '@virid/renderer'
 import { type PlaylistDetail, type SongDetail } from '@/utils'
 import { Message, System } from '@virid/core'
 import { PlaylistComponent, PlaySongMessage, SetPlaylistMessage } from '../playback'
@@ -6,7 +6,7 @@ import { CloseWindowMessage } from './toMain'
 /**
  * * 主进程发起，恢复上次的歌单和歌曲
  */
-@FromIpc('recover-playback')
+@FromMain('recover-playback')
 export class RecoverPlaybackMessage extends FromMainMessage {
   constructor(
     public playlistDetail: PlaylistDetail,
@@ -20,7 +20,7 @@ export class RecoverPlaybackMessage extends FromMainMessage {
 /**
  * * 主进程发起或者自身发起，备份播放列表并关闭窗口
  */
-@FromIpc('backup-playback')
+@FromMain('backup-playback')
 export class BackupPlaybackMessage extends FromMainMessage {}
 
 export class _BackupPlaybackMessage extends ToMainMessage {

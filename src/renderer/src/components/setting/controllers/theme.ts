@@ -3,10 +3,10 @@ import { SettingComponent, type ThemeConfig } from '@/ccs/settings'
 import { Listener, Project, Responsive, OnHook, Watch } from '@virid/vue'
 import { getAccentRGB, type SongDetail } from '@/utils'
 import { SaveSettingsMessage } from '@/ccs/settings/message'
-import { FromIpc, FromMainMessage, ToMainMessage } from '@virid/renderer'
+import { FromMain, FromMainMessage, ToMainMessage } from '@virid/renderer'
 import { PlaylistComponent } from '@/ccs/playback'
 // 获得选择的文件的路径
-@FromIpc('file-dialog')
+@FromMain('file-dialog')
 class ChooseBgImageMessage extends FromMainMessage {
   constructor(public path: string) {
     super()

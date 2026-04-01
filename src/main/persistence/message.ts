@@ -1,6 +1,6 @@
 import type { PlaylistDetail, SongDetail } from '@main/server/netEase'
 import { EventMessage, SingleMessage } from '@virid/core'
-import { FromRender, FromRenderMessage, ToRenderMessage } from '@virid/main'
+import { FromRenderer, FromRendererMessage, ToRendererMessage } from '@virid/main'
 
 export class InitDatabaseMessage extends EventMessage {
   constructor(
@@ -11,7 +11,7 @@ export class InitDatabaseMessage extends EventMessage {
   }
 }
 
-export class SetPlaylistMessage extends ToRenderMessage {
+export class SetPlaylistMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
   __virid_messageType: string = 'set-playlist'
   constructor(public id: string) {
@@ -21,7 +21,7 @@ export class SetPlaylistMessage extends ToRenderMessage {
 
 export class RecoverPlaybackMessage extends SingleMessage {}
 
-export class _RecoverPlaybackMessage extends ToRenderMessage {
+export class _RecoverPlaybackMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
   __virid_messageType: string = 'recover-playback'
   constructor(
@@ -33,8 +33,8 @@ export class _RecoverPlaybackMessage extends ToRenderMessage {
   }
 }
 
-@FromRender('backup-playback')
-export class BackupPlaybackMessage extends FromRenderMessage {
+@FromRenderer('backup-playback')
+export class BackupPlaybackMessage extends FromRendererMessage {
   constructor(
     public playlistDetail: PlaylistDetail,
     public playlistSongs: SongDetail[],

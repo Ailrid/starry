@@ -1,17 +1,17 @@
 import { EventMessage, SingleMessage } from '@virid/core'
-import { FromRenderMessage, FromRender, ToRenderMessage } from '@virid/main'
+import { FromRendererMessage, FromRenderer, ToRendererMessage } from '@virid/main'
 import { type BrowserWindow } from 'electron'
-@FromRender('close-window')
-export class CloseWindowMessage extends FromRenderMessage {}
+@FromRenderer('close-window')
+export class CloseWindowMessage extends FromRendererMessage {}
 
-@FromRender('minimize-window')
-export class MinimizeWindowMessage extends FromRenderMessage {}
+@FromRenderer('minimize-window')
+export class MinimizeWindowMessage extends FromRendererMessage {}
 
-@FromRender('maximize-window')
-export class MaximizeWindowMessage extends FromRenderMessage {}
+@FromRenderer('maximize-window')
+export class MaximizeWindowMessage extends FromRendererMessage {}
 
-@FromRender('open-dialog')
-export class OpenDialogMessage extends FromRenderMessage {
+@FromRenderer('open-dialog')
+export class OpenDialogMessage extends FromRendererMessage {
   constructor(
     public options: {
       title?: string
@@ -22,7 +22,7 @@ export class OpenDialogMessage extends FromRenderMessage {
     super()
   }
 }
-export class RenderDialogMessage extends ToRenderMessage {
+export class RenderDialogMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
   __virid_messageType: string = 'file-dialog'
   constructor(public path: string) {
@@ -30,7 +30,7 @@ export class RenderDialogMessage extends ToRenderMessage {
   }
 }
 
-export class PlaySongMessage extends ToRenderMessage {
+export class PlaySongMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
   __virid_messageType: string = 'play-song'
   constructor(public id: string) {

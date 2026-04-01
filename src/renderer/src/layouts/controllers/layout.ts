@@ -1,18 +1,18 @@
 import { Controller, MessageWriter } from '@virid/core'
 import { Listener, Responsive, Use, Watch } from '@virid/vue'
 import { useRoute, useRouter } from 'vue-router'
-import { FromIpc, FromMainMessage } from '@virid/renderer'
+import { FromMain, FromMainMessage } from '@virid/renderer'
 import { PlaySongMessage } from '@/ccs/playback'
 import { songDetail } from '@/utils'
 import { match } from 'ts-pattern'
 
-@FromIpc('play-song')
+@FromMain('play-song')
 export class MainPlaySongMessage extends FromMainMessage {
   constructor(public id: string) {
     super()
   }
 }
-@FromIpc('set-playlist')
+@FromMain('set-playlist')
 export class MainPlayPlaylistMessage extends FromMainMessage {
   constructor(public id: string) {
     super()

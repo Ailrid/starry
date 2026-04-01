@@ -3,9 +3,9 @@ import { openLoginWindow, closeLoginWindow } from '@/utils/server'
 import { match } from 'ts-pattern'
 import { Listener, Responsive } from '@virid/vue'
 import { FetchUserAccountMessage } from '@/ccs/user'
-import { FromIpc, FromMainMessage } from '@virid/renderer'
+import { FromMain, FromMainMessage } from '@virid/renderer'
 //监听主进程发来的消息，一旦登陆完成，获取cookies
-@FromIpc('login-netease-window')
+@FromMain('login-netease-window')
 class NeteaseWindowMessage extends FromMainMessage {}
 
 @Controller()

@@ -162,8 +162,6 @@ export class CacheSongDataSystem {
     const { url, id, md5 } = message
     const finalPath = path.join(dbComponent.cachePath, `${id}-${md5}`)
     const tempPath = `${finalPath}.downloading`
-    // 在这里上锁
-    CacheSongDataSystem.fileLock.add(finalPath)
 
     if (
       fs.existsSync(finalPath) ||
@@ -171,7 +169,8 @@ export class CacheSongDataSystem {
       CacheSongDataSystem.fileLock.has(finalPath)
     )
       return
-
+    // 在这里上锁
+    CacheSongDataSystem.fileLock.add(finalPath)
     try {
       const downloadRes = await fetch(url)
       if (!downloadRes?.ok || !downloadRes.body) return
