@@ -35,7 +35,7 @@ export class WindowLoginController {
       .with({ ok: false }, ({ val }) => {
         this.loginStatus = 'error'
         this.loginInfo = '无法打开窗口，请检查网络或重启'
-        MessageWriter.error(new Error(val), '[Login Window] Open Failed')
+        MessageWriter.error(new Error(val), '[WindowLoginController] Open Failed')
       })
       .otherwise(() => {})
   }
@@ -63,7 +63,7 @@ export class WindowLoginController {
       .with({ ok: false }, ({ val }) => {
         this.loginStatus = 'error'
         this.loginInfo = '收割 Cookie 失败'
-        MessageWriter.error(new Error(val), '[Login Window] Close Failed')
+        MessageWriter.error(new Error(val), '[WindowLoginController] Close Failed')
       })
       .otherwise(() => {})
   }

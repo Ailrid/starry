@@ -72,7 +72,7 @@ export class HomePageController {
         _pageRadar = val.data.radar
       })
       .with({ ok: false }, ({ val }) => {
-        MessageWriter.error(new Error(val), 'Failed to fetch homepage data')
+        MessageWriter.error(new Error(val), '[HomePageController] Failed to fetch homepage data')
       })
       .exhaustive()
   }
@@ -91,7 +91,10 @@ export class HomePageController {
         _recommendSongs = val.data
       })
       .with({ ok: false }, ({ val: err }) => {
-        MessageWriter.error(new Error(err), 'Failed to fetch recommendation songs')
+        MessageWriter.error(
+          new Error(err),
+          '[HomePageController] Failed to fetch recommendation songs'
+        )
       })
     match(radarRes)
       .with({ ok: true }, ({ val }) => {
@@ -99,7 +102,7 @@ export class HomePageController {
         _personalRadar = val.playlist
       })
       .with({ ok: false }, ({ val: err }) => {
-        MessageWriter.error(new Error(err), 'Failed to fetch personal radar')
+        MessageWriter.error(new Error(err), '[HomePageController] Failed to fetch personal radar')
       })
   }
 

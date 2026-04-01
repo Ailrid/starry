@@ -28,7 +28,10 @@ export class RecommendedPageController {
         val.data.forEach(song => this.getColor(song))
       })
       .with({ ok: false }, ({ val }) => {
-        MessageWriter.write(new Error(val), '[Recommended] Failed to fetch recommended songs')
+        MessageWriter.write(
+          new Error(val),
+          '[RecommendedPageController] Failed to fetch recommended songs'
+        )
       })
   }
 

@@ -95,7 +95,10 @@ export class PlaylistPageController {
         this.playlistsDetail = val.playlist
       })
       .with({ ok: false }, ({ val }) => {
-        MessageWriter.error(new Error(val), '[Playlist Page] Failed To Fetch User Playlist Detail')
+        MessageWriter.error(
+          new Error(val),
+          '[PlaylistPageController] Failed To Fetch User Playlist Detail'
+        )
       })
   }
   /**
@@ -122,7 +125,7 @@ export class PlaylistPageController {
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(
           new Error(val),
-          `[Playlist Page] Failed To Fetch User Playlist Song: Page index: ${this.pageIndex}`
+          `[PlaylistPageController] Failed To Fetch User Playlist Song: Page index: ${this.pageIndex}`
         )
       })
       .exhaustive()

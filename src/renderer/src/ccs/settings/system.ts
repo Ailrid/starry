@@ -16,7 +16,7 @@ export class SettingSystem {
         localStorage.setItem(`virid_setting_${String(key)}`, JSON.stringify(settings[key]))
       }
     } catch (e) {
-      MessageWriter.error(e as Error, `[Setting] LoadConfig Error: ${key} cannot be loaded`)
+      MessageWriter.error(e as Error, `[SettingSystem] LoadConfig Error: ${key} cannot be loaded`)
     }
   }
 
@@ -27,7 +27,7 @@ export class SettingSystem {
     try {
       localStorage.setItem(`virid_setting_${String(key)}`, JSON.stringify(settings[key]))
     } catch (e) {
-      MessageWriter.error(e as Error, `[Setting System] SaveConfig Error: ${key} cannot be saved`)
+      MessageWriter.error(e as Error, `[SettingSystem] SaveConfig Error: ${key} cannot be saved`)
     }
   }
 
@@ -43,7 +43,7 @@ export class SettingSystem {
       this.loadConfig(key, settings)
     })
     SetVolumeMessage.send(settings.player.volume)
-    MessageWriter.info('[Setting System] LoadSetting: Load all settings completed')
+    MessageWriter.info('[SettingSystem] LoadSetting: Load all settings completed')
   }
 
   /**

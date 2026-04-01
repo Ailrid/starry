@@ -1,38 +1,68 @@
-import { System, MessageWriter, Message, ErrorMessage, WarnMessage, InfoMessage } from '@virid/core'
-import { CreateMainWindowMessage, BootStrapElectronMessage, CommandQueueMessage } from './message'
-import { electronApp } from '@electron-toolkit/utils'
-import { app, shell, net, BrowserWindow, protocol, clipboard } from 'electron'
-import { pathToFileURL } from 'url'
-import { join, normalize, isAbsolute } from 'path'
-import icon from '../../../resources/icon.png?asset'
 import fs from 'fs'
 import path from 'path'
-import { PlaySongMessage, RecoverPlaybackSignalMessage, SetPlaylistMessage } from '@main/windows'
+import { System, MessageWriter, Message, ErrorMessage, WarnMessage, InfoMessage } from '@virid/core'
+import { BootStrapElectronMessage, InitStarryMessage, RegisterProtocolMessage } from './message'
+import { electronApp } from '@electron-toolkit/utils'
+import { app, net, BrowserWindow, protocol } from 'electron'
+import { pathToFileURL } from 'url'
+import { normalize, isAbsolute, join } from 'path'
+import { CreateMainWindowMessage, ShareMusicCommandMessage } from '@main/windows'
+import { InitDatabaseMessage } from '@main/persistence'
+import { InitServerMessage, ServerInitializedMessage } from '@main/server'
+import { ElectronComponent } from './component'
+// 注册文件协议
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'local-file',
+    privileges: {
+      secure: true,
+      standard: true,
+      supportFetchAPI: true,
+      bypassCSP: true,
+      stream: true
+    }
+  }
+])
 
-export class InitSystem {
-  public static mainWindow: BrowserWindow | null = null
-  static registerProtocols() {
-    // 必须在 app ready 之前调用
-    protocol.registerSchemesAsPrivileged([
-      {
-        scheme: 'local-file',
-        privileges: {
-          secure: true,
-          standard: true,
-          supportFetchAPI: true,
-          bypassCSP: true,
-          stream: true
-        }
-      }
-    ])
+/**
+ * * 应用初始化
+ */
+export class InitStarrySystem {
+  @System()
+  static initStarry(
+    @Message(InitStarryMessage) message: InitStarryMessage,
+    electronComponent: ElectronComponent
+  ) {
+    electronComponent.port = message.port
+    // 获得文件夹路径
+    const userDataPath = app.getPath('userData')
+    const dbPath = join(userDataPath, 'music.db')
+    const cacheFilesPath = join(userDataPath, 'cache_files')
+    // 先初始化数据库
+    InitDatabaseMessage.send(dbPath, cacheFilesPath)
+    // 然后初始化express服务器
+    InitServerMessage.send(message.port)
   }
 
+  @System({
+    messageClass: ServerInitializedMessage
+  })
+  static initElectron() {
+    // 初始化协议并启动electron
+    app.whenReady().then(() => {
+      RegisterProtocolMessage.send()
+      BootStrapElectronMessage.send()
+    })
+  }
+}
+
+export class InitElectronSystem {
   /**
    * * 注册各种协议
    */
   @System({
-    messageClass: BootStrapElectronMessage,
-    priority: 100
+    messageClass: RegisterProtocolMessage,
+    priority: 1000
   })
   static protocols() {
     /**
@@ -47,7 +77,7 @@ export class InitSystem {
     } else {
       app.setAsDefaultProtocolClient(PROTOCOL)
     }
-    // 单例锁与二次启动监听
+    // 单例锁
     const gotTheLock = app.requestSingleInstanceLock()
     if (!gotTheLock) {
       app.quit()
@@ -56,9 +86,8 @@ export class InitSystem {
     // 监听热启动
     app.on('second-instance', (_event, commandLine) => {
       const url = commandLine.find(arg => arg.startsWith(`${PROTOCOL}://`))
-      if (url) {
-        this.processMusicCommand(url)
-      }
+      if (url) ShareMusicCommandMessage.send(url)
+
       // 唤醒主窗口
       const windows = BrowserWindow.getAllWindows()
       if (windows.length > 0) {
@@ -68,16 +97,15 @@ export class InitSystem {
     })
     // 处理冷启动
     const startUrl = process.argv.find(arg => arg.startsWith(`${PROTOCOL}://`))
-    if (startUrl) {
-      this.processMusicCommand(startUrl)
-    }
+    if (startUrl) ShareMusicCommandMessage.send(startUrl)
     // 处理mac上的协议
     if (process.platform === 'darwin') {
       app.on('open-url', (event, url) => {
         event.preventDefault()
-        this.processMusicCommand(url)
+        ShareMusicCommandMessage.send(url)
       })
     }
+
     /**
      * * 处理本地文件协议
      */
@@ -92,7 +120,10 @@ export class InitSystem {
         const fileUrl = pathToFileURL(normalize(absolutePath)).toString()
         return net.fetch(fileUrl)
       } catch (e) {
-        MessageWriter.error(e as Error, `[Main] Local File Protocol: Failed to load file.`)
+        MessageWriter.error(
+          e as Error,
+          `[InitElectronSystem] Local File Protocol: Failed to load file.`
+        )
         return new Response('File not found', { status: 404 })
       }
     })
@@ -102,132 +133,25 @@ export class InitSystem {
    *
    * 初始化electronApp
    */
-  @System()
-  static initApp(@Message(BootStrapElectronMessage) message: BootStrapElectronMessage) {
+  @System({
+    messageClass: BootStrapElectronMessage
+  })
+  static initApp(electronComponent: ElectronComponent) {
     //配置设置
     electronApp.setAppUserModelId('starry')
     //创建窗口
-    CreateMainWindowMessage.send(message.port)
+    CreateMainWindowMessage.send(electronComponent.port)
     //mac用的东西
     app.on('activate', function () {
-      if (BrowserWindow.getAllWindows().length === 0) CreateMainWindowMessage.send(message.port)
+      if (BrowserWindow.getAllWindows().length === 0)
+        CreateMainWindowMessage.send(electronComponent.port)
     })
     app.on('window-all-closed', () => {
       if (process.platform !== 'darwin') {
         app.quit()
       }
     })
-    MessageWriter.info('[Main] Initialization: App Initialization completed.')
-  }
-  private static lastHandledText = ''
-  /*
-   * 初始化主窗口
-   */
-  @System()
-  static createMainWindow(@Message(CreateMainWindowMessage) message: CreateMainWindowMessage) {
-    const mainWindow = new BrowserWindow({
-      width: 1200,
-      height: 800,
-      minWidth: 900,
-      minHeight: 600,
-      show: false,
-      autoHideMenuBar: true,
-      titleBarStyle: 'hidden',
-      titleBarOverlay: false,
-      backgroundColor: '#00000000',
-      ...(process.platform === 'linux' ? { icon } : {}),
-      webPreferences: {
-        preload: join(__dirname, '../preload/index.js'),
-        sandbox: false
-      }
-    })
-
-    mainWindow.on('ready-to-show', () => {
-      mainWindow!.show()
-      this.mainWindow = mainWindow
-      CommandQueueMessage.send('mainWindow')
-    })
-    // 获得焦点时自动检查一遍剪切板
-    mainWindow.on('focus', () => {
-      const text = clipboard.readText().trim()
-      if (text === this.lastHandledText) return // 跳过重复执行
-      if (text.startsWith('orpheus://') || text.includes('music.163.com')) {
-        this.lastHandledText = text
-        this.processMusicCommand(text)
-      }
-    })
-
-    mainWindow.webContents.setWindowOpenHandler(details => {
-      shell.openExternal(details.url)
-      return { action: 'deny' }
-    })
-    mainWindow.loadURL(`http://localhost:${message.port}`)
-    MessageWriter.info('[Main] MainWindow: Initialize window and mount page completed.')
-  }
-
-  private static commandQueue: Map<string, Array<() => void>> = new Map([
-    [
-      'mainWindow',
-      [
-        // 第一个动作：恢复上次的歌单
-        () => {
-          RecoverPlaybackSignalMessage.send()
-        }
-      ]
-    ]
-  ])
-
-  @System()
-  static mainWindowReady(@Message(CommandQueueMessage) message: CommandQueueMessage) {
-    // 执行所有暂存的命令
-    InitSystem.commandQueue.get(message.command)?.forEach(fn => fn())
-  }
-
-  /**
-   * * 处理 orpheus://协议或者music.163.com的连接
-   */
-  private static processMusicCommand(rawUrl: string) {
-    if (rawUrl.includes('music.163.com') && rawUrl.startsWith('https://')) {
-      // 如果是网址，解析其中的song?id=xxx或者playlist?id=xxx参数
-      const url = new URL(rawUrl.replace('/#/', '/'))
-      const id = url.searchParams.get('id')
-      const type = url.pathname.includes('playlist') ? 'playlist' : 'song'
-      // 根据指令执行动作
-      if (type && id) this.sendCommand(type, id)
-    } else if (rawUrl.includes('orpheus://')) {
-      try {
-        // 去掉协议头 orpheus:// 和可能存在的冗余斜杠
-        const base64Part = rawUrl.replace('orpheus://', '').replace(/^\/+/, '')
-        if (!base64Part) return
-        // Base64 解码
-        const jsonStr = Buffer.from(base64Part, 'base64').toString('utf8')
-        const data = JSON.parse(jsonStr)
-        // 根据指令执行动作
-        if (data.type && data.id) this.sendCommand(data.type, data.id)
-      } catch (err) {
-        MessageWriter.error(err as Error, `[Protocol] 解析指令失败: ${rawUrl}`)
-      }
-    }
-  }
-
-  /**
-   * * 发射消息或者暂时缓存
-   */
-  private static sendCommand(type: 'song' | 'playlist', id: string) {
-    const command = () => {
-      if (type === 'song') PlaySongMessage.send(id)
-      else if (type === 'playlist') SetPlaylistMessage.send(id)
-    }
-
-    // 如果窗口已经好了，直接发射消息
-    if (this.mainWindow) {
-      command()
-    } else {
-      // 否则暂时缓存起来
-      const commandArray = this.commandQueue.get('mainWindow') || []
-      commandArray.push(command)
-      this.commandQueue.set('mainWindow', commandArray)
-    }
+    MessageWriter.info('[InitElectronSystem] Initialization: App Initialization completed.')
   }
 }
 

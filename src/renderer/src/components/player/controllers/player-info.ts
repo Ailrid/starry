@@ -24,9 +24,6 @@ export class PlayerInfoController {
   @Project(PlayerComponent, i => i.player)
   public player!: Player
 
-  @Project(PlaylistComponent, i => i.playlistDetail)
-  public playListDetail: PlaylistDetail | null = null
-
   @Project(SettingComponent, i => i.player)
   public setting!: PlayerConfig
 

@@ -50,7 +50,7 @@ export class LayoutController {
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(
           new Error(val),
-          '[Song Detail] Cannot get song detail in mainPlaySongMessage'
+          '[LayoutController] Cannot get song detail in mainPlaySongMessage'
         )
       })
   }

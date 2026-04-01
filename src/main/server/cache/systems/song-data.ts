@@ -1,4 +1,4 @@
-import { DatabaseComponent } from '../../components'
+import { DatabaseComponent, SongCacheRecord } from '@main/persistence'
 import { CacheSongDataRequestMessage } from '../message'
 import { CacheSongUrlSystem } from './song-url'
 import fs from 'fs'
@@ -44,6 +44,8 @@ class DownloadCacheMessage extends SingleMessage {
   }
 }
 
+class ClearCacheMessage extends SingleMessage {}
+
 const CATCH_CACHE_SIZE = 2 * 1024 * 1024 * 1024
 
 export class CacheSongDataSystem {
@@ -70,11 +72,8 @@ export class CacheSongDataSystem {
     }
     // 否则是网易云的，开始处理
     // 查数据库记录
-    const stmt = dbComponent.db.prepare(
-      'SELECT local_path FROM song_cache WHERE id = ? AND md5 = ?'
-    )
-    const cacheRecord = stmt.get(id, md5) as { local_path: string } | undefined
-    const localPath = cacheRecord?.local_path
+    const record = dbComponent.db.getSongCache(id, md5)
+    const localPath = record?.local_path
     //  缓存
     if (localPath) return new DataFromCacheMessage(requestId, localPath)
     else DownloadCacheMessage.send(realUrl, id, md5)
@@ -139,13 +138,12 @@ export class CacheSongDataSystem {
     const cachePath = message.cachePath
     if (!fs.existsSync(cachePath)) {
       //缓存有问题，删除数据库记录，然后重新发回CacheSongsDataRequestMessage
-      dbComponent.db.prepare('DELETE FROM song_cache WHERE id = ? AND md5 = ?').run(id, md5)
+      dbComponent.db.deleteSongCache(id, md5)
       return new CacheSongDataRequestMessage(requestId)
     }
     // 更新缓存数据
-    dbComponent.db
-      .prepare('UPDATE song_cache SET last_accessed_at = CURRENT_TIMESTAMP WHERE id = ?')
-      .run(id)
+    dbComponent.db.updateSongCache(id)
+
     const absolutePath = path.isAbsolute(cachePath) ? cachePath : path.join('/', cachePath)
     return StreamFile(absolutePath, {
       dotfiles: 'allow',
@@ -179,22 +177,26 @@ export class CacheSongDataSystem {
       if (!downloadRes?.ok || !downloadRes.body) return
       const writer = fs.createWriteStream(tempPath)
       await pipeline(Readable.fromWeb(downloadRes.body as any), writer)
-      
+
       // 重命名
       if (fs.existsSync(finalPath)) fs.unlinkSync(finalPath)
       fs.renameSync(tempPath, finalPath)
-      
+
       const size = fs.statSync(finalPath).size
-      dbComponent.db
-        .prepare(
-          'INSERT OR REPLACE INTO song_cache (id, md5, local_path, size, last_accessed_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
-        )
-        .run(id, md5, finalPath, size)
+      dbComponent.db.addSongCache({
+        id: id,
+        md5,
+        local_path: finalPath,
+        size,
+        created_at: '',
+        last_accessed_at: ''
+      })
+
       // 解锁
       CacheSongDataSystem.fileLock.delete(finalPath)
-      cleanupCache(dbComponent.db, CATCH_CACHE_SIZE)
+      ClearCacheMessage.send()
     } catch (e) {
-      MessageWriter.error(e as Error, '[Express CacheSongDataSystem] Download failed')
+      MessageWriter.error(e as Error, '[CacheSongDataSystem] Download failed')
       if (fs.existsSync(tempPath)) {
         try {
           fs.unlinkSync(tempPath)
@@ -204,27 +206,37 @@ export class CacheSongDataSystem {
       }
     }
   }
-}
 
-function cleanupCache(db: any, maxSizeBytes: number) {
-  // 先查一下目前总大小
-  const row = db.prepare('SELECT SUM(size) as totalSize FROM song_cache').get()
-  let currentSize = row?.totalSize || 0
+  @System({
+    messageClass: ClearCacheMessage
+  })
+  public async clearCache(dbComponent: DatabaseComponent) {
+    // 先查一下目前总大小
+    const row = dbComponent.db.db
+      .prepare('SELECT SUM(size) as totalSize FROM song_cache')
+      .get() as any
+    let currentSize = row?.totalSize || 0
 
-  // 如果超标了（2GB）
-  if (currentSize > maxSizeBytes) {
-    // 每次清理出 50% 的空间
-    const targetSize = maxSizeBytes * 0.5
-    const oldestSongs = db.prepare('SELECT * FROM song_cache ORDER BY last_accessed_at ASC').all()
+    // 如果超标了（2GB）
+    if (currentSize > CATCH_CACHE_SIZE) {
+      // 每次清理出 50% 的空间
+      const targetSize = CATCH_CACHE_SIZE * 0.5
+      const oldestSongs = dbComponent.db.db
+        .prepare('SELECT * FROM song_cache ORDER BY last_accessed_at ASC')
+        .all() as SongCacheRecord[]
 
-    for (const song of oldestSongs) {
-      if (currentSize <= targetSize) break
-      try {
-        if (fs.existsSync(song.local_path)) fs.unlinkSync(song.local_path)
-        db.prepare('DELETE FROM song_cache WHERE id = ?').run(song.id)
-        currentSize -= song.size
-      } catch (e) {
-        MessageWriter.error(e as Error, `[Song Cache] Cannot delete cache file ${song.local_path}`)
+      for (const song of oldestSongs) {
+        if (currentSize <= targetSize) break
+        try {
+          if (fs.existsSync(song.local_path)) fs.unlinkSync(song.local_path)
+          dbComponent.db.deleteSongCache(song.id, song.md5)
+          currentSize -= song.size
+        } catch (e) {
+          MessageWriter.error(
+            e as Error,
+            `[CacheSongDataSystem] Cannot delete cache file ${song.local_path}`
+          )
+        }
       }
     }
   }

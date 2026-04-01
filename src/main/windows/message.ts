@@ -1,6 +1,6 @@
-import { type PlaylistDetail, type SongDetail } from '@main/server/netEase'
-import { SingleMessage } from '@virid/core'
+import { EventMessage, SingleMessage } from '@virid/core'
 import { FromRenderMessage, FromRender, ToRenderMessage } from '@virid/main'
+import { type BrowserWindow } from 'electron'
 @FromRender('close-window')
 export class CloseWindowMessage extends FromRenderMessage {}
 
@@ -38,35 +38,31 @@ export class PlaySongMessage extends ToRenderMessage {
   }
 }
 
-export class SetPlaylistMessage extends ToRenderMessage {
-  __virid_target: string = 'renderer'
-  __virid_messageType: string = 'set-playlist'
-  constructor(public id: string) {
+export class CreateMainWindowMessage extends SingleMessage {
+  constructor(public port: number) {
     super()
   }
 }
 
-export class RecoverPlaybackSignalMessage extends SingleMessage {}
+export class ExecuteCommandQueueMessage extends EventMessage {
+  constructor(public window: string) {
+    super()
+  }
+}
 
-export class RecoverPlaybackMessage extends ToRenderMessage {
-  __virid_target: string = 'renderer'
-  __virid_messageType: string = 'recover-playback'
+export class SetCommandQueueMessage extends EventMessage {
   constructor(
-    public playlistDetail: PlaylistDetail,
-    public playlistSongs: SongDetail[],
-    public currentSong: SongDetail
+    public window: string,
+    public command: (window: BrowserWindow) => void
   ) {
     super()
   }
 }
 
-@FromRender('backup-playback')
-export class BackupPlaybackMessage extends FromRenderMessage {
-  constructor(
-    public playlistDetail: PlaylistDetail,
-    public playlistSongs: SongDetail[],
-    public currentSong: SongDetail
-  ) {
+export class CheckClipboardMessage extends EventMessage {}
+
+export class ShareMusicCommandMessage extends EventMessage {
+  constructor(public url: string) {
     super()
   }
 }

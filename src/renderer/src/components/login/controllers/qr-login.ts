@@ -35,12 +35,12 @@ export class QrLoginController {
             this.startInterval()
           })
           .with({ ok: false }, ({ val }) => {
-            MessageWriter.error(new Error(val), '[Qr Login Controller] Create Qr Svg Failed')
+            MessageWriter.error(new Error(val), '[QrLoginController] Create Qr Svg Failed')
           })
           .exhaustive()
       })
       .with({ ok: false }, ({ val }) => {
-        MessageWriter.error(new Error(val), '[Qr Login Controller] Get Qr Key Failed')
+        MessageWriter.error(new Error(val), '[QrLoginController] Get Qr Key Failed')
       })
       .exhaustive()
   }
@@ -92,7 +92,7 @@ export class QrLoginController {
           .exhaustive()
       })
       .with({ ok: false }, ({ val }) => {
-        MessageWriter.error(new Error(val), '[Qr Login Controller] Check Qr Failed')
+        MessageWriter.error(new Error(val), '[QrLoginController] Check Qr Failed')
       })
       .exhaustive()
   }

@@ -1,5 +1,5 @@
 import { createRequest, CryptoMode } from '../../netEase'
-import { DatabaseComponent } from '../../components'
+import { DatabaseComponent } from '@main/persistence'
 import { CacheLyricRequestMessage } from '../message'
 import { Body, Cookies, Headers, HttpRequestMessage, HttpSystem, Ok } from '@virid/express'
 import { System, Message, SingleMessage } from '@virid/core'
@@ -37,7 +37,7 @@ export class CacheLyricSystem {
 
     let resData: LyricResponse
     // 检查缓存
-    const cache = dbComponent.db.prepare('SELECT * FROM lyric_cache WHERE id = ?').get(id) as any
+    const cache = dbComponent.db.getLyricCache(id)
     if (cache) {
       //如果有缓存，跳转到缓存system
       resData = {
@@ -114,14 +114,12 @@ export class CacheLyricSystem {
   ) {
     const { id, lyrics, isPure } = message.lyricData
     // 缓存存入数据库
-    dbComponent.db
-      .prepare(
-        `
-      INSERT OR REPLACE INTO lyric_cache (id, lyrics_json, is_pure, updated_at)
-      VALUES (?, ?, ?, CURRENT_TIMESTAMP)
-    `
-      )
-      .run(id, JSON.stringify(lyrics), isPure ? 1 : 0)
+    dbComponent.db.addLyricCache({
+      id,
+      lyrics_json: JSON.stringify(lyrics),
+      is_pure: isPure ? 1 : 0,
+      updated_at: ''
+    })
   }
 }
 // 修改歌词格式的工具

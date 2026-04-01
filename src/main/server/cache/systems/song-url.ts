@@ -11,7 +11,7 @@ import {
 } from '@virid/express'
 import { Message } from '@virid/core'
 import { type SongUrlRequest, type SongUrlResponse } from '../types'
-import { DatabaseComponent } from '../../components'
+import { DatabaseComponent } from '@main/persistence'
 import { CacheSongUrlRequestMessage } from '../message'
 
 class UrlFromLocalMessage extends HttpRequestMessage {

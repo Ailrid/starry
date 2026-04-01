@@ -1,18 +1,24 @@
-import { dialog } from 'electron'
+import { BrowserWindow, clipboard, dialog, shell } from 'electron'
 import {
   CloseWindowMessage,
   MinimizeWindowMessage,
   MaximizeWindowMessage,
   OpenDialogMessage,
   RenderDialogMessage,
-  BackupPlaybackMessage,
-  RecoverPlaybackSignalMessage,
-  RecoverPlaybackMessage
+  CreateMainWindowMessage,
+  ShareMusicCommandMessage,
+  PlaySongMessage,
+  ExecuteCommandQueueMessage,
+  SetCommandQueueMessage,
+  CheckClipboardMessage
 } from './message'
 import { System, Message, MessageWriter } from '@virid/core'
-import { DatabaseComponent } from '@main/server'
+import { join } from 'path'
+import icon from '../../../resources/icon.png?asset'
+import { SetPlaylistMessage } from '@main/persistence'
+import { WindowComponent } from './component'
 
-export class WindowSystem {
+export class WindowControllerSystem {
   @System()
   closeWindow(@Message(CloseWindowMessage) message: CloseWindowMessage) {
     message.senderWindow.close()
@@ -42,49 +48,152 @@ export class WindowSystem {
   }
 }
 
-/**
- * * 播放列表备份系统
- */
-export class PlaybackSystem {
-  @System({
-    priority: 1000
-  })
-  static async backup(
-    @Message(BackupPlaybackMessage) message: BackupPlaybackMessage,
-    dbComp: DatabaseComponent
+export class BrowserWindowSystem {
+  /*
+   * 初始化主窗口
+   */
+  @System()
+  static createMainWindow(
+    @Message(CreateMainWindowMessage) message: CreateMainWindowMessage,
+    windowComponent: WindowComponent
   ) {
-    const { playlistDetail, playlistSongs, currentSong } = message
-    const sql = `
-    REPLACE INTO playback_snap (id, playlist_detail, songs_list, current_song, updated_at)
-    VALUES (1, ?, ?, ?, datetime('now'))
-  `
-    try {
-      dbComp.db
-        .prepare(sql)
-        .run(
-          JSON.stringify(playlistDetail),
-          JSON.stringify(playlistSongs),
-          JSON.stringify(currentSong)
-        )
-    } catch (err) {
-      MessageWriter.error(err as Error, '[Playback System] Cannot save playback snapshot')
+    const mainWindow = new BrowserWindow({
+      width: 1200,
+      height: 800,
+      minWidth: 900,
+      minHeight: 600,
+      show: false,
+      autoHideMenuBar: true,
+      titleBarStyle: 'hidden',
+      titleBarOverlay: false,
+      backgroundColor: '#00000000',
+      ...(process.platform === 'linux' ? { icon } : {}),
+      webPreferences: {
+        preload: join(__dirname, '../preload/index.js'),
+        sandbox: false
+      }
+    })
+
+    mainWindow.on('ready-to-show', () => {
+      mainWindow.show()
+      // 触发命令队列,执行所有缓存命令
+      ExecuteCommandQueueMessage.send('mainWindow')
+      // 注册自己
+      windowComponent.windows.set('mainWindow', mainWindow)
+    })
+    // 获得焦点时自动检查一遍剪切板
+    mainWindow.on('focus', () => {
+      CheckClipboardMessage.send()
+    })
+    mainWindow.webContents.setWindowOpenHandler(details => {
+      shell.openExternal(details.url)
+      return { action: 'deny' }
+    })
+    mainWindow.loadURL(`http://localhost:${message.port}`)
+
+    MessageWriter.info(
+      '[BrowserWindowSystem] MainWindow: Initialize window and mount page completed.'
+    )
+  }
+
+  /**
+   * * 当窗口准备好时执行对应的所有命令
+   */
+  @System()
+  static windowReady(
+    @Message(ExecuteCommandQueueMessage) message: ExecuteCommandQueueMessage,
+    windowComponent: WindowComponent
+  ) {
+    // 执行所有暂存的命令
+    const window = windowComponent.windows.get(message.window)
+    if (!window) return
+    windowComponent.commandQueue.get(message.window)?.forEach(fn => fn(window))
+  }
+
+  /**
+   * * 缓存所有窗口的命令
+   */
+  @System()
+  static setWindowCommand(
+    @Message(SetCommandQueueMessage) message: SetCommandQueueMessage,
+    windowComponent: WindowComponent
+  ) {
+    const queue = windowComponent.commandQueue.get(message.window) || []
+    queue.push(message.command)
+    windowComponent.commandQueue.set(message.window, queue)
+  }
+}
+
+/**
+ * * 网易云分享系统
+ */
+export class MusicShareSystem {
+  private static lastHandledText = ''
+
+  @System({
+    messageClass: CheckClipboardMessage
+  })
+  static checkClipboard() {
+    const text = clipboard.readText().trim()
+    if (text === this.lastHandledText) return // 跳过重复执行
+    if (text.startsWith('orpheus://') || text.includes('music.163.com')) {
+      this.lastHandledText = text
+      // 处理url
+      ShareMusicCommandMessage.send(text)
     }
   }
-  @System({
-    messageClass: RecoverPlaybackSignalMessage
-  })
-  async recover(dbComp: DatabaseComponent) {
-    try {
-      const row = dbComp.db.prepare('SELECT * FROM playback_snap WHERE id = 1').get() as any
-      if (row) {
-        RecoverPlaybackMessage.send(
-          JSON.parse(row.playlist_detail),
-          JSON.parse(row.songs_list),
-          JSON.parse(row.current_song)
-        )
+
+  /**
+   * * 处理 orpheus://协议或者music.163.com的连接
+   */
+  @System()
+  static processMusicCommand(
+    @Message(ShareMusicCommandMessage) message: ShareMusicCommandMessage,
+    windowComponent: WindowComponent
+  ) {
+    const rawUrl = message.url
+    const mainWindow = windowComponent.windows.get('mainWindow')
+    if (rawUrl.includes('music.163.com') && rawUrl.startsWith('https://')) {
+      // 如果是网址，解析其中的song?id=xxx或者playlist?id=xxx参数
+      const url = new URL(rawUrl.replace('/#/', '/'))
+      const id = url.searchParams.get('id')
+      const type = url.pathname.includes('playlist') ? 'playlist' : 'song'
+      // 根据指令执行动作
+      if (type && id) this.sendCommand(type, id, mainWindow)
+    } else if (rawUrl.includes('orpheus://')) {
+      try {
+        // 去掉协议头 orpheus:// 和可能存在的冗余斜杠
+        const base64Part = rawUrl.replace('orpheus://', '').replace(/^\/+/, '')
+        if (!base64Part) return
+        // Base64 解码
+        const jsonStr = Buffer.from(base64Part, 'base64').toString('utf8')
+        const data = JSON.parse(jsonStr)
+        // 根据指令执行动作
+        if (data.type && data.id) this.sendCommand(data.type, data.id, mainWindow)
+      } catch (err) {
+        MessageWriter.error(err as Error, `[MusicShareSystem] Unable to parse URL : ${rawUrl}`)
       }
-    } catch (err) {
-      MessageWriter.error(err as Error, '[Playback System] Cannot read snapshot from database')
+    }
+  }
+
+  /**
+   * * 发射消息或者暂时缓存
+   */
+  private static sendCommand(
+    type: 'song' | 'playlist',
+    id: string,
+    window: BrowserWindow | undefined
+  ) {
+    const command = () => {
+      if (type === 'song') PlaySongMessage.send(id)
+      else if (type === 'playlist') SetPlaylistMessage.send(id)
+    }
+    // 如果窗口已经好了，直接发射消息
+    if (window) {
+      command()
+    } else {
+      // 否则暂时缓存起来
+      SetCommandQueueMessage.send('mainWindow', command)
     }
   }
 }

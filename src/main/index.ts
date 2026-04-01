@@ -1,17 +1,12 @@
 import 'reflect-metadata'
-//注册system
 export * from './init'
-export * from './server'
-export * from './windows'
 //启动
-import { InitStarryMessage, InitSystem } from './init'
-import { server } from './utils'
+import { InitStarryMessage, bindComponents } from './init'
+import { server } from './server'
 import { createVirid } from '@virid/core'
 import { MainPlugin } from '@virid/main'
 import { ExpressPlugin } from '@virid/express'
 import { app } from 'electron'
-import { bindComponents } from './server'
-
 
 const virid = createVirid()
   .use(MainPlugin, { electronApp: app })
@@ -19,9 +14,5 @@ const virid = createVirid()
 //绑定组件
 bindComponents(virid)
 
-//注册协议
-InitSystem.registerProtocols()
-// 初始化完成，点火
-app.whenReady().then(() => {
-  InitStarryMessage.send(server, 1566)
-})
+//初始化整个App
+InitStarryMessage.send(1566)

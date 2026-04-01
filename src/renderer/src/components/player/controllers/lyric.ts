@@ -33,8 +33,9 @@ export class LyricController {
    * * 容器变化时重新获取高度
    */
   @OnHook('onMounted')
-  public onMounted() {
+  public async onMounted() {
     if (this.containerRef.value) {
+      await nextTick()
       // 初始计算高度
       this.containerHeight = this.containerRef.value.clientHeight
       this.lyricTextHeight = Array.from(this.lyricRef.value!.children).map(el => el.clientHeight)
@@ -46,9 +47,10 @@ export class LyricController {
             el => el.clientHeight
           )
         }
+        this.onLyricIndexChange()
       })
       this.observer.observe(this.containerRef.value)
-      this.containerRef.value.scrollTo({ top: this.shiftTop })
+      this.onLyricIndexChange()
     }
   }
 

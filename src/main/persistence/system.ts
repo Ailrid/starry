@@ -1,0 +1,65 @@
+import {
+  _RecoverPlaybackMessage,
+  BackupPlaybackMessage,
+  InitDatabaseMessage,
+  RecoverPlaybackMessage
+} from './message'
+import { DatabaseComponent, DB } from './component'
+import fs from 'fs'
+import { System, MessageWriter, Message } from '@virid/core'
+
+export class DatabaseSystem {
+  /*
+   * 创建数据库
+   */
+  @System({
+    priority: 1000
+  })
+  static initDatabase(
+    @Message(InitDatabaseMessage) message: InitDatabaseMessage,
+    dbComp: DatabaseComponent
+  ) {
+    const path = message.path
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true })
+    }
+    // 绑定数据库
+    dbComp.db = new DB(path)
+    dbComp.cachePath = message.cachePath
+    MessageWriter.info('[Express] Database: Database and Cache path bound successfully.')
+  }
+}
+
+/**
+ * * 播放列表备份系统
+ */
+export class PlaybackSystem {
+  @System({
+    priority: 999
+  })
+  static async backup(
+    @Message(BackupPlaybackMessage) message: BackupPlaybackMessage,
+    dbComp: DatabaseComponent
+  ) {
+    const { playlistDetail, playlistSongs, currentSong } = message
+
+    dbComp.db.backupPlaybackSnap({
+      playlist_detail: playlistDetail,
+      songs_list: playlistSongs,
+      current_song: currentSong
+    })
+  }
+  @System({
+    messageClass: RecoverPlaybackMessage
+  })
+  async recover(dbComp: DatabaseComponent) {
+    try {
+      const row = dbComp.db.recoverPlaybackSnap()
+      if (row) {
+        _RecoverPlaybackMessage.send(row.playlist_detail, row.songs_list, row.current_song)
+      }
+    } catch (err) {
+      MessageWriter.error(err as Error, '[Playback System] Cannot read snapshot from database')
+    }
+  }
+}

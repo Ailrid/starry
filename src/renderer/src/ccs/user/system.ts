@@ -39,12 +39,12 @@ export class UserSystem {
           FetchUserPlaylistMessage.send()
         } else {
           MessageWriter.error(
-            new Error('[User System] Failed To Fetch User Information: Got empty profile')
+            new Error('[UserSystem] Failed To Fetch User Information: Got empty profile')
           )
         }
       })
       .with({ ok: false }, ({ val }) => {
-        MessageWriter.error(new Error(val), '[User System] Failed To Fetch User Information')
+        MessageWriter.error(new Error(val), '[UserSystem] Failed To Fetch User Information')
       })
       .exhaustive()
   }
@@ -56,7 +56,7 @@ export class UserSystem {
   })
   static async fetchUserPlaylist(userComponent: UserComponent) {
     if (!userComponent.userProfile) {
-      MessageWriter.warn('[User System] Fetch User Playlist: Not login in')
+      MessageWriter.warn('[UserSystem] Fetch User Playlist: Not login in')
       return
     }
     const playlist = await userPlaylist({
@@ -71,7 +71,7 @@ export class UserSystem {
         FetchUserPlaylistDetailMessage.send(val.playlists[0].id)
       })
       .with({ ok: false }, ({ val }) => {
-        MessageWriter.error(new Error(val), '[User System] Failed To Fetch User Playlist')
+        MessageWriter.error(new Error(val), '[UserSystem] Failed To Fetch User Playlist')
       })
       .exhaustive()
   }
@@ -84,7 +84,7 @@ export class UserSystem {
     userComponent: UserComponent
   ) {
     if (!userComponent.userProfile) {
-      MessageWriter.warn('[User System] Fetch User Playlist: Not login in')
+      MessageWriter.warn('[UserSystem] Fetch User Playlist: Not login in')
       return
     }
     if (userComponent.userPlaylistsDetail.has(message.playlistId)) return
@@ -103,7 +103,7 @@ export class UserSystem {
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(
           new Error(val),
-          `[User System] Failed To Fetch User Playlist Detail: Id ${message.playlistId}`
+          `[UserSystem] Failed To Fetch User Playlist Detail: Id ${message.playlistId}`
         )
       })
       .exhaustive()
@@ -117,7 +117,7 @@ export class UserSystem {
     userComponent: UserComponent
   ) {
     if (!userComponent.userProfile) {
-      MessageWriter.warn('[User System] Fetch User Playlist Song: Not login in')
+      MessageWriter.warn('[UserSystem] Fetch User Playlist Song: Not login in')
       return
     }
     if (!userComponent.userPlaylistsDetail.has(message.playlistId)) {
@@ -146,7 +146,7 @@ export class UserSystem {
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(
           new Error(val),
-          `[User System] Failed To Fetch User Playlist Song: Page index: ${message.pageIndex}`
+          `[UserSystem] Failed To Fetch User Playlist Song: Page index: ${message.pageIndex}`
         )
       })
       .exhaustive()
@@ -197,7 +197,7 @@ export class UserSystem {
         .with({ ok: false }, ({ val }) => {
           MessageWriter.error(
             new Error(val),
-            `[User System] Add Song Failed: Cannot get song detail`
+            `[UserSystem] Add Song Failed: Cannot get song detail`
           )
         })
         .exhaustive()
@@ -289,7 +289,7 @@ export class UserSystem {
           }
         })
         .with({ ok: false }, ({ val }) => {
-          MessageWriter.error(new Error(val), `[User System] Delete Fallback Failed`)
+          MessageWriter.error(new Error(val), `[UserSystem] Delete Fallback Failed`)
         })
         .exhaustive()
     }

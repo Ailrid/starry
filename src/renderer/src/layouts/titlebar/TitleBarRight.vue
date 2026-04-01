@@ -33,7 +33,7 @@
 
       <button
         class="hover:text-primary flex h-10 w-10 cursor-pointer items-center justify-center transition-colors active:opacity-50"
-        @click="BackupPlaybackSignalMessage.send()"
+        @click="BackupPlaybackMessage.send()"
       >
         <X :size="18" :stroke-width="1.2" />
       </button>
@@ -43,11 +43,7 @@
 
 <script setup lang="ts">
 import { Minus, Square, X, ArrowLeft, ArrowRight } from 'lucide-vue-next'
-import {
-  BackupPlaybackSignalMessage,
-  MinimizeWindowMessage,
-  MaximizeWindowMessage
-} from '@/ccs/electron'
+import { BackupPlaybackMessage, MinimizeWindowMessage, MaximizeWindowMessage } from '@/ccs/electron'
 </script>
 
 <style scoped>

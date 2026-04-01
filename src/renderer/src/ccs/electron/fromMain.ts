@@ -3,7 +3,9 @@ import { type PlaylistDetail, type SongDetail } from '@/utils'
 import { Message, System } from '@virid/core'
 import { PlaylistComponent, PlaySongMessage, SetPlaylistMessage } from '../playback'
 import { CloseWindowMessage } from './toMain'
-
+/**
+ * * 主进程发起，恢复上次的歌单和歌曲
+ */
 @FromIpc('recover-playback')
 export class RecoverPlaybackMessage extends FromMainMessage {
   constructor(
@@ -14,10 +16,14 @@ export class RecoverPlaybackMessage extends FromMainMessage {
     super()
   }
 }
-@FromIpc('recover-playback-signal')
-export class BackupPlaybackSignalMessage extends FromMainMessage {}
 
-export class BackupPlaybackMessage extends ToMainMessage {
+/**
+ * * 主进程发起或者自身发起，备份播放列表并关闭窗口
+ */
+@FromIpc('backup-playback')
+export class BackupPlaybackMessage extends FromMainMessage {}
+
+export class _BackupPlaybackMessage extends ToMainMessage {
   __virid_messageType: string = 'backup-playback'
   __virid_target: string = 'main'
   constructor(
@@ -36,18 +42,20 @@ export class PlaybackRecoverAndBackupSystem {
   @System({
     priority: 1000
   })
-  static async backup(@Message(RecoverPlaybackMessage) message: RecoverPlaybackMessage) {
+  static async recover(@Message(RecoverPlaybackMessage) message: RecoverPlaybackMessage) {
     const { playlistDetail, playlistSongs, currentSong } = message
     SetPlaylistMessage.send(playlistSongs, playlistDetail)
     PlaySongMessage.send(currentSong, false)
   }
   @System({
-    messageClass: BackupPlaybackSignalMessage,
+    messageClass: BackupPlaybackMessage,
     priority: -100
   })
-  async recover(playlistComponent: PlaylistComponent) {
+  async backup(playlistComponent: PlaylistComponent) {
     if (playlistComponent.playlistDetail && playlistComponent.currentSong)
-      BackupPlaybackMessage.send(
+      // 数据脱水
+      // 这两条消息通过ipc到达主进程之后是顺序的，因此关闭之前一定已经备份完成了
+      _BackupPlaybackMessage.send(
         JSON.parse(JSON.stringify(playlistComponent.playlistDetail)),
         JSON.parse(JSON.stringify(playlistComponent.currentList)),
         JSON.parse(JSON.stringify(playlistComponent.currentSong))
