@@ -6,7 +6,7 @@
         @click="toggle"
         :class="[isOpen ? 'ring-primary border-primary ring-1' : 'hover:bg-accent']"
       >
-        <div class="flex items-center justify-center p-2">
+        <div class="flex items-center justify-center pr-2 pl-2">
           <span class="truncate text-sm">{{ currentLabel || placeholder }}</span>
           <ChevronDown
             :size="14"

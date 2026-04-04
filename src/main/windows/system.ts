@@ -10,12 +10,13 @@ import {
   PlaySongMessage,
   ExecuteCommandQueueMessage,
   SetCommandQueueMessage,
-  CheckClipboardMessage
+  CheckClipboardMessage,
+  SetPlaylistMessage
 } from './message'
 import { System, Message, MessageWriter } from '@virid/core'
 import { join } from 'path'
 import icon from '../../../resources/icon.png?asset'
-import { SetPlaylistMessage } from '@main/persistence'
+
 import { WindowComponent } from './component'
 
 export class WindowControllerSystem {
@@ -188,6 +189,7 @@ export class MusicShareSystem {
       if (type === 'song') PlaySongMessage.send(id)
       else if (type === 'playlist') SetPlaylistMessage.send(id)
     }
+
     // 如果窗口已经好了，直接发射消息
     if (window) {
       command()

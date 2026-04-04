@@ -11,14 +11,6 @@ export class InitDatabaseMessage extends EventMessage {
   }
 }
 
-export class SetPlaylistMessage extends ToRendererMessage {
-  __virid_target: string = 'renderer'
-  __virid_messageType: string = 'set-playlist'
-  constructor(public id: string) {
-    super()
-  }
-}
-
 export class RecoverPlaybackMessage extends SingleMessage {}
 
 export class _RecoverPlaybackMessage extends ToRendererMessage {

@@ -24,20 +24,20 @@ importers:
         specifier: 0.2.0
         version: 0.2.0(electron@39.8.5)
       '@virid/core':
-        specifier: 0.2.0
-        version: 0.2.0(reflect-metadata@0.2.2)
+        specifier: 0.2.1
+        version: 0.2.1(reflect-metadata@0.2.2)
       '@virid/express':
         specifier: 0.2.0
-        version: 0.2.0(@types/express@5.0.6)(@virid/core@0.2.0(reflect-metadata@0.2.2))(express@5.2.1)
+        version: 0.2.0(@types/express@5.0.6)(@virid/core@0.2.1(reflect-metadata@0.2.2))(express@5.2.1)
       '@virid/main':
         specifier: 0.2.0
-        version: 0.2.0(@virid/core@0.2.0(reflect-metadata@0.2.2))(electron@39.8.5)
+        version: 0.2.0(@virid/core@0.2.1(reflect-metadata@0.2.2))(electron@39.8.5)
       '@virid/renderer':
         specifier: 0.2.0
-        version: 0.2.0(@virid/core@0.2.0(reflect-metadata@0.2.2))
+        version: 0.2.0(@virid/core@0.2.1(reflect-metadata@0.2.2))
       '@virid/vue':
-        specifier: 0.2.0
-        version: 0.2.0(@virid/core@0.2.0(reflect-metadata@0.2.2))(vue@3.5.31(typescript@5.9.3))
+        specifier: 0.2.1
+        version: 0.2.1(@virid/core@0.2.1(reflect-metadata@0.2.2))(vue@3.5.31(typescript@5.9.3))
       better-sqlite3:
         specifier: ^12.8.0
         version: 12.8.0
@@ -1247,8 +1247,8 @@ packages:
     peerDependencies:
       electron: ^30.0.0
 
-  '@virid/core@0.2.0':
-    resolution: {integrity: sha512-2Oq77splLur/rjZ8YACRLMyZr+gXBvN/Mk0dKxBwYrKJHugit9Ch4b5SrxXYZf1WXv+v3Y52j9YlO4jDb+P5CQ==}
+  '@virid/core@0.2.1':
+    resolution: {integrity: sha512-1y8b7hIZv7TJSoYPRjQ2gu9V3939q24Tsh2hjtoveU36dO+SDGKaRBtY004ebBVtLjm/xLRaS1IN59aumwauWg==}
     peerDependencies:
       reflect-metadata: ^0.2.2
 
@@ -1270,10 +1270,10 @@ packages:
     peerDependencies:
       '@virid/core': 0.2.0
 
-  '@virid/vue@0.2.0':
-    resolution: {integrity: sha512-8u0sqJoITjdVGXMmCO5yPU0dW/d7jT1Gotn03R3A1fgHboVuJ6wFnWF8io3b4cSRv+NKjhH0VC9Fk6fdAqC6BA==}
+  '@virid/vue@0.2.1':
+    resolution: {integrity: sha512-UN5U/ZsjrM8rjofKSo9dnUIyOEyTX6MezLNCig5W/vlOMW9vj4rO2tO0sfGsZO0WVr+mLeYvQaE4yirWPUrTLA==}
     peerDependencies:
-      '@virid/core': 0.2.0
+      '@virid/core': 0.2.1
       vue: ^3.4.0
 
   '@vitejs/plugin-vue@6.0.5':
@@ -4556,28 +4556,28 @@ snapshots:
     dependencies:
       electron: 39.8.5
 
-  '@virid/core@0.2.0(reflect-metadata@0.2.2)':
+  '@virid/core@0.2.1(reflect-metadata@0.2.2)':
     dependencies:
       reflect-metadata: 0.2.2
 
-  '@virid/express@0.2.0(@types/express@5.0.6)(@virid/core@0.2.0(reflect-metadata@0.2.2))(express@5.2.1)':
+  '@virid/express@0.2.0(@types/express@5.0.6)(@virid/core@0.2.1(reflect-metadata@0.2.2))(express@5.2.1)':
     dependencies:
       '@types/express': 5.0.6
-      '@virid/core': 0.2.0(reflect-metadata@0.2.2)
+      '@virid/core': 0.2.1(reflect-metadata@0.2.2)
       express: 5.2.1
 
-  '@virid/main@0.2.0(@virid/core@0.2.0(reflect-metadata@0.2.2))(electron@39.8.5)':
+  '@virid/main@0.2.0(@virid/core@0.2.1(reflect-metadata@0.2.2))(electron@39.8.5)':
     dependencies:
-      '@virid/core': 0.2.0(reflect-metadata@0.2.2)
+      '@virid/core': 0.2.1(reflect-metadata@0.2.2)
       electron: 39.8.5
 
-  '@virid/renderer@0.2.0(@virid/core@0.2.0(reflect-metadata@0.2.2))':
+  '@virid/renderer@0.2.0(@virid/core@0.2.1(reflect-metadata@0.2.2))':
     dependencies:
-      '@virid/core': 0.2.0(reflect-metadata@0.2.2)
+      '@virid/core': 0.2.1(reflect-metadata@0.2.2)
 
-  '@virid/vue@0.2.0(@virid/core@0.2.0(reflect-metadata@0.2.2))(vue@3.5.31(typescript@5.9.3))':
+  '@virid/vue@0.2.1(@virid/core@0.2.1(reflect-metadata@0.2.2))(vue@3.5.31(typescript@5.9.3))':
     dependencies:
-      '@virid/core': 0.2.0(reflect-metadata@0.2.2)
+      '@virid/core': 0.2.1(reflect-metadata@0.2.2)
       vue: 3.5.31(typescript@5.9.3)
 
   '@vitejs/plugin-vue@6.0.5(vite@7.3.1(@types/node@22.19.15)(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.98.0)(sass@1.98.0)(yaml@2.8.3))(vue@3.5.31(typescript@5.9.3))':

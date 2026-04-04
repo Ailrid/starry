@@ -37,7 +37,13 @@ export class PlaySongMessage extends ToRendererMessage {
     super()
   }
 }
-
+export class SetPlaylistMessage extends ToRendererMessage {
+  __virid_target: string = 'renderer'
+  __virid_messageType: string = 'set-playlist'
+  constructor(public id: string) {
+    super()
+  }
+}
 export class CreateMainWindowMessage extends SingleMessage {
   constructor(public port: number) {
     super()

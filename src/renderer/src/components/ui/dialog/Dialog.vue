@@ -29,4 +29,11 @@ const isShowing = ref(false)
 const open = () => {
   isShowing.value = true
 }
+
+defineExpose({
+  toggle: (show: boolean) =>  isShowing.value = show
+})
+
+
+
 </script>

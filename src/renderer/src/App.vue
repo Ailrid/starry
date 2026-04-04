@@ -9,12 +9,14 @@
     <Layout></Layout>
     <!-- 弹窗的坑 -->
     <div id="dialog"></div>
+    <ShareDialog></ShareDialog>
   </div>
 </template>
 <script setup lang="ts">
 import Layout from '@/layouts/Layout.vue'
 import { useController } from '@virid/vue'
 import { SettingThemeController } from '@/ccs/settings'
+import ShareDialog from './components/public/ShareDialog.vue'
 const tct = useController(SettingThemeController)
 </script>
 
@@ -59,5 +61,4 @@ body {
 /* ::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--primary), transparent 40%);
 } */
-
 </style>

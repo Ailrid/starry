@@ -35,9 +35,6 @@
             >
               <Play :size="18" fill="currentColor" />
             </Button>
-            <Button variant="icon" @click="">
-              <Heart :size="18" />
-            </Button>
           </div>
           <div class="flex-1"></div>
           <!-- 歌单文字信息 -->
@@ -130,7 +127,7 @@ import VirtualList from '@/components/public/VirtualList.vue'
 import { useController } from '@virid/vue'
 import { UserPlaylistPageController, UserPlaylistPageChangeMessage } from './controllers'
 import Button from '@/components/ui/Button.vue'
-import { Play, Heart, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { Play, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { PlaySongMessage } from '@/ccs/playback'
 import Song from '@/components/public/Song.vue'
 import Img from '@/components/public/Img.vue'

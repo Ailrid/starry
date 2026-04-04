@@ -4,7 +4,6 @@ import { OnHook, Project, Responsive, Watch } from '@virid/vue'
 import { SaveSettingsMessage } from '@/ccs/settings'
 @Controller()
 export class PlayerConfigController {
-
   @Project(SettingComponent, i => i.player)
   public player!: PlayerConfig
 
