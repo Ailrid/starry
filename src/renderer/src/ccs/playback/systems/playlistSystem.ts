@@ -17,7 +17,7 @@ export class PlaylistSystem {
    * *加载FM模式歌曲的buffer
    */
   @System()
-  async loadFmPlaylist(
+  static async loadFmPlaylist(
     @Message(LoadFMPlaylistMessage) message: LoadFMPlaylistMessage,
     playlistComponent: PlaylistComponent
   ) {
@@ -55,7 +55,7 @@ export class PlaylistSystem {
    * *加载心动模式歌曲的buffer
    */
   @System()
-  async loadIntelligencePlaylist(
+  static async loadIntelligencePlaylist(
     @Message(LoadIntelligencePlaylistMessage) message: LoadIntelligencePlaylistMessage,
     playlistComponent: PlaylistComponent,
     userComponent: UserComponent
@@ -108,7 +108,7 @@ export class PlaylistSystem {
    * *设置新的播放列表
    */
   @System()
-  setPlaylist(
+  static setPlaylist(
     @Message(SetPlaylistMessage) message: SetPlaylistMessage,
     playlistComponent: PlaylistComponent,
     playerComponent: PlayerComponent
@@ -130,7 +130,7 @@ export class PlaylistSystem {
   @System({
     messageClass: SongLikeMessage
   })
-  likeCurrentSong(playlistComponent: PlaylistComponent, userComponent: UserComponent) {
+  static likeCurrentSong(playlistComponent: PlaylistComponent, userComponent: UserComponent) {
     const asyncTask = async () => {
       if (!playlistComponent.currentSong) return
       const currentSong = playlistComponent.currentSong

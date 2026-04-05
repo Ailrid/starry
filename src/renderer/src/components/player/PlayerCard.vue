@@ -27,7 +27,7 @@
 
     <div class="flex w-full flex-col items-center">
       <div class="flex w-full">
-        <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
+        <div class="flex-1" @dblclick.stop="PlayerControllerMessage.send($event, true)"></div>
         <div class="flex w-[80%] items-center justify-between px-2">
           <Button variant="icon" @click="PreviousSongMessage.send()">
             <SkipBack class="control-btn" :size="18"
@@ -36,11 +36,11 @@
             <SkipForward class="control-btn" :size="18"
           /></Button>
         </div>
-        <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
+        <div class="flex-1" @dblclick.stop="PlayerControllerMessage.send($event, true)"></div>
       </div>
 
       <div class="flex w-full">
-        <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
+        <div class="flex-1" @dblclick.stop="PlayerControllerMessage.send($event, true)"></div>
         <div v-if="sct.currentSong" class="flex max-w-[80%] items-center px-2 whitespace-nowrap">
           <span
             class="song-text text-right"
@@ -58,7 +58,7 @@
             {{ sct.currentSong?.artists[0].name }}
           </span>
         </div>
-        <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
+        <div class="flex-1" @dblclick.stop="PlayerControllerMessage.send($event, true)"></div>
       </div>
     </div>
   </div>

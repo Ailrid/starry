@@ -6,7 +6,7 @@ export class MediaSessionSystem {
   @System({
     messageClass: MediaSessionMessage
   })
-  async changeSongMetadata(lyricComponent: LyricComponent, playlistComponent: PlaylistComponent) {
+  static async changeSongMetadata(lyricComponent: LyricComponent, playlistComponent: PlaylistComponent) {
     const currentSong = playlistComponent.currentSong
 
     if (!currentSong) return

@@ -81,7 +81,7 @@ export class HomePageController {
    */
   @OnHook('onSetup')
   async getRecommendationSongs() {
-    if (!_recommendSongs.length && _personalRadar) return
+    if (_recommendSongs.length != 0 && _personalRadar) return
     const recommend = recommendSong()
     const personalRadar = playlistDetail({ id: 3136952023 })
     const [recommendRes, radarRes] = await Promise.all([recommend, personalRadar])

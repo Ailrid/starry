@@ -20,7 +20,7 @@
               :style="{ '--card-color': hct.colors.get(index) }"
             >
               <div
-                class="bg-primary relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md"
+                class="relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md"
               >
                 <Img :cover="item.cover" />
               </div>

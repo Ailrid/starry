@@ -52,7 +52,7 @@ export class PlaybackSystem {
   @System({
     messageClass: RecoverPlaybackMessage
   })
-  async recover(dbComp: DatabaseComponent) {
+  static async recover(dbComp: DatabaseComponent) {
     try {
       const row = dbComp.db.recoverPlaybackSnap()
       if (row) {

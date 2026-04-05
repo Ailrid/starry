@@ -23,7 +23,7 @@ export class PlayerSystem {
   @System({
     priority: -1
   })
-  async playSong(
+  static async playSong(
     @Message(PlaySongMessage) message: PlaySongMessage,
     playerComponent: PlayerComponent,
     playlistComponent: PlaylistComponent,
@@ -87,7 +87,7 @@ export class PlayerSystem {
    * 暂停或继续播放
    */
   @System()
-  playOrPause(
+  static playOrPause(
     @Message(PlayOrPauseMessage) message: PlayOrPauseMessage,
     playerComponent: PlayerComponent,
     playlistComponent: PlaylistComponent
@@ -105,7 +105,7 @@ export class PlayerSystem {
   @System({
     messageClass: NextSongMessage
   })
-  nextSong(playerComponent: PlayerComponent, playlistComponent: PlaylistComponent) {
+  static nextSong(playerComponent: PlayerComponent, playlistComponent: PlaylistComponent) {
     const { currentList, currentIndex, fmList, intelligenceList, currentSong } = playlistComponent
     const { playMode } = playerComponent
 
@@ -140,7 +140,7 @@ export class PlayerSystem {
   /**
    * 内部私有工具：消费缓冲区
    */
-  private consumeBuffer(buffer: SongDetail[], refillAction: () => void) {
+  static consumeBuffer(buffer: SongDetail[], refillAction: () => void) {
     const next = buffer.shift()
     if (next) {
       PlaySongMessage.send(next)
@@ -158,7 +158,7 @@ export class PlayerSystem {
   @System({
     messageClass: PreviousSongMessage
   })
-  previousSong(playlistComponent: PlaylistComponent) {
+  static previousSong(playlistComponent: PlaylistComponent) {
     const { currentList, currentIndex } = playlistComponent
     if (currentList.length === 0) return
     // 无论什么模式，只要 currentList 有记录，就允许回退
@@ -170,7 +170,7 @@ export class PlayerSystem {
    * 设置音量
    */
   @System()
-  setVolume(
+  static setVolume(
     @Message(SetVolumeMessage) message: SetVolumeMessage,
     playerComponent: PlayerComponent
   ) {
@@ -180,7 +180,7 @@ export class PlayerSystem {
    * 设置进度
    */
   @System()
-  seekProgress(
+  static seekProgress(
     @Message(SeekTimeMessage) message: SeekTimeMessage,
     playerComponent: PlayerComponent
   ) {
@@ -199,7 +199,7 @@ export class PlayerSystem {
    * 设置播放模式
    */
   @System()
-  setPlayMode(
+  static setPlayMode(
     @Message(SetPlayModeMessage) message: SetPlayModeMessage,
     playerComponent: PlayerComponent,
     playlistComponent: PlaylistComponent
