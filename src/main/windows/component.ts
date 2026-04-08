@@ -1,6 +1,6 @@
 import { RecoverPlaybackMessage } from '@main/persistence'
 import { Component } from '@virid/core'
-import { type BrowserWindow } from 'electron'
+import { type Tray, type BrowserWindow } from 'electron'
 
 @Component()
 export class WindowComponent {
@@ -16,4 +16,5 @@ export class WindowComponent {
     ]
   ])
   public windows: Map<string, BrowserWindow> = new Map()
+  public tray!: Tray
 }

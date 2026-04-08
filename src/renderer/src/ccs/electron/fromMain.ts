@@ -1,7 +1,15 @@
 import { FromMain, ToMainMessage, FromMainMessage } from '@virid/renderer'
 import { type PlaylistDetail, type SongDetail } from '@/utils'
 import { Message, System } from '@virid/core'
-import { PlaylistComponent, PlaySongMessage, SetPlaylistMessage } from '../playback'
+import {
+  PlaylistComponent,
+  PlaySongMessage,
+  SetPlaylistMessage,
+  PlayOrPauseMessage,
+  NextSongMessage,
+  PreviousSongMessage,
+  PlayerComponent
+} from '../playback'
 import { CloseWindowMessage } from './toMain'
 /**
  * * 主进程发起，恢复上次的歌单和歌曲
@@ -61,5 +69,42 @@ export class PlaybackRecoverAndBackupSystem {
         JSON.parse(JSON.stringify(playlistComponent.currentSong))
       )
     CloseWindowMessage.send()
+  }
+}
+
+/**
+ * * 上一首
+ */
+@FromMain('play-or-pause')
+export class _PlayOrPauseMessage extends FromMainMessage {}
+
+/**
+ * * 下一首
+ */
+@FromMain('next-song')
+export class _NextSongMessage extends FromMainMessage {}
+
+/**
+ * * 暂停与播放
+ */
+@FromMain('previous-song')
+export class _PreviousSongMessage extends FromMainMessage {}
+
+export class SongControlSystem {
+  @System({
+    messageClass: _PlayOrPauseMessage
+  })
+  static playOrPause(playerComponent: PlayerComponent) {
+    PlayOrPauseMessage.send(!playerComponent.player.isPlaying)
+  }
+
+  @System({ messageClass: _NextSongMessage })
+  static next() {
+    NextSongMessage.send()
+  }
+
+  @System({ messageClass: _PreviousSongMessage })
+  static previous() {
+    PreviousSongMessage.send()
   }
 }

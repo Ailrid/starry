@@ -14,8 +14,11 @@ export class PlayOrPauseMessage extends SingleMessage {
     super()
   }
 }
-export class NextSongMessage extends SingleMessage {}
-export class PreviousSongMessage extends SingleMessage {}
+
+export class NextSongMessage extends SingleMessage { }
+
+export class PreviousSongMessage extends SingleMessage { }
+
 
 export class SetVolumeMessage extends SingleMessage {
   constructor(public volume: number) {
