@@ -1,21 +1,21 @@
 <template>
   <div class="flex h-full w-full flex-col justify-between gap-2 p-2 pb-7">
-    <div class="flex flex-col gap-4 p-2">
+    <div class="flex flex-col gap-5 p-2">
       <div
         v-for="(item, index) in functions"
         :key="item.name"
         class="group relative flex w-full cursor-pointer items-center gap-4 pb-3 transition-all duration-500 hover:translate-x-2"
         @click="item.onClick"
       >
-        <div class="relative flex items-center gap-3">
-          <span class="group-hover:text-primary font-bold tracking-widest transition-colors">
-            {{ String(index + 1).padStart(2, '0') }}
-          </span>
+        <span class="group-hover:text-primary font-bold tracking-widest transition-colors">
+          {{ String(index + 1).padStart(2, '0') }}
+        </span>
+        <Button variant="none" class="relative flex items-center gap-3">
           <component
             :is="item.component"
             class="group-hover:text-primary h-5 w-5 transition-all duration-500 group-hover:scale-110"
           />
-        </div>
+        </Button>
 
         <div class="flex-1">
           <span
@@ -50,6 +50,7 @@
 
 <script setup lang="ts">
 import { House, Play, User, Download, Type } from 'lucide-vue-next'
+import Button from '../ui/Button.vue'
 import MiniLyric from '../player/MiniLyric.vue'
 import { useController } from '@virid/vue'
 import { MenuAreaController } from './controllers'

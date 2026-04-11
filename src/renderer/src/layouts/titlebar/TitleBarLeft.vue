@@ -26,6 +26,13 @@
             <div class="bg-primary h-0.5 w-full"></div>
             <Button
               variant="none"
+              @click="tct.changeView('menu-area')"
+              class="hover:bg-primary/10 hover:text-primary justify-start!"
+            >
+              <Heart class="mr-2 h-4 w-4" /> 功能菜单
+            </Button>
+            <Button
+              variant="none"
               @click="tct.changeView('current-playlist')"
               class="hover:bg-primary/10 hover:text-primary justify-start!"
             >
@@ -37,13 +44,6 @@
               class="hover:bg-primary/10 hover:text-primary justify-start!"
             >
               <Disc class="mr-2 h-4 w-4" /> 歌单列表
-            </Button>
-            <Button
-              variant="none"
-              @click="tct.changeView('menu-area')"
-              class="hover:bg-primary/10 hover:text-primary justify-start!"
-            >
-              <Heart class="mr-2 h-4 w-4" /> 功能菜单
             </Button>
           </div>
         </template>

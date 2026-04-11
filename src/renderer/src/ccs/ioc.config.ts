@@ -15,7 +15,7 @@ import { InitializationMessage } from './init'
 import * as _ from './utils'
 export * from './electron'
 const app = createVirid()
-app.use(VuePlugin, {})
+app.use(VuePlugin, undefined)
 app.use(RenderPlugin, {
   windowId: 'renderer'
 })
