@@ -1,7 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 import { System, MessageWriter, Message, ErrorMessage, WarnMessage, InfoMessage } from '@virid/core'
-import { BootStrapElectronMessage, InitStarryMessage, RegisterProtocolMessage } from './message'
+import {
+  BootStrapElectronMessage,
+  InitStarryMessage,
+  RegisterProtocolMessage,
+  RendererErrorMessage,
+  RendererInfoMessage,
+  RendererWarnMessage
+} from './message'
 import { electronApp } from '@electron-toolkit/utils'
 import { app, net, BrowserWindow, protocol } from 'electron'
 import { pathToFileURL } from 'url'
@@ -163,7 +170,8 @@ export class LogSystem {
 
   private static write(level: string, context: string, detail?: any) {
     const time = new Date().toLocaleString()
-    const logEntry = `[${time}] [${level}] [${context}]: ${JSON.stringify(detail || '')}\n`
+    let logEntry = `[${time}] [${level}]\nContext: ${context}\n`
+    if(detail) logEntry += `Detail: ${JSON.stringify(detail)}\n`
     fs.appendFile(this.logPath, logEntry, err => {
       if (err) console.error('Failed to write log:', err)
     })
@@ -171,7 +179,7 @@ export class LogSystem {
 
   @System()
   static error(@Message(ErrorMessage) message: ErrorMessage) {
-    this.write('ERROR', message.context || '', {
+    this.write('MAIN ERROR', message.context || '', {
       message: message.error.message,
       stack: message.error.stack
     })
@@ -179,11 +187,28 @@ export class LogSystem {
 
   @System()
   static warn(@Message(WarnMessage) message: WarnMessage) {
-    this.write('WARN', message.context, {})
+    this.write('MAIN WARN', message.context)
   }
 
   @System()
   static info(@Message(InfoMessage) message: InfoMessage) {
-    this.write('INFO', message.context, {})
+    this.write('MAIN INFO', message.context)
+  }
+
+  @System()
+  static rendererError(@Message(RendererErrorMessage) message: RendererErrorMessage) {
+    this.write(`${message.__virid_source.toLocaleUpperCase()} ERROR`, message.context || '', {
+      message: message.message
+    })
+  }
+
+  @System()
+  static rendererWarn(@Message(RendererWarnMessage) message: RendererWarnMessage) {
+    this.write(`${message.__virid_source.toLocaleUpperCase()} WARN`, message.context)
+  }
+
+  @System()
+  static rendererInfo(@Message(RendererInfoMessage) message: RendererInfoMessage) {
+    this.write(`${message.__virid_source.toLocaleUpperCase()} INFO`, message.context)
   }
 }

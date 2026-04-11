@@ -59,7 +59,7 @@ export class PlaybackRecoverAndBackupSystem {
     messageClass: BackupPlaybackMessage,
     priority: -100
   })
-  async backup(playlistComponent: PlaylistComponent) {
+  static async backup(playlistComponent: PlaylistComponent) {
     if (playlistComponent.playlistDetail && playlistComponent.currentSong)
       // 数据脱水
       // 这两条消息通过ipc到达主进程之后是顺序的，因此关闭之前一定已经备份完成了

@@ -7,7 +7,7 @@
           <Button
             @click="toggle"
             variant="none"
-            @wheel="TitleBarLeftControllerMessage.send($event)"
+            @wheel.passive="TitleBarLeftControllerMessage.send($event)"
             class="hover:text-primary"
           >
             <div class="flex items-center justify-center gap-1">

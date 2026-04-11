@@ -22,19 +22,19 @@ import { WindowComponent } from './component'
  */
 export class WindowControllerSystem {
   @System()
-  closeWindow(@Message(CloseWindowMessage) message: CloseWindowMessage) {
+  static closeWindow(@Message(CloseWindowMessage) message: CloseWindowMessage) {
     message.senderWindow.close()
   }
   @System()
-  hiddenWindow(@Message(HiddenWindowMessage) message: HiddenWindowMessage) {
+  static hiddenWindow(@Message(HiddenWindowMessage) message: HiddenWindowMessage) {
     message.senderWindow.hide()
   }
   @System()
-  minimizeWindow(@Message(MinimizeWindowMessage) message: MinimizeWindowMessage) {
+  static minimizeWindow(@Message(MinimizeWindowMessage) message: MinimizeWindowMessage) {
     message.senderWindow.minimize()
   }
   @System()
-  maximizeWindow(@Message(MaximizeWindowMessage) message: MaximizeWindowMessage) {
+  static maximizeWindow(@Message(MaximizeWindowMessage) message: MaximizeWindowMessage) {
     if (message.senderWindow.isMaximized()) {
       message.senderWindow.unmaximize()
     } else {
@@ -43,16 +43,16 @@ export class WindowControllerSystem {
   }
 
   @System()
-  showWindow(
+  static showWindow(
     @Message(ShowWindowMessage) message: ShowWindowMessage,
     windowComponent: WindowComponent
   ) {
     if (!windowComponent.windows.has(message.windowName)) return
-    windowComponent.windows.get(message.windowName)?.show()
+    windowComponent.windows.get(message.windowName)!.show()
   }
 
   @System()
-  async openDialog(@Message(OpenDialogMessage) message: OpenDialogMessage) {
+  static async openDialog(@Message(OpenDialogMessage) message: OpenDialogMessage) {
     // 调用原生对话框
     const result = await dialog.showOpenDialog(message.senderWindow, message.options)
     // 如果用户没有取消，并且确实选择了文件

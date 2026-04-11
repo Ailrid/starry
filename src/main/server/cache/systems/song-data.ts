@@ -52,7 +52,7 @@ export class CacheSongDataSystem {
   //用于暂存url的map
   static urlMap: Map<number, string> = new Map()
   @HttpSystem()
-  public static async songData(
+  static async songData(
     @Message(CacheSongDataRequestMessage)
     message: CacheSongDataRequestMessage,
     @Query('id') id: number,
@@ -117,7 +117,7 @@ export class CacheSongDataSystem {
   }
 
   @HttpSystem()
-  public static async songDataFromLocal(
+  static async songDataFromLocal(
     @Message(DataFromLocalMessage) _message: DataFromLocalMessage,
     _dbComponent: DatabaseComponent
   ) {
@@ -128,7 +128,7 @@ export class CacheSongDataSystem {
   }
 
   @HttpSystem()
-  public static async songDataFromCache(
+  static async songDataFromCache(
     @Message(DataFromCacheMessage) message: DataFromCacheMessage,
     @Query('id') id: number,
     @Query('md5') md5: string,
@@ -155,7 +155,7 @@ export class CacheSongDataSystem {
 
   static fileLock = new Set()
   @System()
-  public async downloadCache(
+  static async downloadCache(
     @Message(DownloadCacheMessage) message: DownloadCacheMessage,
     dbComponent: DatabaseComponent
   ) {
@@ -209,7 +209,7 @@ export class CacheSongDataSystem {
   @System({
     messageClass: ClearCacheMessage
   })
-  public async clearCache(dbComponent: DatabaseComponent) {
+  static async clearCache(dbComponent: DatabaseComponent) {
     // 先查一下目前总大小
     const row = dbComponent.db.db
       .prepare('SELECT SUM(size) as totalSize FROM song_cache')

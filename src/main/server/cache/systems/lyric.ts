@@ -24,7 +24,7 @@ class CacheLyricMessage extends SingleMessage {
 
 export class CacheLyricSystem {
   @HttpSystem()
-  public static async lyric(
+  static async lyric(
     @Message(CacheLyricRequestMessage) message: CacheLyricRequestMessage,
     @Body() body: LyricRequest,
     @Cookies() cookies: Record<string, string>,
@@ -103,12 +103,12 @@ export class CacheLyricSystem {
   @HttpSystem({
     messageClass: LyricFromLocalMessage
   })
-  public static async lyricFromLocal() {
+  static async lyricFromLocal() {
     //TODO
   }
 
   @System()
-  public static cacheLyric(
+  static cacheLyric(
     @Message(CacheLyricMessage) message: CacheLyricMessage,
     dbComponent: DatabaseComponent
   ) {
