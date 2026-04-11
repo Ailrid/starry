@@ -13,9 +13,9 @@ type NameType = 'menu-area' | 'current-playlist' | 'playlist-manager'
 @Controller()
 export class TitleBarLeftController {
   public nameMap = {
-    'menu-area': '最近播放',
+    'menu-area': '功能菜单',
     'current-playlist': '播放列表',
-    'playlist-manager': '功能菜单'
+    'playlist-manager': '最近播放'
   }
   public nameList = ['menu-area', 'current-playlist', 'playlist-manager']
   @Responsive()

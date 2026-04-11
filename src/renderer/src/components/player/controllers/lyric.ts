@@ -22,7 +22,7 @@ export class LyricController {
   //容器的高度
   public containerHeight: number = 0
 
-  @Use(() => useTemplateRef('container'))
+  @Use(() => useTemplateRef('lyric-container'))
   public containerRef!: ShallowRef<HTMLElement | null>
   @Use(() => useTemplateRef('lyric'))
   public lyricRef!: ShallowRef<HTMLElement | null>
