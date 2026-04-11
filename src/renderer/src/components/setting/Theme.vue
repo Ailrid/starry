@@ -129,7 +129,7 @@
             </Button>
             <Button
               variant="outline"
-              class="font-color-btn bg-black shadow hover:bg-zinc-900"
+              class="font-color-btn bg-black shadow"
               @click="tch.setting.textColor = 'white'"
             >
               <span class="text-xs text-white">浅色文字</span>
