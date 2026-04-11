@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full w-full p-2">
-    <div class="mb-7 flex flex-col gap-2 overflow-y-auto">
+  <div class="h-full w-full overflow-y-auto p-2">
+    <div class="mb-7 flex flex-col gap-2">
       <div
         v-for="item in pct.playlists"
         :key="item.id"

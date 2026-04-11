@@ -52,7 +52,7 @@
           <span
             class="song-text text-left"
             @click.stop="
-              $router.push({ name: 'artist2', params: { id: sct.currentSong.artists[0].id } })
+              $router.push({ name: 'artist', params: { id: sct.currentSong.artists[0].id } })
             "
           >
             {{ sct.currentSong?.artists[0].name }}
