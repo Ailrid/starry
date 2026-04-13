@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import Button from '@/components/ui/Button.vue'
-import { Minus, Square, X, ArrowLeft, ArrowRight } from 'lucide-vue-next'
+import { Minus, Square, X } from 'lucide-vue-next'
 import { MinimizeWindowMessage, MaximizeWindowMessage, CloseWindowMessage } from '@/ccs/electron'
 </script>
 

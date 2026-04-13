@@ -3,7 +3,7 @@ import { VuePlugin } from '@virid/vue'
 import { RenderPlugin } from '@virid/renderer'
 import { bindLoginControllers } from '../components/controllers'
 const app = createVirid()
-// @ts-expect-error
+// @ts-ignore
 app.use(VuePlugin, {})
 app.use(RenderPlugin, {
   windowId: 'login'
