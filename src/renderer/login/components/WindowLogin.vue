@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center space-y-6 py-2">
+  <div class="flex h-full w-full flex-col items-center justify-center space-y-6 py-2">
     <!-- 开头装饰 -->
     <div class="flex flex-col items-center space-y-2 text-center">
       <div
@@ -29,7 +29,7 @@
       </div>
     </div>
     <!-- 提示 -->
-    <div class="w-full max-w-72 space-y-3">
+    <div class="w-full space-y-3">
       <div class="flex items-start gap-3">
         <span class="prompt-text">1</span>
         <p class="text-xs leading-5">点击“去登录”，在弹出的官方页面完成登录操作</p>
@@ -68,8 +68,6 @@
         确认登录
       </Button>
     </div>
-
-    <p class="text-sm opacity-80">您的密码不会被存储，登录行为由官方环境保护</p>
   </div>
 </template>
 

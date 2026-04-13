@@ -1,3 +1,6 @@
+export * from './express'
+export * from './cache'
+
 import { System, MessageWriter, Message, EventMessage } from '@virid/core'
 import { server } from './express'
 
@@ -24,5 +27,3 @@ export class InitServerSystem {
     })
   }
 }
-export * from './express'
-export * from './cache'

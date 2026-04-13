@@ -2,7 +2,7 @@ import { Controller, MessageWriter } from '@virid/core'
 import { match } from 'ts-pattern'
 import { OnHook, Responsive } from '@virid/vue'
 import { loginQrKey, loginQrCreate, loginQrCheck } from '@/utils/server'
-import { FetchUserAccountMessage } from '@/ccs/user'
+
 @Controller()
 export class QrLoginController {
   @Responsive()
@@ -83,7 +83,6 @@ export class QrLoginController {
           .with({ code: 803 }, () => {
             this.currentStatus = '登陆成功'
             this.removeInterval()
-            FetchUserAccountMessage.send()
           })
           .with({ code: -462 }, () => {
             this.currentStatus = '登陆频繁，请使用网页登陆'

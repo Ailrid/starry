@@ -1,6 +1,6 @@
 <template>
   <div class="h-full w-full pr-8 pl-8">
-    <div class="mask h-full w-full overflow-y-auto">
+    <div v-if="hct.userProfile" class="h-full w-full overflow-y-auto">
       <div class="flex w-full flex-col gap-4">
         <!-- 日推 -->
         <section class="no-scrollbar section">
@@ -190,6 +190,12 @@
             </div>
           </div>
         </section>
+      </div>
+    </div>
+    <div v-else class="flex h-full w-full items-center justify-center">
+      <div class="text-center">
+        <div class="mb-2 animate-bounce text-xl">💿</div>
+        <div class="text-sm tracking-widest uppercase">Fetching Data...</div>
       </div>
     </div>
   </div>

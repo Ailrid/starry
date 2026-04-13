@@ -2,7 +2,6 @@ import { Controller, MessageWriter } from '@virid/core'
 import { openLoginWindow, closeLoginWindow } from '@/utils/server'
 import { match } from 'ts-pattern'
 import { Listener, Responsive } from '@virid/vue'
-import { FetchUserAccountMessage } from '@/ccs/user'
 import { FromMain, FromMainMessage } from '@virid/renderer'
 //监听主进程发来的消息，一旦登陆完成，获取cookies
 @FromMain('login-netease-window')
@@ -52,9 +51,6 @@ export class WindowLoginController {
         if (val.code === 200) {
           this.loginStatus = 'success'
           this.loginInfo = '身份认证成功，欢迎回来'
-          // 这里的 Cookie 已经被 HttpSystem 自动 Set-Cookie 了
-          // 直接触发账号信息拉取即可
-          FetchUserAccountMessage.send()
         } else {
           this.loginStatus = 'error'
           this.loginInfo = '未检测到登录成功，请重新尝试'

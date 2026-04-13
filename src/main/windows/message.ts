@@ -10,9 +10,9 @@ export class CloseWindowMessage extends FromRendererMessage {}
 export class MinimizeWindowMessage extends FromRendererMessage {}
 
 @FromRenderer('maximize-window')
-export class MaximizeWindowMessage extends FromRendererMessage { }
+export class MaximizeWindowMessage extends FromRendererMessage {}
 @FromRenderer('hidden-window')
-export class HiddenWindowMessage extends FromRendererMessage { }
+export class HiddenWindowMessage extends FromRendererMessage {}
 
 // 内部的操作消息
 export class ShowWindowMessage extends SingleMessage {
@@ -20,7 +20,6 @@ export class ShowWindowMessage extends SingleMessage {
     super()
   }
 }
-
 
 @FromRenderer('open-dialog')
 export class OpenDialogMessage extends FromRendererMessage {
@@ -76,11 +75,16 @@ export class BackupAndCloseMessage extends ToRendererMessage {
   __virid_messageType: string = 'backup-playback'
 }
 
-export class CreateMainWindowMessage extends SingleMessage {
-  constructor(public port: number) {
-    super()
-  }
+export class NeteaseLoginSuccessMessage extends ToRendererMessage {
+  __virid_messageType: string = 'netease-login-success'
+  __virid_target: string = 'renderer'
 }
+
+export class CreateMainWindowMessage extends SingleMessage {}
+
+export class CreateLoginWindowMessage extends SingleMessage {}
+
+export class CreateLyricWindowMessage extends SingleMessage {}
 
 export class ExecuteCommandQueueMessage extends EventMessage {
   constructor(public window: string) {

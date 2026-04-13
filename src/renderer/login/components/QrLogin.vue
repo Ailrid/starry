@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center space-y-6 py-4">
+  <div class="flex h-full w-full flex-col items-center justify-center space-y-6 py-4">
     <div class="group relative">
       <div
         class="qr-container h-52 w-52 overflow-hidden rounded-2xl border border-slate-100 bg-white p-3 shadow-sm transition-all duration-500"
@@ -44,7 +44,7 @@
     <Button
       variant="none"
       @click="qct.getQrSvg()"
-      class="hover:text-primary cursor-pointer text-sm  underline underline-offset-4 transition-colors"
+      class="hover:text-primary cursor-pointer text-sm underline underline-offset-4 transition-colors"
     >
       刷新二维码
     </Button>
@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import { useController } from '@virid/vue'
 import { QrLoginController } from './controllers'
-import Button from '../ui/Button.vue'
+import Button from '@/components/ui/Button.vue'
 const qct = useController(QrLoginController)
 </script>
 

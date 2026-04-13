@@ -33,7 +33,7 @@ export class DatabaseSystem {
     // 绑定数据库
     dbComp.db = new DB(dbFilePath)
     dbComp.cachePath = message.cachePath
-    MessageWriter.info('[Express] Database: Database and Cache path bound successfully.')
+    MessageWriter.info('[DatabaseSystem] Database: Database and Cache path bound successfully.')
   }
 }
 
@@ -66,7 +66,7 @@ export class PlaybackSystem {
         _RecoverPlaybackMessage.send(row.playlist_detail, row.songs_list, row.current_song)
       }
     } catch (err) {
-      MessageWriter.error(err as Error, '[Playback System] Cannot read snapshot from database')
+      MessageWriter.error(err as Error, '[PlaybackSystem] Cannot read snapshot from database')
     }
   }
 }

@@ -59,6 +59,14 @@ export class DB {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `)
+
+    // 记录cookie的表
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS netease_cookies (
+        id INTEGER PRIMARY KEY DEFAULT 1,
+        cookies TEXT
+    )
+    `)
   }
   addSongCache(record: SongCacheRecord) {
     const { id, md5, local_path, size } = record
@@ -121,6 +129,23 @@ export class DB {
       songs_list: JSON.parse(row.songs_list),
       current_song: JSON.parse(row.current_song)
     } as PlaybackSnapRecord
+  }
+  removePlaybackSnap() {
+    this.db.prepare('DELETE FROM playback_snap WHERE id = 1').run()
+  }
+
+  getCookies(): string | undefined {
+    const row = this.db.prepare('SELECT * FROM netease_cookies WHERE id = 1').get() as any
+    if (!row) return undefined
+    return row.cookies
+  }
+  setCookies(cookies: string) {
+    this.db
+      .prepare('INSERT OR REPLACE INTO netease_cookies (id, cookies) VALUES (1, ?)')
+      .run(cookies)
+  }
+  removeCookies() {
+    this.db.prepare('DELETE FROM netease_cookies WHERE id = 1').run()
   }
 }
 

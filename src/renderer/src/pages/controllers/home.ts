@@ -7,7 +7,8 @@ import {
   type HomepagePlaylist,
   type HomepageSong,
   type SongDetail,
-  type PlaylistDetail
+  type PlaylistDetail,
+  type UserProfile
 } from '@/utils'
 import { OnHook, Project, Responsive, Watch, Use } from '@virid/vue'
 import { match } from 'ts-pattern'
@@ -28,6 +29,9 @@ let _personalRadar: PlaylistDetail | null = null
 
 @Controller()
 export class HomePageController {
+  @Project(UserComponent, i => i.userProfile)
+  public userProfile!: UserProfile
+
   @Responsive()
   public pageSong: HomepageSong[] = _pageSong
   @Responsive()
@@ -195,5 +199,10 @@ export class HomePageController {
     this.getRecommendationSongs()
     LoadFMPlaylistMessage.send(false, true)
     LoadIntelligencePlaylistMessage.send(false, true)
+  }
+  // 登陆时刷新数据
+  @Watch(UserComponent, i => i.userProfile)
+  public onLogin() {
+    if (this.userProfile) this.refresh()
   }
 }

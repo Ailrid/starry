@@ -16,13 +16,29 @@ export default defineConfig({
     plugins: [swcPlugin()],
     resolve: {
       alias: {
-        // 确保这里的配置与 tsconfig.json 一致
         '@main': resolve(__dirname, './src/main')
       }
     }
   },
-  preload: {},
+  preload: {
+    build: {
+      rollupOptions: {
+        input: {
+          index: resolve(__dirname, './src/preload/index.ts'),
+          login: resolve(__dirname, './src/preload/index.ts')
+        }
+      }
+    }
+  },
   renderer: {
+    build: {
+      rollupOptions: {
+        input: {
+          index: resolve(__dirname, './src/renderer/index.html'),
+          login: resolve(__dirname, './src/renderer/login.html')
+        }
+      }
+    },
     optimizeDeps: {
       exclude: ['@virid/core', '@virid/vue']
     },

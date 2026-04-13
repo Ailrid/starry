@@ -1,6 +1,6 @@
 import { FromMain, ToMainMessage, FromMainMessage } from '@virid/renderer'
-import { type PlaylistDetail, type SongDetail } from '@/utils'
-import { Message, System } from '@virid/core'
+import { fetchCookies, type PlaylistDetail, type SongDetail } from '@/utils'
+import { Message, MessageWriter, System } from '@virid/core'
 import {
   PlaylistComponent,
   PlaySongMessage,
@@ -11,6 +11,8 @@ import {
   PlayerComponent
 } from '../playback'
 import { CloseWindowMessage } from './toMain'
+import { match } from 'ts-pattern'
+import { FetchUserAccountMessage } from '../user'
 /**
  * * 主进程发起，恢复上次的歌单和歌曲
  */
@@ -106,5 +108,29 @@ export class SongControlSystem {
   @System({ messageClass: _PreviousSongMessage })
   static previous() {
     PreviousSongMessage.send()
+  }
+}
+
+/**
+ * * 尝试登陆
+ */
+@FromMain('netease-login-success')
+export class NeteaseLoginSuccessMessage extends FromMainMessage {}
+export class NeteaseLoginSystem {
+  @System({
+    messageClass: NeteaseLoginSuccessMessage
+  })
+  static async loginSuccess() {
+    // 尝试登陆
+    const res = await fetchCookies()
+    match(res)
+      .with({ ok: true }, () => {
+        // 获取用户的账号信息
+        FetchUserAccountMessage.send()
+      })
+      .with({ ok: false }, ({ val }) => {
+        MessageWriter.error(new Error(val), '[NeteaseLoginSystem] Login Failed')
+      })
+      .otherwise(() => {})
   }
 }

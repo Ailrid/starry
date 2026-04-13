@@ -44,7 +44,12 @@ export async function openLoginWindow(): Promise<Result<OpenLoginWindowResponse,
 export async function closeLoginWindow(): Promise<Result<CloseLoginWindowResponse, string>> {
   return await request<object, CloseLoginWindowResponse>('/netease/login/window/close', {})
 }
-
+/**
+ * * 关闭登陆窗口
+ */
+export async function fetchCookies(): Promise<Result<CloseLoginWindowResponse, string>> {
+  return await request<object, CloseLoginWindowResponse>('/netease/login/cookies', {})
+}
 /**
  * * 登出
  */

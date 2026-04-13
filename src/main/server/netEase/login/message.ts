@@ -1,5 +1,10 @@
 import { HttpRoute, HttpRequestMessage } from '@virid/express'
 @HttpRoute({
+  path: '/netease/login/cookies',
+  method: 'post'
+})
+export class FetchCookiesRequestMessage extends HttpRequestMessage {}
+@HttpRoute({
   path: '/netease/login/window/open',
   method: 'post'
 })

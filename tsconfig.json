@@ -15,11 +15,9 @@
     "types": [
       "reflect-metadata"
     ],
-    // ...
-    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/renderer/src/*"
+        "/src/renderer/src/*"
       ]
     },
   }

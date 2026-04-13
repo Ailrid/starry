@@ -13,8 +13,12 @@ import { electronApp } from '@electron-toolkit/utils'
 import { app, net, BrowserWindow, protocol } from 'electron'
 import { pathToFileURL } from 'url'
 import { normalize, isAbsolute, join } from 'path'
-import { CreateMainWindowMessage, ShareMusicCommandMessage } from '@main/windows'
-import { InitDatabaseMessage } from '@main/persistence'
+import {
+  CreateLoginWindowMessage,
+  CreateMainWindowMessage,
+  ShareMusicCommandMessage
+} from '@main/windows'
+import { DatabaseComponent, InitDatabaseMessage } from '@main/persistence'
 import { InitServerMessage, ServerInitializedMessage } from '@main/server'
 import { ElectronComponent } from './component'
 // 注册文件协议
@@ -143,15 +147,19 @@ export class InitElectronSystem {
   @System({
     messageClass: BootStrapElectronMessage
   })
-  static initApp(electronComponent: ElectronComponent) {
+  static initApp(dbComponent: DatabaseComponent) {
     //配置设置
     electronApp.setAppUserModelId('com.ailrid.vireo')
-    //创建窗口
-    CreateMainWindowMessage.send(electronComponent.port)
+    if (dbComponent.db.getCookies()) {
+      CreateMainWindowMessage.send()
+    } else {
+      CreateLoginWindowMessage.send()
+    }
     //mac用的东西
     app.on('activate', function () {
-      if (BrowserWindow.getAllWindows().length === 0)
-        CreateMainWindowMessage.send(electronComponent.port)
+      if (BrowserWindow.getAllWindows().length === 0 && dbComponent.db.getCookies()) {
+        CreateMainWindowMessage.send()
+      }
     })
     app.on('window-all-closed', () => {
       if (process.platform !== 'darwin') {

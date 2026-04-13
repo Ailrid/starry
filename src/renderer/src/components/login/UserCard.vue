@@ -67,7 +67,14 @@
         <div class="bg-primary h-2 w-2 rounded-full brightness-50 contrast-150"></div>
         已加入网易云 {{ uct.userProfile?.createDays || 0 }} 天
       </div>
-      <Button variant="outline" @click="LogoutMessage.send()">
+      <Button
+        variant="outline"
+        @click="
+          () => {
+            ;(logout(), CloseWindowMessage.send())
+          }
+        "
+      >
         <i class="ri-logout-box-r-line mr-1 text-base brightness-50 contrast-150"> 退出登录</i>
       </Button>
     </div>
@@ -75,9 +82,11 @@
 </template>
 <script setup lang="ts">
 import { useController } from '@virid/vue'
-import { LogoutMessage, UserController } from '@/ccs/user'
+import { UserController } from '@/ccs/user'
 import Button from '../ui/Button.vue'
 import Img from '../public/Img.vue'
+import { CloseWindowMessage } from '@/ccs'
+import { logout } from '@/utils'
 const uct = useController(UserController)
 </script>
 
