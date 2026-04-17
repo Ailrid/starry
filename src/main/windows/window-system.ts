@@ -82,7 +82,10 @@ export class WindowCommandSystem {
     @Message(SetCommandQueueMessage) message: SetCommandQueueMessage,
     windowComponent: WindowComponent
   ) {
-    if (windowComponent.windows.has(message.window)) {
+    if (
+      windowComponent.windows.has(message.window) &&
+      windowComponent.windows.get(message.window)!.isVisible()
+    ) {
       message.command(windowComponent.windows.get(message.window)!)
       return
     }

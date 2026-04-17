@@ -1,5 +1,5 @@
 import { SingleMessage, EventMessage } from '@virid/core'
-import { PlaylistDetail, type SongDetail } from '@/utils/server'
+import { type PlaylistDetail, type SongDetail } from '@/utils/server'
 import { AsyncQueue } from '@virid/std'
 
 @AsyncQueue('play-song')
@@ -69,3 +69,7 @@ export class LoadIntelligencePlaylistMessage extends SingleMessage {
 }
 
 export class MediaSessionMessage extends SingleMessage {}
+
+export class SetPipelineParamsMessage extends SingleMessage {
+
+}

@@ -9,7 +9,6 @@ import {
   RendererInfoMessage,
   RendererWarnMessage
 } from './message'
-import { electronApp } from '@electron-toolkit/utils'
 import { app, net, BrowserWindow, protocol } from 'electron'
 import { pathToFileURL } from 'url'
 import { normalize, isAbsolute, join } from 'path'
@@ -22,6 +21,12 @@ import { DatabaseComponent, InitDatabaseMessage } from '@main/persistence'
 import { InitServerMessage } from '@main/server'
 import { ElectronComponent } from './component'
 import { executeGroup, nextTick } from '@virid/std'
+
+const isMac = process.platform === 'darwin'
+const isWin = process.platform === 'win32'
+const isLinux = process.platform === 'linux'
+app.name = 'Vireo'
+
 // 注册文件协议
 protocol.registerSchemesAsPrivileged([
   {
@@ -156,26 +161,33 @@ export class InitElectronSystem {
   static async initApp(dbComponent: DatabaseComponent) {
     await app.whenReady()
     //配置设置
-    electronApp.setAppUserModelId('com.ailrid.vireo')
-    if (dbComponent.db.getCookies()) {
-      CreateMainWindowMessage.send()
-    } else {
-      CreateLoginWindowMessage.send()
-    }
+    this.platformConfig()
+    if (dbComponent.db.getCookies()) CreateMainWindowMessage.send()
+    else CreateLoginWindowMessage.send()
+
     //mac用的东西
     app.on('activate', function () {
       if (BrowserWindow.getAllWindows().length === 0 && dbComponent.db.getCookies()) {
         CreateMainWindowMessage.send()
+      } else if (BrowserWindow.getAllWindows().length === 0 && !dbComponent.db.getCookies()) {
+        CreateLoginWindowMessage.send()
       }
     })
     app.on('window-all-closed', () => {
-      if (process.platform !== 'darwin') {
-        app.quit()
-      }
+      if (!isMac) app.quit()
     })
     MessageWriter.info(
       '[InitElectronSystem] Electron Initialization Completed: Ready to create windows.'
     )
+  }
+
+  static platformConfig() {
+    const appId = 'com.ailrid.vireo'
+    if (isWin) {
+      app.setAppUserModelId(appId)
+    } else if (isLinux) {
+    } else if (isMac) {
+    }
   }
 }
 

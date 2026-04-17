@@ -2,12 +2,14 @@
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
   "include": [
     "src/renderer/src/env.d.ts",
+    "src/renderer/public/wasm/**/*",
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.vue",
     "src/renderer/src/env.d.ts",
     "src/renderer/login/**/*",
     "src/renderer/login/**/*.vue",
     "src/preload/*.d.ts",
+    "src/renderer/public",
   ],
   "compilerOptions": {
     "experimentalDecorators": true,

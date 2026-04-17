@@ -16,7 +16,6 @@ import { DatabaseComponent } from '@main/persistence'
  * * 创建窗口
  */
 export class MainWindowSystem {
-  static singletonLock = false
   /*
    * 创建主窗口
    */
@@ -28,8 +27,7 @@ export class MainWindowSystem {
     electronComponent: ElectronComponent,
     dbComponent: DatabaseComponent
   ) {
-    if (windowComponent.windows.has('mainWindow') || this.singletonLock) return
-    this.singletonLock = true
+    if (windowComponent.windows.has('mainWindow')) return
     const mainWindow = new BrowserWindow({
       width: 1200,
       height: 800,
@@ -46,18 +44,17 @@ export class MainWindowSystem {
         sandbox: false
       }
     })
+    windowComponent.windows.set('mainWindow', mainWindow)
     // 注册自己
     mainWindow.on('closed', () => {
       windowComponent.windows.delete('mainWindow')
       // 这里记得要销毁系统托盘
       windowComponent.tray?.destroy()
-      this.singletonLock = false
     })
     mainWindow.on('ready-to-show', () => {
       mainWindow.show()
       // 触发命令队列,执行所有缓存命令
       ExecuteCommandQueueMessage.send('mainWindow')
-      windowComponent.windows.set('mainWindow', mainWindow)
     })
 
     // 获得焦点时自动检查一遍剪切板
@@ -76,6 +73,8 @@ export class MainWindowSystem {
       }
     })
 
-    MessageWriter.info('[MainWindowSystem] Created MainWindow: Initialize window and mount page completed.')
+    MessageWriter.info(
+      '[MainWindowSystem] Created MainWindow: Initialize window and mount page completed.'
+    )
   }
 }

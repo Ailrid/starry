@@ -4,10 +4,14 @@
       <section>
         <Theme />
       </section>
+      <section>
+        <Pipeline />
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import Pipeline from '@/components/setting/Pipeline.vue'
 import Theme from '@components/setting/Theme.vue'
 </script>

@@ -4,6 +4,7 @@
     :value="modelValue"
     :min="min"
     :max="max"
+    :step="step"
     @input="onInput"
     class="hide-arrows focus:ring-primary focus:border-primary border-foreground/10 rounded px-2 py-1 outline-none focus:ring-1"
     :class="$attrs.class"
@@ -13,6 +14,7 @@
 <script setup lang="ts">
 interface Props {
   modelValue: string | number
+  step?: string | number
   type?: string
   min?: string | number
   max?: string | number
@@ -20,7 +22,10 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
-  type: 'text'
+  type: 'text',
+  step: 1,
+  min: 0,
+  max: 100
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -30,8 +35,10 @@ const onInput = (event: Event) => {
   let value: string | number = target.value
 
   if (props.type === 'number') {
-    value = value === '' ? '' : Number(value)
+    value = value === '' ? '' : Number(value.trim())
+    if (Number.isNaN(value)) return
   }
+  // 再效验一步，如果是number保证返回的是数字而不是中间态0.xxx
 
   emit('update:modelValue', value)
 }

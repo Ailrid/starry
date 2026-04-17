@@ -51,7 +51,6 @@ export class ThemeController {
    */
   @Watch<ThemeController>(i => i.setting, { deep: true })
   public updateTheme() {
-    //切换到图片主题
     SaveSettingsMessage.send(settings => {
       settings.theme = this.setting
     })

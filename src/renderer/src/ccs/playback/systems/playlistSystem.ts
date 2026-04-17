@@ -150,7 +150,6 @@ export class PlaylistSystem {
           DeleteSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong!.id)
         else AddSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong)
 
-        
       })
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(new Error(val), '[PlayerSystem] Failed to like song.')

@@ -15,7 +15,6 @@ import { DatabaseComponent } from '@main/persistence'
 class FetchCookieMessage extends SingleMessage {}
 
 export class LoginWindowSystem {
-  static singletonLock = false
   /*
    * 创建登陆窗口
    */
@@ -23,8 +22,7 @@ export class LoginWindowSystem {
     messageClass: CreateLoginWindowMessage
   })
   static createLoginWindow(windowComponent: WindowComponent, electronComponent: ElectronComponent) {
-    if (windowComponent.windows.has('loginWindow') || this.singletonLock) return
-    this.singletonLock = true
+    if (windowComponent.windows.has('loginWindow')) return
     const loginWindow = new BrowserWindow({
       width: 350,
       height: 500,
@@ -42,14 +40,12 @@ export class LoginWindowSystem {
       }
     })
     // 注册自己
-
+    windowComponent.windows.set('loginWindow', loginWindow)
     loginWindow.on('closed', () => {
       windowComponent.windows.delete('loginWindow')
-      this.singletonLock = false
     })
     loginWindow.on('ready-to-show', () => {
       loginWindow.show()
-      windowComponent.windows.set('loginWindow', loginWindow)
     })
 
     // 获得焦点时自动检查一遍剪切板

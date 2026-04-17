@@ -9,12 +9,14 @@ import {
   LoadFMPlaylistMessage,
   LoadIntelligencePlaylistMessage,
   MediaSessionMessage,
-  SeekTimeMessage
+  SeekTimeMessage,
+  SetPipelineParamsMessage
 } from '../messages'
 import { PlayerComponent, PlaylistComponent, LyricComponent } from '../components'
 import { songUrl, lyric } from '@/utils/server'
 import { match, P } from 'ts-pattern'
 import { SongDetail } from '@utils/server/interfaces'
+import { SettingComponent } from '@/ccs/settings/component'
 
 export class PlayerSystem {
   /**
@@ -258,5 +260,14 @@ export class PlayerSystem {
       playlistComponent.stagingList = []
       PlaySongMessage.send(playlistComponent.currentList[0])
     }
+  }
+
+  @System({
+    messageClass: SetPipelineParamsMessage
+  })
+  static setPipelineConfig(playerComponent: PlayerComponent, settings: SettingComponent) {
+    if (!playerComponent.player.effectNode) return
+    const params = settings.pipeline
+    playerComponent.player.set_audio_params(params)
   }
 }
