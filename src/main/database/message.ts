@@ -1,6 +1,6 @@
 import type { PlaylistDetail, SongDetail } from '@main/server/netEase'
 import { EventMessage, SingleMessage } from '@virid/core'
-import { FromRenderer, FromRendererMessage, ToRendererMessage } from '@virid/main'
+import { FromRenderer, FromRendererMessage, MainPlugin, ToRendererMessage } from '@virid/main'
 
 export class InitDatabaseMessage extends EventMessage {
   constructor(
@@ -15,7 +15,7 @@ export class RecoverPlaybackMessage extends SingleMessage {}
 
 export class _RecoverPlaybackMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
-  __virid_messageType: string = 'recover-playback'
+  __virid_message_type: string = 'recover-playback'
   constructor(
     public playlistDetail: PlaylistDetail,
     public playlistSongs: SongDetail[],
@@ -34,4 +34,8 @@ export class BackupPlaybackMessage extends FromRendererMessage {
   ) {
     super()
   }
+}
+
+export function bindDatabaseMessages(plugin: MainPlugin) {
+  plugin.bindRoute(BackupPlaybackMessage)
 }

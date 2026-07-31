@@ -9,9 +9,8 @@ import {
   HttpRequestMessage,
   type RequestId
 } from '@virid/express'
-import { Message } from '@virid/core'
 import { type SongUrlRequest, type SongUrlResponse } from '../types'
-import { DatabaseComponent } from '@main/persistence'
+import { DatabaseComponent } from '@main/database'
 import { CacheSongUrlRequestMessage } from '../message'
 
 class UrlFromLocalMessage extends HttpRequestMessage {
@@ -25,10 +24,10 @@ class UrlFromLocalMessage extends HttpRequestMessage {
 
 export class CacheSongUrlSystem {
   //用于暂存url的map
-  static urlMap: Map<number, string> = new Map()
+  static urlMap = new Map()
   @HttpSystem()
   public static async songUrl(
-    @Message(CacheSongUrlRequestMessage) message: CacheSongUrlRequestMessage,
+    message: CacheSongUrlRequestMessage,
     @Body() body: SongUrlRequest,
     @Cookies() cookies: Record<string, string>,
     @Headers() headers: Record<string, string>
@@ -46,15 +45,31 @@ export class CacheSongUrlSystem {
       encodeType: 'mp3',
       immerseType: level == 'sky' ? 'c51' : 'standard'
     }
+    if (CacheSongUrlSystem.urlMap.has(id)) {
+      const data = CacheSongUrlSystem.urlMap.get(id)
+      const response: SongUrlResponse = {
+        data: {
+          id: id,
+          url: `/cache/songs/data?id=${id}&md5=${data.md5 || ''}&source=netease`,
+          md5: data.md5,
+          size: data.size,
+          br: data.br,
+          level: data.level
+        },
+        code: 200
+      }
+      return Ok(response)
+    }
     const answer = await createRequest(CryptoMode.eapi, {
       url: '/song/enhance/player/url/v1',
       data,
       cookies,
       headers
     })
+
     const rawResponse: RawSongUrlResponse = answer.data
     //记录一下这个url
-    CacheSongUrlSystem.urlMap.set(id, rawResponse.data[0].url)
+    CacheSongUrlSystem.urlMap.set(Number(id), rawResponse.data[0])
     //根据网易云的返回数据进行转换
     const response: SongUrlResponse = {
       data: {
@@ -73,7 +88,7 @@ export class CacheSongUrlSystem {
 
   @HttpSystem()
   public static async songUrlFromLocal(
-    @Message(UrlFromLocalMessage) _message: UrlFromLocalMessage,
+     _message: UrlFromLocalMessage,
     _dbComponent: DatabaseComponent
   ) {
     // const id = message.songId

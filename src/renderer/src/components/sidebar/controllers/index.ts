@@ -5,10 +5,10 @@ import { MenuAreaController } from './menu-area'
 import { SideBarController } from './side-bar'
 
 export function bindSidebarControllers(app: ViridApp) {
-  app.bindController(CurrentPlaylistController)
-  app.bindController(PlaylistManagerController)
-  app.bindController(MenuAreaController)
-  app.bindController(SideBarController)
+  app.bind(CurrentPlaylistController)
+  app.bind(PlaylistManagerController)
+  app.bind(MenuAreaController)
+  app.bind(SideBarController)
 }
 
 export * from './current-playlist'

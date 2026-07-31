@@ -1,4 +1,4 @@
-import { System, MessageWriter, Message } from '@virid/core'
+import { System, MessageWriter } from '@virid/core'
 import { UserComponent } from './component'
 import {
   FetchUserAccountMessage,
@@ -79,7 +79,7 @@ export class UserSystem {
    */
   @System()
   static async fetchUserPlaylistDetail(
-    @Message(FetchUserPlaylistDetailMessage) message: FetchUserPlaylistDetailMessage,
+    message: FetchUserPlaylistDetailMessage,
     userComponent: UserComponent
   ) {
     if (!userComponent.userProfile) {
@@ -112,7 +112,7 @@ export class UserSystem {
    */
   @System()
   static async fetchUserPlaylistSong(
-    @Message(FetchUserPlaylistSongMessage) message: FetchUserPlaylistSongMessage,
+    message: FetchUserPlaylistSongMessage,
     userComponent: UserComponent
   ) {
     if (!userComponent.userProfile) {
@@ -155,10 +155,7 @@ export class UserSystem {
    * * 向歌单添加歌曲
    */
   @System()
-  static async addSong(
-    @Message(AddSongMessage) message: AddSongMessage,
-    userComponent: UserComponent
-  ) {
+  static async addSong(message: AddSongMessage, userComponent: UserComponent) {
     const { playlistId, songDetail: newSong } = message
     const playlistMap = userComponent.userPlaylistsSongs.get(playlistId)
     const playlistDetail = userComponent.userPlaylistsDetail.get(playlistId)
@@ -205,10 +202,7 @@ export class UserSystem {
    * * 从歌单删除歌曲
    */
   @System()
-  static async deleteSong(
-    @Message(DeleteSongMessage) message: DeleteSongMessage,
-    userComponent: UserComponent
-  ) {
+  static async deleteSong(message: DeleteSongMessage, userComponent: UserComponent) {
     const { playlistId, songId } = message
     const playlistMap = userComponent.userPlaylistsSongs.get(playlistId)
     const playlistDetail = userComponent.userPlaylistsDetail.get(playlistId)
@@ -300,4 +294,14 @@ export class UserSystem {
     userComponent.userPlaylists = []
     userComponent.userProfile = null
   }
+}
+import { type ViridApp } from '@virid/core'
+export function registerUserSystems(app: ViridApp) {
+  app.register(UserSystem.fetchUserInfo)
+  app.register(UserSystem.fetchUserPlaylist)
+  app.register(UserSystem.fetchUserPlaylistDetail)
+  app.register(UserSystem.fetchUserPlaylistSong)
+  app.register(UserSystem.addSong)
+  app.register(UserSystem.deleteSong)
+  app.register(UserSystem.logoutNetease)
 }

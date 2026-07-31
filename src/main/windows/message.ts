@@ -1,5 +1,5 @@
 import { EventMessage, SingleMessage } from '@virid/core'
-import { FromRendererMessage, FromRenderer, ToRendererMessage } from '@virid/main'
+import { FromRendererMessage, FromRenderer, ToRendererMessage, MainPlugin } from '@virid/main'
 import { type BrowserWindow } from 'electron'
 
 // 渲染进程发来的操作消息
@@ -11,15 +11,9 @@ export class MinimizeWindowMessage extends FromRendererMessage {}
 
 @FromRenderer('maximize-window')
 export class MaximizeWindowMessage extends FromRendererMessage {}
+
 @FromRenderer('hidden-window')
 export class HiddenWindowMessage extends FromRendererMessage {}
-
-// 内部的操作消息
-export class ShowWindowMessage extends SingleMessage {
-  constructor(public windowName: string = 'mainWindow') {
-    super()
-  }
-}
 
 @FromRenderer('open-dialog')
 export class OpenDialogMessage extends FromRendererMessage {
@@ -33,9 +27,16 @@ export class OpenDialogMessage extends FromRendererMessage {
     super()
   }
 }
+
+// 内部的操作消息
+export class ShowWindowMessage extends SingleMessage {
+  constructor(public windowName: string = 'mainWindow') {
+    super()
+  }
+}
 export class RenderDialogMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
-  __virid_messageType: string = 'file-dialog'
+  __virid_message_type: string = 'file-dialog'
   constructor(public path: string) {
     super()
   }
@@ -43,14 +44,14 @@ export class RenderDialogMessage extends ToRendererMessage {
 
 export class PlaySongMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
-  __virid_messageType: string = 'play-song'
+  __virid_message_type: string = 'play-song'
   constructor(public id: string) {
     super()
   }
 }
 export class SetPlaylistMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
-  __virid_messageType: string = 'set-playlist'
+  __virid_message_type: string = 'set-playlist'
   constructor(public id: string) {
     super()
   }
@@ -58,25 +59,25 @@ export class SetPlaylistMessage extends ToRendererMessage {
 
 export class PlayOrPauseMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
-  __virid_messageType: string = 'play-or-pause'
+  __virid_message_type: string = 'play-or-pause'
 }
 
 export class NextSongMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
-  __virid_messageType: string = 'next-song'
+  __virid_message_type: string = 'next-song'
 }
 
 export class PreviousSongMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
-  __virid_messageType: string = 'previous-song'
+  __virid_message_type: string = 'previous-song'
 }
 export class BackupAndCloseMessage extends ToRendererMessage {
   __virid_target: string = 'renderer'
-  __virid_messageType: string = 'backup-playback'
+  __virid_message_type: string = 'backup-playback'
 }
 
 export class NeteaseLoginSuccessMessage extends ToRendererMessage {
-  __virid_messageType: string = 'netease-login-success'
+  __virid_message_type: string = 'netease-login-success'
   __virid_target: string = 'renderer'
 }
 
@@ -107,4 +108,12 @@ export class ShareMusicCommandMessage extends EventMessage {
   constructor(public url: string) {
     super()
   }
+}
+
+export function bindWindowMessages(plugin: MainPlugin) {
+  plugin.bindRoute(CloseWindowMessage)
+  plugin.bindRoute(MinimizeWindowMessage)
+  plugin.bindRoute(MaximizeWindowMessage)
+  plugin.bindRoute(HiddenWindowMessage)
+  plugin.bindRoute(OpenDialogMessage)
 }

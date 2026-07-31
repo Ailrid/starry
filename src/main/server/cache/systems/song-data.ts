@@ -1,11 +1,11 @@
-import { DatabaseComponent, SongCacheRecord } from '@main/persistence'
+import { DatabaseComponent, SongCacheRecord } from '@main/database'
 import { CacheSongDataRequestMessage } from '../message'
 import { CacheSongUrlSystem } from './song-url'
 import fs from 'fs'
 import path from 'path'
 import { Readable } from 'stream'
 import { pipeline } from 'node:stream/promises'
-import { MessageWriter, Message, System, SingleMessage } from '@virid/core'
+import { MessageWriter, System, SingleMessage } from '@virid/core'
 import {
   Headers,
   HttpSystem,
@@ -49,11 +49,8 @@ class ClearCacheMessage extends SingleMessage {}
 const CATCH_CACHE_SIZE = 2 * 1024 * 1024 * 1024
 
 export class CacheSongDataSystem {
-  //用于暂存url的map
-  static urlMap: Map<number, string> = new Map()
   @HttpSystem()
   static async songData(
-    @Message(CacheSongDataRequestMessage)
     message: CacheSongDataRequestMessage,
     @Query('id') id: number,
     @Query('md5') md5: string,
@@ -65,11 +62,11 @@ export class CacheSongDataSystem {
     const requestId = message.requestId
     if (source == 'local') return new DataFromLocalMessage(requestId, id)
     // 没有缓存，开始边传输边下载
-    const realUrl = CacheSongUrlSystem.urlMap.get(id)
+    const realUrl = CacheSongUrlSystem.urlMap.get(id)?.url
     if (!realUrl) return InternalServerError('URL Expired')
-    if (CacheSongUrlSystem.urlMap.size > 100) {
-      CacheSongUrlSystem.urlMap.clear()
-    }
+    // if (CacheSongUrlSystem.urlMap.size > 100) {
+    //   CacheSongUrlSystem.urlMap.clear()
+    // }
     // 否则是网易云的，开始处理
     // 查数据库记录
     const record = dbComponent.db.getSongCache(id, md5)
@@ -117,10 +114,7 @@ export class CacheSongDataSystem {
   }
 
   @HttpSystem()
-  static async songDataFromLocal(
-    @Message(DataFromLocalMessage) _message: DataFromLocalMessage,
-    _dbComponent: DatabaseComponent
-  ) {
+  static async songDataFromLocal(_message: DataFromLocalMessage, _dbComponent: DatabaseComponent) {
     // const _id = message.songId
     //在这里应该查找然后播放
     //TODO
@@ -129,7 +123,7 @@ export class CacheSongDataSystem {
 
   @HttpSystem()
   static async songDataFromCache(
-    @Message(DataFromCacheMessage) message: DataFromCacheMessage,
+    message: DataFromCacheMessage,
     @Query('id') id: number,
     @Query('md5') md5: string,
     dbComponent: DatabaseComponent
@@ -155,10 +149,7 @@ export class CacheSongDataSystem {
 
   static fileLock = new Set()
   @System()
-  static async downloadCache(
-    @Message(DownloadCacheMessage) message: DownloadCacheMessage,
-    dbComponent: DatabaseComponent
-  ) {
+  static async downloadCache(message: DownloadCacheMessage, dbComponent: DatabaseComponent) {
     const { url, id, md5 } = message
     const finalPath = path.join(dbComponent.cachePath, `${id}-${md5}`)
     const tempPath = `${finalPath}.downloading`

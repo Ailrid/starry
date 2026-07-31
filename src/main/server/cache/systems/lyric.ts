@@ -1,8 +1,8 @@
 import { createRequest, CryptoMode } from '../../netEase'
-import { DatabaseComponent } from '@main/persistence'
+import { DatabaseComponent } from '@main/database'
 import { CacheLyricRequestMessage } from '../message'
 import { Body, Cookies, Headers, HttpRequestMessage, HttpSystem, Ok } from '@virid/express'
-import { System, Message, SingleMessage } from '@virid/core'
+import { System, SingleMessage } from '@virid/core'
 import { type LyricRequest, type LyricResponse } from '../types'
 //内部消息
 class LyricFromLocalMessage extends HttpRequestMessage {}
@@ -25,7 +25,7 @@ class CacheLyricMessage extends SingleMessage {
 export class CacheLyricSystem {
   @HttpSystem()
   static async lyric(
-    @Message(CacheLyricRequestMessage) message: CacheLyricRequestMessage,
+     message: CacheLyricRequestMessage,
     @Body() body: LyricRequest,
     @Cookies() cookies: Record<string, string>,
     @Headers() headers: Record<string, string>,
@@ -109,7 +109,7 @@ export class CacheLyricSystem {
 
   @System()
   static cacheLyric(
-    @Message(CacheLyricMessage) message: CacheLyricMessage,
+     message: CacheLyricMessage,
     dbComponent: DatabaseComponent
   ) {
     const { id, lyrics, isPure } = message.lyricData

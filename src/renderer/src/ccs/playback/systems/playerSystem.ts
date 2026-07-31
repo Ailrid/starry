@@ -1,4 +1,4 @@
-import { System, Message, MessageWriter } from '@virid/core'
+import { System, MessageWriter } from '@virid/core'
 import {
   PlaySongMessage,
   PlayOrPauseMessage,
@@ -26,7 +26,7 @@ export class PlayerSystem {
     priority: -1
   })
   static async playSong(
-    @Message(PlaySongMessage) message: PlaySongMessage,
+    message: PlaySongMessage,
     playerComponent: PlayerComponent,
     playlistComponent: PlaylistComponent,
     lyricComponent: LyricComponent
@@ -90,7 +90,7 @@ export class PlayerSystem {
    */
   @System()
   static playOrPause(
-    @Message(PlayOrPauseMessage) message: PlayOrPauseMessage,
+    message: PlayOrPauseMessage,
     playerComponent: PlayerComponent,
     playlistComponent: PlaylistComponent
   ) {
@@ -172,20 +172,14 @@ export class PlayerSystem {
    * 设置音量
    */
   @System()
-  static setVolume(
-    @Message(SetVolumeMessage) message: SetVolumeMessage,
-    playerComponent: PlayerComponent
-  ) {
+  static setVolume(message: SetVolumeMessage, playerComponent: PlayerComponent) {
     playerComponent.player.setVolume(message.volume)
   }
   /**
    * 设置进度
    */
   @System()
-  static seekProgress(
-    @Message(SeekTimeMessage) message: SeekTimeMessage,
-    playerComponent: PlayerComponent
-  ) {
+  static seekProgress(message: SeekTimeMessage, playerComponent: PlayerComponent) {
     playerComponent.player.seek(message.newTime)
     //更新MediaSession
     navigator.mediaSession.setPositionState({
@@ -202,7 +196,7 @@ export class PlayerSystem {
    */
   @System()
   static setPlayMode(
-    @Message(SetPlayModeMessage) message: SetPlayModeMessage,
+    message: SetPlayModeMessage,
     playerComponent: PlayerComponent,
     playlistComponent: PlaylistComponent
   ) {
@@ -270,4 +264,16 @@ export class PlayerSystem {
     const params = settings.pipeline
     playerComponent.player.set_audio_params(params)
   }
+}
+
+import { type ViridApp } from '@virid/core'
+export function registerPlayerSystems(app: ViridApp) {
+  app.register(PlayerSystem.playSong)
+  app.register(PlayerSystem.playOrPause)
+  app.register(PlayerSystem.nextSong)
+  app.register(PlayerSystem.previousSong)
+  app.register(PlayerSystem.setVolume)
+  app.register(PlayerSystem.seekProgress)
+  app.register(PlayerSystem.setPlayMode)
+  app.register(PlayerSystem.setPipelineConfig)
 }

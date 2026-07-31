@@ -17,12 +17,10 @@ export class RecommendSongsSystem {
       cookies,
       headers
     })
-
     const dailySongs = recommendAnswer.data?.data?.dailySongs || []
 
     const tracksID = dailySongs.map((item: any) => item.id)
     const formattedSongs = await getSongDetail(tracksID, cookies, headers)
-
     return Ok({
       code: 200,
       data: formattedSongs

@@ -6,7 +6,7 @@ import {
   CheckClipboardMessage,
   SetPlaylistMessage
 } from './message'
-import { System, Message, MessageWriter } from '@virid/core'
+import { System, MessageWriter, ViridApp } from '@virid/core'
 import { WindowComponent } from './component'
 
 /**
@@ -33,7 +33,7 @@ export class MusicShareSystem {
    */
   @System()
   static processMusicCommand(
-    @Message(ShareMusicCommandMessage) message: ShareMusicCommandMessage,
+    message: ShareMusicCommandMessage,
     windowComponent: WindowComponent
   ) {
     const rawUrl = message.url
@@ -78,4 +78,9 @@ export class MusicShareSystem {
     if (window) command()
     else SetCommandQueueMessage.send('mainWindow', command) // 否则暂时缓存起来
   }
+}
+
+export function registerShareSystems(app: ViridApp) {
+  app.register(MusicShareSystem.checkClipboard)
+  app.register(MusicShareSystem.processMusicCommand)
 }

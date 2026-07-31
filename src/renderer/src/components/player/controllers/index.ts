@@ -7,13 +7,13 @@ import { LyricController } from './lyric'
 import { PlayerConfigController } from './player-config'
 import { PlayerInfoController } from './player-info'
 export function bindPlayerControllers(app: ViridApp) {
-  app.bindController(SliderController)
-  app.bindController(PlayerButtonController)
-  app.bindController(SongCardController)
-  app.bindController(PlayerBarController)
-  app.bindController(LyricController)
-  app.bindController(PlayerConfigController)
-  app.bindController(PlayerInfoController)
+  app.bind(SliderController)
+  app.bind(PlayerButtonController)
+  app.bind(SongCardController)
+  app.bind(PlayerBarController)
+  app.bind(LyricController)
+  app.bind(PlayerConfigController)
+  app.bind(PlayerInfoController)
 }
 export * from './slider'
 export * from './player-button'

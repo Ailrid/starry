@@ -6,5 +6,5 @@ export class ElectronComponent {
 }
 
 export function bindElectronComponents(app: ViridApp) {
-  app.bindComponent(ElectronComponent)
+  app.bind(ElectronComponent)
 }

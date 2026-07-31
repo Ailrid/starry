@@ -15,7 +15,7 @@ class ChooseBgImageMessage extends FromMainMessage {
 //打开文件选择框
 class OpenDialogMessage extends ToMainMessage {
   __virid_target: string = 'main'
-  __virid_messageType: string = 'open-dialog'
+  __virid_message_type: string = 'open-dialog'
   constructor(
     public options: {
       title?: string
@@ -95,9 +95,7 @@ export class ThemeController {
   /**
    * *  监听选择对话框的消息，并调整自己的路径
    */
-  @Listener({
-    messageClass: ChooseBgImageMessage
-  })
+  @Listener()
   public async chooseBgImageListener(message: ChooseBgImageMessage) {
     //更新路径
     this.setting.url = 'local-file://' + message.path

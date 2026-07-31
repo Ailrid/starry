@@ -1,7 +1,6 @@
-import { System, Message, MessageWriter } from '@virid/core'
+import { System, MessageWriter } from '@virid/core'
 import { SettingComponent } from './component'
 import { LoadSettingsMessage, SaveSettingsMessage } from './message'
-
 
 export class SettingSystem {
   /**
@@ -38,7 +37,7 @@ export class SettingSystem {
     messageClass: LoadSettingsMessage,
     priority: 1000
   })
-  static LoadSetting(settings: SettingComponent) {
+  static loadSetting(settings: SettingComponent) {
     ;(Object.keys(settings) as Array<keyof SettingComponent>).forEach(key => {
       this.loadConfig(key, settings)
     })
@@ -49,14 +48,16 @@ export class SettingSystem {
    * *修改并保存设置
    */
   @System()
-  static SaveSetting(
-    @Message(SaveSettingsMessage) msg: SaveSettingsMessage,
-    settings: SettingComponent
-  ) {
+  static saveSetting(msg: SaveSettingsMessage, settings: SettingComponent) {
     msg.modify(settings)
     const keys = Object.keys(settings) as Array<keyof SettingComponent>
     keys.forEach(key => {
       this.saveConfig(key, settings)
     })
   }
+}
+import { type ViridApp } from '@virid/core'
+export function registerSettingSystems(app: ViridApp) {
+  app.register(SettingSystem.loadSetting)
+  app.register(SettingSystem.saveSetting)
 }

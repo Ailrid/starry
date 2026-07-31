@@ -8,6 +8,7 @@ export default defineConfig({
   main: {
     build: {
       target: 'node*',
+      sourcemap: true,
       rollupOptions: {
         external: ['electron', 'reflect-metadata']
       }
@@ -32,6 +33,7 @@ export default defineConfig({
   },
   renderer: {
     build: {
+      sourcemap: true,
       rollupOptions: {
         input: {
           index: resolve(__dirname, './src/renderer/index.html'),
@@ -58,7 +60,6 @@ export default defineConfig({
       vue(),
       tailwindcss(),
       swc({
-        // 这里启用真正的元数据支持
         swcOptions: {
           jsc: {
             parser: {

@@ -5,7 +5,7 @@ import { useTemplateRef, type ShallowRef } from 'vue'
 export class VirtualListController<T> {
   @Responsive()
   public scrollTop = 0
-  @Responsive()
+  @Env()
   public listData: T[] = []
   @Responsive()
   public containerHeight: number = 0
@@ -16,6 +16,7 @@ export class VirtualListController<T> {
   public buffer!: number
   @Env()
   public keyField: keyof T | null = null
+
   @Use(() => {
     return useTemplateRef<HTMLDivElement>('container')
   })

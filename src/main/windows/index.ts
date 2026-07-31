@@ -1,12 +1,22 @@
-import { WindowComponent } from './component'
+import { bindWindowComponents } from './component'
+import { bindWindowMessages } from './message'
 import { type ViridApp } from '@virid/core'
+import { type MainPlugin } from '@virid/main'
+import { registerWindowSystems } from './window-system'
+import { registerTraySystems } from './tray-system'
+import { registerShareSystems } from './share-system'
+import { registerMainWindowSystems } from './main-window'
+import { registerLoginWindowSystems } from './login-window'
+
 export * from './component'
-export * from './main-window'
-export * from './login-window'
-export * from './window-system'
-export * from './tray-system'
-export * from './share-system'
 export * from './message'
-export function bindWindowComponents(app: ViridApp) {
-  app.bindComponent(WindowComponent)
+
+export function windowSystemsBunch(app: ViridApp, plugin: MainPlugin) {
+  registerWindowSystems(app)
+  registerTraySystems(app)
+  registerShareSystems(app)
+  registerMainWindowSystems(app)
+  registerLoginWindowSystems(app)
+  bindWindowComponents(app)
+  bindWindowMessages(plugin)
 }

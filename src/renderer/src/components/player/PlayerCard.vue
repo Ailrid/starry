@@ -27,7 +27,7 @@
 
     <div class="flex w-full flex-col items-center">
       <div class="flex w-full">
-        <div class="flex-1" @dblclick.stop="console.log('left1'),PlayerControllerMessage.send($event, true)"></div>
+        <div class="flex-1" @dblclick.stop="PlayerControllerMessage.send($event, true)"></div>
         <div class="flex w-[80%] items-center justify-between px-2">
           <Button variant="icon" @click="PreviousSongMessage.send()">
             <SkipBack class="control-btn" :size="18"
@@ -135,4 +135,3 @@ const sct = useController(SongCardController)
   opacity: 0;
 }
 </style>
-

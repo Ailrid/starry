@@ -1,8 +1,8 @@
 import { ToMainMessage } from '@virid/renderer'
-import { Message, System, ErrorMessage, InfoMessage, WarnMessage } from '@virid/core'
+import { System, ErrorMessage, InfoMessage, WarnMessage, ViridApp } from '@virid/core'
 export class CloseWindowMessage extends ToMainMessage {
   __virid_target = 'main'
-  __virid_messageType: string = 'close-window'
+  __virid_message_type: string = 'close-window'
   constructor() {
     super()
   }
@@ -10,22 +10,22 @@ export class CloseWindowMessage extends ToMainMessage {
 
 export class MinimizeWindowMessage extends ToMainMessage {
   __virid_target = 'main'
-  __virid_messageType: string = 'minimize-window'
+  __virid_message_type: string = 'minimize-window'
 }
 
 export class MaximizeWindowMessage extends ToMainMessage {
   __virid_target = 'main'
-  __virid_messageType: string = 'maximize-window'
+  __virid_message_type: string = 'maximize-window'
 }
 
 export class HiddenWindowMessage extends ToMainMessage {
   __virid_target = 'main'
-  __virid_messageType: string = 'hidden-window'
+  __virid_message_type: string = 'hidden-window'
 }
 
 export class RendererErrorMessage extends ToMainMessage {
   __virid_target = 'main'
-  __virid_messageType: string = 'renderer-error'
+  __virid_message_type: string = 'renderer-error'
   constructor(
     public message: string,
     public context?: string
@@ -36,7 +36,7 @@ export class RendererErrorMessage extends ToMainMessage {
 
 export class RendererWarnMessage extends ToMainMessage {
   __virid_target = 'main'
-  __virid_messageType: string = 'renderer-warn'
+  __virid_message_type: string = 'renderer-warn'
   constructor(public context: string) {
     super()
   }
@@ -44,7 +44,7 @@ export class RendererWarnMessage extends ToMainMessage {
 
 export class RendererInfoMessage extends ToMainMessage {
   __virid_target = 'main'
-  __virid_messageType: string = 'renderer-info'
+  __virid_message_type: string = 'renderer-info'
   constructor(public context: string) {
     super()
   }
@@ -55,7 +55,7 @@ export class RendererInfoMessage extends ToMainMessage {
  */
 export class LogSystem {
   @System()
-  static error(@Message(ErrorMessage) message: ErrorMessage) {
+  static error(message: ErrorMessage) {
     // 这里必须要检查是否预加载脚本加载完成了，不然会导致递归报错卡死
     // 因为RendererErrorMessage出错了，又会导致ErrorMessage被发送，然后继续出错，在一个微队列里直接永远死循环
     if (!window.__VIRID_BRIDGE__) return
@@ -63,12 +63,18 @@ export class LogSystem {
   }
 
   @System()
-  static warn(@Message(WarnMessage) message: WarnMessage) {
+  static warn(message: WarnMessage) {
     return new RendererWarnMessage(message.context)
   }
 
   @System()
-  static info(@Message(InfoMessage) message: InfoMessage) {
+  static info(message: InfoMessage) {
     return new RendererInfoMessage(message.context)
   }
+}
+
+export function registerToMainSystems(app: ViridApp) {
+  app.register(LogSystem.error)
+  app.register(LogSystem.warn)
+  app.register(LogSystem.info)
 }

@@ -1,4 +1,4 @@
-import { Component } from '@virid/core'
+import { Component, ViridApp } from '@virid/core'
 import Database from 'better-sqlite3'
 import { type PlaylistDetail, type SongDetail } from '@main/server/netEase'
 
@@ -104,8 +104,7 @@ export class DB {
   }
   getLyricCache(id: number): LyricCacheRecord | undefined {
     return this.db.prepare('SELECT lyrics_json FROM lyric_cache WHERE id = ?').get(id) as
-      | LyricCacheRecord
-      | undefined
+      LyricCacheRecord | undefined
   }
   backupPlaybackSnap(record: PlaybackSnapRecord) {
     const { playlist_detail, songs_list, current_song } = record
@@ -153,4 +152,8 @@ export class DB {
 export class DatabaseComponent {
   public db!: DB
   public cachePath: string = ''
+}
+
+export function bindDatabaseComponents(app: ViridApp) {
+  app.bind(DatabaseComponent)
 }

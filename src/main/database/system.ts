@@ -6,7 +6,7 @@ import {
 } from './message'
 import { DatabaseComponent, DB } from './component'
 import fs from 'fs'
-import { System, MessageWriter, Message } from '@virid/core'
+import { System, MessageWriter, ViridApp } from '@virid/core'
 import path from 'node:path'
 
 export class DatabaseSystem {
@@ -14,10 +14,7 @@ export class DatabaseSystem {
    * 创建数据库
    */
   @System()
-  static initDatabase(
-    @Message(InitDatabaseMessage) message: InitDatabaseMessage,
-    dbComp: DatabaseComponent
-  ) {
+  static initDatabase(message: InitDatabaseMessage, dbComp: DatabaseComponent) {
     const dbFilePath = message.path
     const dbDir = path.dirname(dbFilePath)
 
@@ -44,10 +41,7 @@ export class PlaybackSystem {
   @System({
     priority: 999
   })
-  static async backup(
-    @Message(BackupPlaybackMessage) message: BackupPlaybackMessage,
-    dbComp: DatabaseComponent
-  ) {
+  static async backup(message: BackupPlaybackMessage, dbComp: DatabaseComponent) {
     const { playlistDetail, playlistSongs, currentSong } = message
 
     dbComp.db.backupPlaybackSnap({
@@ -69,4 +63,9 @@ export class PlaybackSystem {
       MessageWriter.error(err as Error, '[PlaybackSystem] Cannot read snapshot from database')
     }
   }
+}
+export function registerDbSystems(app: ViridApp) {
+  app.register(DatabaseSystem.initDatabase)
+  app.register(PlaybackSystem.backup)
+  app.register(PlaybackSystem.recover)
 }

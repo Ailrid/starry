@@ -6,12 +6,12 @@ import {
   NeteaseLoginSuccessMessage,
   CreateMainWindowMessage
 } from './message'
-import { System, MessageWriter, SingleMessage } from '@virid/core'
+import { System, MessageWriter, SingleMessage, ViridApp } from '@virid/core'
 import { join } from 'path'
 import icon from '../../../resources/icon.png?asset'
 import { WindowComponent } from './component'
-import { ElectronComponent } from '@main/init'
-import { DatabaseComponent } from '@main/persistence'
+import { ElectronComponent } from '@main/electron'
+import { DatabaseComponent } from '@main/database'
 class FetchCookieMessage extends SingleMessage {}
 
 export class LoginWindowSystem {
@@ -149,4 +149,8 @@ async function tryGetCookies(window: BrowserWindow): Promise<string[] | null> {
       return cookieStr
     })
   return setCookieHeaders
+}
+export function registerLoginWindowSystems(app: ViridApp) {
+  app.register(LoginWindowSystem.createLoginWindow)
+  app.register(LoginWindowSystem.fetchCookie)
 }

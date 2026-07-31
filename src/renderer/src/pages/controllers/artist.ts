@@ -144,9 +144,7 @@ export class ArtistPageController {
   /**
    * * 改变页面的时候获取新的数据
    */
-  @Listener({
-    messageClass: ArtistPageChangeMessage
-  })
+  @Listener()
   public onPageChange(message: ArtistPageChangeMessage) {
     this.pageIndex = message.pageIndex
     if (!this.isAlbum) this.getNewPageSongs()

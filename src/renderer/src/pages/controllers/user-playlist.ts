@@ -31,6 +31,7 @@ export class UserPlaylistPageController {
   // 用户全部的歌单歌曲
   @Project(UserComponent, i => i.userPlaylistsSongs)
   public userPlaylistsSongs!: Map<number, Map<number, SongDetail[]>>
+
   // 当前的页面
   @Responsive()
   public pageIndex: number = 0
@@ -86,12 +87,9 @@ export class UserPlaylistPageController {
   /**
    * * 改变页面的时候获取新的数据
    */
-  @Listener({
-    messageClass: UserPlaylistPageChangeMessage
-  })
+  @Listener()
   public onPageChange(message: UserPlaylistPageChangeMessage) {
     this.pageIndex = message.pageIndex
-    //顺便拉取一下新的页面数据
     this.initPageData()
   }
   /**

@@ -2,7 +2,6 @@ import { SingleMessage, EventMessage } from '@virid/core'
 import { type PlaylistDetail, type SongDetail } from '@/utils/server'
 import { AsyncQueue } from '@virid/std'
 
-@AsyncQueue('play-song')
 export class PlaySongMessage extends EventMessage {
   constructor(
     public song: SongDetail,
@@ -11,6 +10,7 @@ export class PlaySongMessage extends EventMessage {
     super()
   }
 }
+
 @AsyncQueue('song-like')
 export class SongLikeMessage extends EventMessage {}
 

@@ -31,8 +31,9 @@ import { type Newable, type BaseMessage } from '@virid/core'
 const props = defineProps<{
   pageIndex: number
   maxPageLength: number
-  messageType: Newable<BaseMessage>
+  messageType: Newable<BaseMessage> | null
 }>()
+
 const sct = useController(ScrubberController, {
   context: props
 })

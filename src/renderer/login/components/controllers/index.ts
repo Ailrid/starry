@@ -4,9 +4,9 @@ import { QrLoginController } from './qr-login'
 import { WindowLoginController } from './window-login'
 
 export function bindLoginControllers(app: ViridApp) {
-  app.bindController(LoginDialogController)
-  app.bindController(QrLoginController)
-  app.bindController(WindowLoginController)
+  app.bind(LoginDialogController)
+  app.bind(QrLoginController)
+  app.bind(WindowLoginController)
 }
 export * from './login-dialog'
 export * from './qr-login'

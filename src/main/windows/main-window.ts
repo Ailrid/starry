@@ -5,12 +5,12 @@ import {
   CheckClipboardMessage,
   CreateLoginWindowMessage
 } from './message'
-import { System, MessageWriter } from '@virid/core'
+import { System, MessageWriter, ViridApp } from '@virid/core'
 import { join } from 'path'
 import icon from '../../../resources/icon.png?asset'
 import { WindowComponent } from './component'
-import { ElectronComponent } from '@main/init'
-import { DatabaseComponent } from '@main/persistence'
+import { ElectronComponent } from '@main/electron'
+import { DatabaseComponent } from '@main/database'
 
 /**
  * * 创建窗口
@@ -77,4 +77,8 @@ export class MainWindowSystem {
       '[MainWindowSystem] Created MainWindow: Initialize window and mount page completed.'
     )
   }
+}
+
+export function registerMainWindowSystems(app: ViridApp) {
+  app.register(MainWindowSystem.createMainWindow)
 }

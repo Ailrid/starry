@@ -1,5 +1,5 @@
-import { RecoverPlaybackMessage } from '@main/persistence'
-import { Component } from '@virid/core'
+import { RecoverPlaybackMessage } from '@main/database'
+import { Component, ViridApp } from '@virid/core'
 import { type Tray, type BrowserWindow } from 'electron'
 
 @Component()
@@ -17,4 +17,8 @@ export class WindowComponent {
   ])
   public windows: Map<string, BrowserWindow> = new Map()
   public tray!: Tray
+}
+
+export function bindWindowComponents(app: ViridApp) {
+  app.bind(WindowComponent)
 }

@@ -81,9 +81,7 @@ export class PlaylistPageController {
   /**
    * * 改变页面的时候获取新的数据
    */
-  @Listener({
-    messageClass: PlaylistPageChangeMessage
-  })
+  @Listener()
   public onPageChange(message: PlaylistPageChangeMessage) {
     this.pageIndex = message.pageIndex
     this.getPlaylistSongs()

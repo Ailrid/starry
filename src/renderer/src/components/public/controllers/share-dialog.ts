@@ -43,9 +43,7 @@ export class ShareDialogController {
   @Responsive()
   public songColor: string = ''
 
-  @Listener({
-    messageClass: MainPlaySongMessage
-  })
+  @Listener()
   async mainPlaySongMessage(message: MainPlaySongMessage) {
     const res = await songDetail({ ids: [Number(message.id)] })
     match(res)
@@ -65,9 +63,7 @@ export class ShareDialogController {
       })
   }
 
-  @Listener({
-    messageClass: MainPlayPlaylistMessage
-  })
+  @Listener()
   async mainPlayPlaylistMessage(message: MainPlayPlaylistMessage) {
     const res = await playlistDetail({ id: Number(message.id) })
     match(res)

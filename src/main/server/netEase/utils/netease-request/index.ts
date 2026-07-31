@@ -30,53 +30,67 @@ export async function createRequest<T extends CryptoMode>(
   else if (cryptoMode == CryptoMode.api)
     requestConfig = generateApiConfig(url, data, headers, cookies)
   else throw new Error('[NetEase Cloud Request] Invalid crypto mode')
-  // 发送请求
-  const response = await fetch(requestConfig.url, {
-    method: 'POST',
-    headers: requestConfig.headers as any,
-    body: requestConfig.body
-  })
+  const controller = new AbortController()
 
-  // 拿到原始数据，eapi 接口返回的是二进制 buffer
-  const buffer = await response.arrayBuffer()
-  const uint8Array = new Uint8Array(buffer)
+  // 10秒后自动取消请求
+  const timeoutId = setTimeout(() => {
+    controller.abort(new Error('Request Timeout after 10000ms'))
+  }, 10000)
 
-  let neteaseData: any
+  try {
+    // 发送请求
+    const response = await fetch(requestConfig.url, {
+      method: 'POST',
+      headers: requestConfig.headers as any,
+      body: requestConfig.body,
+      signal: controller.signal
+    })
+    clearTimeout(timeoutId)
 
-  // 响应解密
-  if (cryptoMode === CryptoMode.eapi && (options as any).e_r !== false) {
-    // eapi 结果通常需要 hex 转码后送入解密函数
-    const hexData = Buffer.from(uint8Array).toString('hex').toUpperCase()
-    neteaseData = eapiResDecrypt(hexData)
-  } else {
-    // 其他模式直接解析 JSON
-    const text = new TextDecoder().decode(uint8Array)
-    try {
-      neteaseData = JSON.parse(text)
-    } catch {
-      neteaseData = text
+    // 拿到原始数据，eapi 接口返回的是二进制 buffer
+    const buffer = await response.arrayBuffer()
+    const uint8Array = new Uint8Array(buffer)
+
+    let neteaseData: any
+
+    // 响应解密
+    if (cryptoMode === CryptoMode.eapi && (options as any).e_r !== false) {
+      // eapi 结果通常需要 hex 转码后送入解密函数
+      const hexData = Buffer.from(uint8Array).toString('hex').toUpperCase()
+      neteaseData = eapiResDecrypt(hexData)
+    } else {
+      // 其他模式直接解析 JSON
+      const text = new TextDecoder().decode(uint8Array)
+      try {
+        neteaseData = JSON.parse(text)
+      } catch {
+        neteaseData = text
+      }
     }
-  }
 
-  // 状态码规范化 (洗白网易云的奇葩状态码)
-  // 对应原版 [201, 302, 400...] 变 200 的逻辑
-  let status = neteaseData?.code ? Number(neteaseData.code) : response.status
-  if ([201, 302, 400, 502, 800, 801, 802, 803].includes(status)) {
-    status = 200
-  }
-  const headerRecord: Record<string, string | string[]> = {}
-  response.headers.forEach((value, key) => {
-    headerRecord[key] = value
-  })
-  return {
-    status,
-    data: neteaseData,
-    cookies: sanitizeCookies(response.headers.get('set-cookie') || ''),
-    headers: headerRecord
-  } as {
-    status: number
-    data: any
-    cookies: string[] // 这里你之前打成了 sting，纠正为 string
-    headers: Record<string, string | string[]>
+    // 状态码规范化 (洗白网易云的奇葩状态码)
+    // 对应原版 [201, 302, 400...] 变 200 的逻辑
+    let status = neteaseData?.code ? Number(neteaseData.code) : response.status
+    if ([201, 302, 400, 502, 800, 801, 802, 803].includes(status)) {
+      status = 200
+    }
+    const headerRecord: Record<string, string | string[]> = {}
+    response.headers.forEach((value, key) => {
+      headerRecord[key] = value
+    })
+    return {
+      status,
+      data: neteaseData,
+      cookies: sanitizeCookies(response.headers.get('set-cookie') || ''),
+      headers: headerRecord
+    } as {
+      status: number
+      data: any
+      cookies: string[]
+      headers: Record<string, string | string[]>
+    }
+  } catch (error: any) {
+    clearTimeout(timeoutId)
+    throw error
   }
 }

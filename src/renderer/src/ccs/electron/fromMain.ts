@@ -1,6 +1,7 @@
 import { FromMain, ToMainMessage, FromMainMessage } from '@virid/renderer'
 import { fetchCookies, type PlaylistDetail, type SongDetail } from '@/utils'
-import { Message, MessageWriter, System } from '@virid/core'
+import { MessageWriter, System, ViridApp } from '@virid/core'
+import { RendererPlugin } from '@virid/renderer'
 import {
   PlaylistComponent,
   PlaySongMessage,
@@ -13,9 +14,7 @@ import {
 import { CloseWindowMessage } from './toMain'
 import { match } from 'ts-pattern'
 import { FetchUserAccountMessage } from '../user'
-/**
- * * 主进程发起，恢复上次的歌单和歌曲
- */
+
 @FromMain('recover-playback')
 export class RecoverPlaybackMessage extends FromMainMessage {
   constructor(
@@ -27,14 +26,23 @@ export class RecoverPlaybackMessage extends FromMainMessage {
   }
 }
 
-/**
- * * 主进程发起或者自身发起，备份播放列表并关闭窗口
- */
 @FromMain('backup-playback')
 export class BackupPlaybackMessage extends FromMainMessage {}
 
+@FromMain('play-or-pause')
+export class _PlayOrPauseMessage extends FromMainMessage {}
+
+@FromMain('next-song')
+export class _NextSongMessage extends FromMainMessage {}
+
+@FromMain('previous-song')
+export class _PreviousSongMessage extends FromMainMessage {}
+
+@FromMain('netease-login-success')
+export class NeteaseLoginSuccessMessage extends FromMainMessage {}
+
 export class _BackupPlaybackMessage extends ToMainMessage {
-  __virid_messageType: string = 'backup-playback'
+  __virid_message_type: string = 'backup-playback'
   __virid_target: string = 'main'
   constructor(
     public playlistDetail: PlaylistDetail,
@@ -52,7 +60,7 @@ export class PlaybackRecoverAndBackupSystem {
   @System({
     priority: 1000
   })
-  static async recover(@Message(RecoverPlaybackMessage) message: RecoverPlaybackMessage) {
+  static async recover(message: RecoverPlaybackMessage) {
     const { playlistDetail, playlistSongs, currentSong } = message
     SetPlaylistMessage.send(playlistSongs, playlistDetail)
     PlaySongMessage.send(currentSong, false)
@@ -75,23 +83,6 @@ export class PlaybackRecoverAndBackupSystem {
 }
 
 /**
- * * 上一首
- */
-@FromMain('play-or-pause')
-export class _PlayOrPauseMessage extends FromMainMessage {}
-
-/**
- * * 下一首
- */
-@FromMain('next-song')
-export class _NextSongMessage extends FromMainMessage {}
-
-/**
- * * 暂停与播放
- */
-@FromMain('previous-song')
-export class _PreviousSongMessage extends FromMainMessage {}
-/**
  * * 主进程托盘播放控制转发
  */
 export class SongControlSystem {
@@ -113,11 +104,6 @@ export class SongControlSystem {
   }
 }
 
-/**
- * * 登陆成功，刷新账户信息
- */
-@FromMain('netease-login-success')
-export class NeteaseLoginSuccessMessage extends FromMainMessage {}
 export class NeteaseLoginSystem {
   @System({
     messageClass: NeteaseLoginSuccessMessage
@@ -135,4 +121,20 @@ export class NeteaseLoginSystem {
       })
       .exhaustive()
   }
+}
+
+export function registerFromMainSystems(app: ViridApp, plugin: RendererPlugin) {
+  plugin.bindRoute(RecoverPlaybackMessage)
+  plugin.bindRoute(BackupPlaybackMessage)
+  plugin.bindRoute(_PlayOrPauseMessage)
+  plugin.bindRoute(_NextSongMessage)
+  plugin.bindRoute(_PreviousSongMessage)
+  plugin.bindRoute(NeteaseLoginSuccessMessage)
+
+  app.register(PlaybackRecoverAndBackupSystem.recover)
+  app.register(PlaybackRecoverAndBackupSystem.backup)
+  app.register(SongControlSystem.playOrPause)
+  app.register(SongControlSystem.next)
+  app.register(SongControlSystem.previous)
+  app.register(NeteaseLoginSystem.loginSuccess)
 }

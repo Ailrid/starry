@@ -7,7 +7,7 @@
           <Button
             @click="toggle"
             variant="none"
-            @wheel.passive="TitleBarLeftControllerMessage.send($event)"
+            @wheel.passive="tct.onWheel($event)"
             class="hover:text-primary"
           >
             <div class="flex items-center justify-center gap-1">
@@ -85,7 +85,7 @@ import LoginDialog from '@/components/login/LoginDialog.vue'
 import { Settings, ChevronDown, ChevronUp, ListMusic, Disc, Heart, MapPin } from 'lucide-vue-next'
 import DropdownMenu from '@/components/ui/DropdownMenu.vue'
 import { useController } from '@virid/vue'
-import { TitleBarLeftController, TitleBarLeftControllerMessage } from '../controllers'
+import { TitleBarLeftController } from '../controllers'
 import { MoveToCurrentSongMessage } from '@/components/sidebar/controllers'
 import Button from '@/components/ui/Button.vue'
 const tct = useController(TitleBarLeftController, {

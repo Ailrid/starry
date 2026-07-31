@@ -21,7 +21,7 @@ export class HomepageSystem {
       headers
     })
     const res = answer.data as RawHomepageResponse
-
+    
     if (!res.data?.blocks) return InternalServerError('Failed to fetch homepage data')
 
     const playlist = res.data.blocks.find(
@@ -160,7 +160,7 @@ function convertToHomepagePlaylist(resource: PlaylistResource | RadarResource): 
         return {
           id: Number(res.resourceId),
           title: ui.mainTitle.title,
-          subTitle: ui.subTitle?.title ||'',
+          subTitle: ui.subTitle?.title || '',
           cover: ui.image.imageUrl,
           labels: ui.labelTexts || []
         }

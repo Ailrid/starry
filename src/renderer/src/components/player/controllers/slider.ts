@@ -84,9 +84,7 @@ export class SliderController {
   /**
    * * 计算seek的时间位置
    */
-  @Listener({
-    messageClass: SliderControllerMessage
-  })
+  @Listener()
   public onSliderChange(message: SliderControllerMessage) {
     if (!this.container.value || !this.player.duration) return
 

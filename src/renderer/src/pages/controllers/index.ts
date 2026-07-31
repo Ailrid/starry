@@ -7,13 +7,13 @@ import { RecommendedPageController } from './recommended'
 import { AlbumPageController } from './album'
 import { ArtistPageController } from './artist'
 export function bindPageControllers(app: ViridApp) {
-  app.bindController(UserPlaylistPageController)
-  app.bindController(PlayerPageController)
-  app.bindController(HomePageController)
-  app.bindController(PlaylistPageController)
-  app.bindController(RecommendedPageController)
-  app.bindController(AlbumPageController)
-  app.bindController(ArtistPageController)
+  app.bind(UserPlaylistPageController)
+  app.bind(PlayerPageController)
+  app.bind(HomePageController)
+  app.bind(PlaylistPageController)
+  app.bind(RecommendedPageController)
+  app.bind(AlbumPageController)
+  app.bind(ArtistPageController)
 }
 
 export * from './user-playlist'

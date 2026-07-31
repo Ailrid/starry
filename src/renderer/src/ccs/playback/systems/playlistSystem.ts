@@ -1,4 +1,4 @@
-import { System, Message, MessageWriter } from '@virid/core'
+import { System, MessageWriter } from '@virid/core'
 import {
   PlaySongMessage,
   SetPlaylistMessage,
@@ -18,7 +18,7 @@ export class PlaylistSystem {
    */
   @System()
   static async loadFmPlaylist(
-    @Message(LoadFMPlaylistMessage) message: LoadFMPlaylistMessage,
+    message: LoadFMPlaylistMessage,
     playlistComponent: PlaylistComponent
   ) {
     // 如果不为空，先不加载
@@ -56,7 +56,7 @@ export class PlaylistSystem {
    */
   @System()
   static async loadIntelligencePlaylist(
-    @Message(LoadIntelligencePlaylistMessage) message: LoadIntelligencePlaylistMessage,
+    message: LoadIntelligencePlaylistMessage,
     playlistComponent: PlaylistComponent,
     userComponent: UserComponent
   ) {
@@ -109,7 +109,7 @@ export class PlaylistSystem {
    */
   @System()
   static setPlaylist(
-    @Message(SetPlaylistMessage) message: SetPlaylistMessage,
+    message: SetPlaylistMessage,
     playlistComponent: PlaylistComponent,
     playerComponent: PlayerComponent
   ) {
@@ -149,10 +149,17 @@ export class PlaylistSystem {
         if (!newState)
           DeleteSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong!.id)
         else AddSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong)
-
       })
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(new Error(val), '[PlayerSystem] Failed to like song.')
       })
   }
+}
+
+import { type ViridApp } from '@virid/core'
+export function registerPlaylistSystems(app: ViridApp) {
+  app.register(PlaylistSystem.loadFmPlaylist)
+  app.register(PlaylistSystem.loadIntelligencePlaylist)
+  app.register(PlaylistSystem.setPlaylist)
+  app.register(PlaylistSystem.likeCurrentSong)
 }

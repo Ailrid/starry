@@ -1,6 +1,7 @@
 import { Responsive, Env, Use } from '@virid/vue'
 import { BaseMessage, Controller, type Newable, MessageWriter } from '@virid/core'
 import { useTemplateRef, type ShallowRef } from 'vue'
+
 @Controller()
 export class ScrubberController {
   @Env()
@@ -13,6 +14,7 @@ export class ScrubberController {
   @Responsive()
   public isDragging: boolean = false
   public rafId: number | null = null
+
   @Use(() => useTemplateRef('scrubber'))
   public scrubberRef!: ShallowRef<HTMLDivElement | null>
 
@@ -47,6 +49,7 @@ export class ScrubberController {
       transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
     }
   }
+
   updateValue(clientY: number) {
     if (!this.scrubberRef.value) return
 

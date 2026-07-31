@@ -1,8 +1,6 @@
 import { EventMessage } from '@virid/core'
-import { FromRenderer, FromRendererMessage } from '@virid/main'
-export class BootStrapElectronMessage extends EventMessage {}
-
-export class InitVireoMessage extends EventMessage {
+import { FromRenderer, FromRendererMessage, MainPlugin } from '@virid/main'
+export class BootStrapElectronMessage extends EventMessage {
   constructor(public port: number) {
     super()
   }
@@ -32,4 +30,9 @@ export class RendererInfoMessage extends FromRendererMessage {
   constructor(public context: string) {
     super()
   }
+}
+export function bindElectronMessages(plugin: MainPlugin) {
+  plugin.bindRoute(RendererErrorMessage)
+  plugin.bindRoute(RendererWarnMessage)
+  plugin.bindRoute(RendererInfoMessage)
 }

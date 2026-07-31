@@ -98,3 +98,9 @@ export class InitSystem {
     }
   }
 }
+import { type ViridApp } from '@virid/core'
+export function registerInitSystems(app: ViridApp) {
+  app.register(InitSystem.initSetting)
+  app.register(InitSystem.initPlayer)
+  app.register(InitSystem.initMediaSession)
+}

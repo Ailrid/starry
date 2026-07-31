@@ -10,26 +10,26 @@ import {
   ShowWindowMessage,
   HiddenWindowMessage
 } from './message'
-import { System, Message } from '@virid/core'
+import { System, ViridApp } from '@virid/core'
 import { WindowComponent } from './component'
 /**
  * * 与窗口相关的一些事情
  */
 export class WindowControllerSystem {
   @System()
-  static closeWindow(@Message(CloseWindowMessage) message: CloseWindowMessage) {
+  static closeWindow(message: CloseWindowMessage) {
     message.senderWindow.close()
   }
   @System()
-  static hiddenWindow(@Message(HiddenWindowMessage) message: HiddenWindowMessage) {
+  static hiddenWindow(message: HiddenWindowMessage) {
     message.senderWindow.hide()
   }
   @System()
-  static minimizeWindow(@Message(MinimizeWindowMessage) message: MinimizeWindowMessage) {
+  static minimizeWindow(message: MinimizeWindowMessage) {
     message.senderWindow.minimize()
   }
   @System()
-  static maximizeWindow(@Message(MaximizeWindowMessage) message: MaximizeWindowMessage) {
+  static maximizeWindow(message: MaximizeWindowMessage) {
     if (message.senderWindow.isMaximized()) {
       message.senderWindow.unmaximize()
     } else {
@@ -38,16 +38,13 @@ export class WindowControllerSystem {
   }
 
   @System()
-  static showWindow(
-    @Message(ShowWindowMessage) message: ShowWindowMessage,
-    windowComponent: WindowComponent
-  ) {
+  static showWindow(message: ShowWindowMessage, windowComponent: WindowComponent) {
     if (!windowComponent.windows.has(message.windowName)) return
     windowComponent.windows.get(message.windowName)!.show()
   }
 
   @System()
-  static async openDialog(@Message(OpenDialogMessage) message: OpenDialogMessage) {
+  static async openDialog(message: OpenDialogMessage) {
     // 调用原生对话框
     const result = await dialog.showOpenDialog(message.senderWindow, message.options)
     // 如果用户没有取消，并且确实选择了文件
@@ -64,10 +61,7 @@ export class WindowCommandSystem {
    * * 当窗口准备好时执行对应的所有命令
    */
   @System()
-  static windowReady(
-    @Message(ExecuteCommandQueueMessage) message: ExecuteCommandQueueMessage,
-    windowComponent: WindowComponent
-  ) {
+  static windowReady(message: ExecuteCommandQueueMessage, windowComponent: WindowComponent) {
     // 执行所有暂存的命令
     const window = windowComponent.windows.get(message.window)
     if (!window) return
@@ -78,10 +72,7 @@ export class WindowCommandSystem {
    * * 缓存所有窗口的命令
    */
   @System()
-  static setWindowCommand(
-    @Message(SetCommandQueueMessage) message: SetCommandQueueMessage,
-    windowComponent: WindowComponent
-  ) {
+  static setWindowCommand(message: SetCommandQueueMessage, windowComponent: WindowComponent) {
     if (
       windowComponent.windows.has(message.window) &&
       windowComponent.windows.get(message.window)!.isVisible()
@@ -94,4 +85,15 @@ export class WindowCommandSystem {
     windowComponent.commandQueue.set(message.window, queue)
     // 如果窗口已经准备好了，直接发射
   }
+}
+export function registerWindowSystems(app: ViridApp) {
+  app.register(WindowControllerSystem.closeWindow)
+  app.register(WindowControllerSystem.hiddenWindow)
+  app.register(WindowControllerSystem.minimizeWindow)
+  app.register(WindowControllerSystem.maximizeWindow)
+  app.register(WindowControllerSystem.showWindow)
+  app.register(WindowControllerSystem.openDialog)
+
+  app.register(WindowCommandSystem.windowReady)
+  app.register(WindowCommandSystem.setWindowCommand)
 }

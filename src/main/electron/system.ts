@@ -1,9 +1,15 @@
 import fs from 'fs'
 import path from 'path'
-import { System, MessageWriter, Message, ErrorMessage, WarnMessage, InfoMessage } from '@virid/core'
+import {
+  System,
+  MessageWriter,
+  ErrorMessage,
+  WarnMessage,
+  InfoMessage,
+  ViridApp
+} from '@virid/core'
 import {
   BootStrapElectronMessage,
-  InitVireoMessage,
   RegisterProtocolMessage,
   RendererErrorMessage,
   RendererInfoMessage,
@@ -11,16 +17,14 @@ import {
 } from './message'
 import { app, net, BrowserWindow, protocol } from 'electron'
 import { pathToFileURL } from 'url'
-import { normalize, isAbsolute, join } from 'path'
+import { normalize, isAbsolute } from 'path'
 import {
   CreateLoginWindowMessage,
   CreateMainWindowMessage,
   ShareMusicCommandMessage
 } from '@main/windows'
-import { DatabaseComponent, InitDatabaseMessage } from '@main/persistence'
-import { InitServerMessage } from '@main/server'
+import { DatabaseComponent } from '@main/database'
 import { ElectronComponent } from './component'
-import { executeGroup, nextTick } from '@virid/std'
 
 const isMac = process.platform === 'darwin'
 const isWin = process.platform === 'win32'
@@ -40,44 +44,6 @@ protocol.registerSchemesAsPrivileged([
     }
   }
 ])
-
-/**
- * * 应用初始化
- */
-export class InitVireoSystem {
-  @System()
-  static async initVireo(
-    @Message(InitVireoMessage) message: InitVireoMessage,
-    electronComponent: ElectronComponent
-  ) {
-    electronComponent.port = message.port
-    // 获得文件夹路径
-    const userDataPath = app.getPath('userData')
-    const dbPath = join(userDataPath, 'music.db')
-    const cacheFilesPath = join(userDataPath, 'cache_files')
-    // 触发初始化流程，连续执行四条消息
-    const res = await executeGroup([
-      new InitDatabaseMessage(dbPath, cacheFilesPath),
-      new InitServerMessage(message.port),
-      new RegisterProtocolMessage(),
-      new BootStrapElectronMessage()
-    ])
-    if (res) {
-      MessageWriter.info(
-        '[InitVireoSystem] App Initialization Successful: All initialization work has been completed.'
-      )
-    } else {
-      MessageWriter.error(
-        new Error(
-          `[InitVireoSystem] App Initialization Failed: Due to an error during the process, initialization has stopped and the app has exited`
-        )
-      )
-      nextTick(() => {
-        app.quit()
-      })
-    }
-  }
-}
 
 export class InitElectronSystem {
   /**
@@ -155,10 +121,13 @@ export class InitElectronSystem {
    *
    * 初始化electronApp
    */
-  @System({
-    messageClass: BootStrapElectronMessage
-  })
-  static async initApp(dbComponent: DatabaseComponent) {
+  @System()
+  static async initApp(
+    message: BootStrapElectronMessage,
+    dbComponent: DatabaseComponent,
+    electronComponent: ElectronComponent
+  ) {
+    electronComponent.port = message.port
     await app.whenReady()
     //配置设置
     this.platformConfig()
@@ -207,7 +176,7 @@ export class LogSystem {
   }
 
   @System()
-  static error(@Message(ErrorMessage) message: ErrorMessage) {
+  static error(message: ErrorMessage) {
     this.write('MAIN ERROR', message.context || '', {
       message: message.error.message,
       stack: message.error.stack
@@ -215,29 +184,41 @@ export class LogSystem {
   }
 
   @System()
-  static warn(@Message(WarnMessage) message: WarnMessage) {
+  static warn(message: WarnMessage) {
     this.write('MAIN WARN', message.context)
   }
 
   @System()
-  static info(@Message(InfoMessage) message: InfoMessage) {
+  static info(message: InfoMessage) {
     this.write('MAIN INFO', message.context)
   }
 
   @System()
-  static rendererError(@Message(RendererErrorMessage) message: RendererErrorMessage) {
+  static rendererError(message: RendererErrorMessage) {
     this.write(`${message.__virid_source.toLocaleUpperCase()} ERROR`, message.context || '', {
       message: message.message
     })
   }
 
   @System()
-  static rendererWarn(@Message(RendererWarnMessage) message: RendererWarnMessage) {
+  static rendererWarn(message: RendererWarnMessage) {
     this.write(`${message.__virid_source.toLocaleUpperCase()} WARN`, message.context)
   }
 
   @System()
-  static rendererInfo(@Message(RendererInfoMessage) message: RendererInfoMessage) {
+  static rendererInfo(message: RendererInfoMessage) {
     this.write(`${message.__virid_source.toLocaleUpperCase()} INFO`, message.context)
   }
+}
+
+export function registerElectronSystems(app: ViridApp) {
+  // 日志
+  app.register(LogSystem.error)
+  app.register(LogSystem.warn)
+  app.register(LogSystem.info)
+  app.register(LogSystem.rendererError)
+  app.register(LogSystem.rendererWarn)
+  app.register(LogSystem.rendererInfo)
+  app.register(InitElectronSystem.protocols)
+  app.register(InitElectronSystem.initApp)
 }

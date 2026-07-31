@@ -4,9 +4,9 @@ import { ScrubberController } from './scrubber'
 import { ShareDialogController } from './share-dialog'
 
 export function bindPublicControllers(app: ViridApp) {
-  app.bindController(VirtualListController)
-  app.bindController(ScrubberController)
-  app.bindController(ShareDialogController)
+  app.bind(VirtualListController)
+  app.bind(ScrubberController)
+  app.bind(ShareDialogController)
 }
 export * from './virtual-list'
 export * from './scrubber'

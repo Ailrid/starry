@@ -2,8 +2,8 @@ import { type ViridApp } from '@virid/core'
 import { LayoutController } from './layout'
 import { TitleBarLeftController } from './title-bar-left'
 export function bindLayoutControllers(app: ViridApp) {
-  app.bindController(LayoutController)
-  app.bindController(TitleBarLeftController)
+  app.bind(LayoutController)
+  app.bind(TitleBarLeftController)
 }
 
 export * from './layout'

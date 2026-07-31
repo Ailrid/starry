@@ -6,7 +6,10 @@ export class MediaSessionSystem {
   @System({
     messageClass: MediaSessionMessage
   })
-  static async changeSongMetadata(lyricComponent: LyricComponent, playlistComponent: PlaylistComponent) {
+  static async changeSongMetadata(
+    lyricComponent: LyricComponent,
+    playlistComponent: PlaylistComponent
+  ) {
     const currentSong = playlistComponent.currentSong
 
     if (!currentSong) return
@@ -30,4 +33,9 @@ export class MediaSessionSystem {
       position: 0
     })
   }
+}
+
+import { type ViridApp } from '@virid/core'
+export function registerMediaSessionSystems(app: ViridApp) {
+  app.register(MediaSessionSystem.changeSongMetadata)
 }

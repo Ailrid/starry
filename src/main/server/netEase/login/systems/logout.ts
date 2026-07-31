@@ -2,7 +2,7 @@
 // import { Cookies, Headers, HttpSystem, Ok } from '@virid/express'
 import { HttpSystem, Ok } from '@virid/express'
 import { LogoutRequestMessage } from '../message'
-import { DatabaseComponent } from '@main/persistence'
+import { DatabaseComponent } from '@main/database'
 import { CreateLoginWindowMessage } from '@main/windows'
 
 export class LogoutSystem {

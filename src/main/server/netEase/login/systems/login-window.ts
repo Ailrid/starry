@@ -5,14 +5,14 @@ import {
   FetchCookiesRequestMessage
 } from '../message'
 import { BrowserWindow } from 'electron'
-import { Message, SingleMessage, System } from '@virid/core'
+import { SingleMessage, System } from '@virid/core'
 import { type OpenLoginWindowResponse, type CloseLoginWindowResponse } from '../types'
 import { ToRendererMessage } from '@virid/main'
-import { DatabaseComponent } from '@main/persistence'
+import { DatabaseComponent } from '@main/database'
 
 //发送登陆完成消息
 class NeteaseWindowMessage extends ToRendererMessage {
-  __virid_messageType: string = 'login-netease-window'
+  __virid_message_type: string = 'login-netease-window'
   __virid_target: string = 'login'
 }
 
@@ -81,9 +81,7 @@ export class LoginCellphoneSystem {
    * * 抠出结果，关闭窗口，并 Set-Cookie
    */
   @HttpSystem()
-  public static async close(
-    @Message(CloseLoginWindowRequestMessage) _message: CloseLoginWindowRequestMessage
-  ) {
+  public static async close(_message: CloseLoginWindowRequestMessage) {
     if (!this.loginWindow || this.loginWindow.isDestroyed()) {
       LoginWindowMessage.send()
       //直接转发
@@ -142,7 +140,7 @@ export class LoginCellphoneSystem {
    */
   @HttpSystem()
   public static async cookies(
-    @Message(FetchCookiesRequestMessage) _message: FetchCookiesRequestMessage,
+    _message: FetchCookiesRequestMessage,
     dbComponent: DatabaseComponent
   ) {
     const cookiesStr = dbComponent.db.getCookies()
