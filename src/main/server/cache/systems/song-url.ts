@@ -69,7 +69,7 @@ export class CacheSongUrlSystem {
 
     const rawResponse: RawSongUrlResponse = answer.data
     //记录一下这个url
-    CacheSongUrlSystem.urlMap.set(Number(id), rawResponse.data[0])
+    CacheSongUrlSystem.urlMap.set(id.toString(), rawResponse.data[0])
     //根据网易云的返回数据进行转换
     const response: SongUrlResponse = {
       data: {
@@ -88,7 +88,7 @@ export class CacheSongUrlSystem {
 
   @HttpSystem()
   public static async songUrlFromLocal(
-     _message: UrlFromLocalMessage,
+    _message: UrlFromLocalMessage,
     _dbComponent: DatabaseComponent
   ) {
     // const id = message.songId

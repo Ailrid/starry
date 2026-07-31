@@ -54,7 +54,7 @@ export class Player {
       this.duration = this.audio.duration
     })
     // 出错的时候重新发起请求
-    const MAX_RETRIES = 3
+    const MAX_RETRIES = 1
     this.audio.addEventListener('error', () => {
       const errorCode = this.audio.error?.code
       const currentTime = this.audio.currentTime
@@ -87,7 +87,7 @@ export class Player {
           new Error(`[Player] All retries have failed, skipping the current song`)
         )
         this.retryCount = 0 // 切换前重置计数器
-        NextSongMessage.send()
+        // NextSongMessage.send()
       }
     })
     // this.audio.addEventListener('progress', () => {

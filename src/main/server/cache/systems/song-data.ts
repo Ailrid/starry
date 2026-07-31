@@ -62,8 +62,9 @@ export class CacheSongDataSystem {
     const requestId = message.requestId
     if (source == 'local') return new DataFromLocalMessage(requestId, id)
     // 没有缓存，开始边传输边下载
-    const realUrl = CacheSongUrlSystem.urlMap.get(id)?.url
-    if (!realUrl) return InternalServerError('URL Expired')
+    const realUrl = CacheSongUrlSystem.urlMap.get(id.toString())?.url
+
+    if (!realUrl) return InternalServerError('Cannot get song url')
     // if (CacheSongUrlSystem.urlMap.size > 100) {
     //   CacheSongUrlSystem.urlMap.clear()
     // }
