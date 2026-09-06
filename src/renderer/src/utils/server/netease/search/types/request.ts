@@ -3,7 +3,7 @@
  */
 export interface SearchSuggestRequest {
   keywords: string
-  type: 'mobile' | null
+  type: 'mobile' | 'web'
 }
 
 /**

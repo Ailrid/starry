@@ -6,7 +6,7 @@ import { HttpRoute, HttpRequestMessage } from '@virid/express'
 export class SearchRequestMessage extends HttpRequestMessage {}
 
 @HttpRoute({
-  path: '/netease/search/suggests',
+  path: '/netease/search/suggest',
   method: 'post'
 })
 export class SearchSuggestRequestMessage extends HttpRequestMessage {}
