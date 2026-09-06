@@ -54,7 +54,7 @@ export interface SearchResponse<T> {
 export interface SearchResultMap {
   [SearchType.Song]: SearchResponse<SongDetail>
   [SearchType.Album]: SearchResponse<AlbumInfo>
-  [SearchType.Singer]: SearchResponse<ArtistInfo>
+  [SearchType.Artist]: SearchResponse<ArtistInfo>
   [SearchType.Playlist]: SearchResponse<PlaylistInfo>
   [SearchType.User]: SearchResponse<UserInfo>
   [SearchType.Mv]: SearchResponse<MvInfo>

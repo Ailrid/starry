@@ -7,7 +7,7 @@ import {
   type PlaylistInfo,
   getSongDetail
 } from '../../utils'
-import { Body, Cookies, Headers, HttpSystem, Ok } from '@virid/express'
+import { Body, Cookies, Headers, HttpSystem, InternalServerError, Ok } from '@virid/express'
 import { SearchRequestMessage } from '../message'
 import {
   SearchType,
@@ -26,7 +26,7 @@ export class SearchSystem {
     @Cookies() cookies: Record<string, string>,
     @Headers() headers: Record<string, string>
   ) {
-    const { keywords, type, limit = 30, offset = 0 } = body
+    const { keywords, type, limit = 100, offset = 0 } = body
 
     // 发起原始搜索请求
     const answer = await createRequest(CryptoMode.eapi, {
@@ -36,9 +36,10 @@ export class SearchSystem {
       headers
     })
 
-    const result = answer.data?.result || {}
+    const result = answer.data?.result
+    if (!result)
+      return InternalServerError(`Netease api doesn't return any data. data is: ${answer.data}`)
 
-    // 分拣中心：根据 type 进行不同路径的“脱水”
     switch (type) {
       // ================= 单曲搜索 (包含 ID 补全逻辑) =================
       case SearchType.Song:

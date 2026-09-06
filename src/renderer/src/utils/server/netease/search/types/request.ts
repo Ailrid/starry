@@ -12,7 +12,7 @@ export interface SearchSuggestRequest {
 export enum SearchType {
   Song = 1,
   Album = 10,
-  Singer = 100,
+  Artist = 100,
   Playlist = 1000,
   User = 1002,
   Mv = 1004,

@@ -30,6 +30,7 @@
           @focus="tct.isSearchFocused = true"
           @blur="hiddenSuggest"
           class="placeholder:text-foreground/50 text-foreground selection:bg-primary/20 selection:text-foreground w-full bg-transparent px-2 text-sm outline-none"
+          @keydown.enter="$router.push({ name: 'search', params: { keywords: tct.searchText } })"
         />
 
         <button

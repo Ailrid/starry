@@ -4,17 +4,17 @@
     class="bg-card z-50 flex h-20 w-full items-center backdrop-blur-xl"
     @dblclick.stop="PlayerControllerMessage.send($event, false)"
   >
-    <SongCard class="h-20 w-64" />
+    <PlayerCard class="h-20 w-64" />
     <div class="flex-1" @dblclick.stop="PlayerControllerMessage.send($event, true)"></div>
     <Slider class="h-8" />
     <div class="flex-1" @dblclick.stop="PlayerControllerMessage.send($event, true)"></div>
-    <Volume />
+    <PlayerButton />
   </div>
 </template>
 <script lang="ts" setup>
-import SongCard from './PlayerCard.vue'
+import PlayerCard from './PlayerCard.vue'
 import Slider from './Slider.vue'
-import Volume from './PlayerButton.vue'
+import PlayerButton from './PlayerButton.vue'
 import { useController } from '@virid/vue'
 import { PlayerBarController, PlayerControllerMessage } from './controllers'
 useController(PlayerBarController)

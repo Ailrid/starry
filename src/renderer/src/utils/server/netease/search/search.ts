@@ -22,5 +22,5 @@ export async function searchSuggest(
 export async function search<T extends SearchType>(
   params: SearchRequest<T>
 ): Promise<Result<SearchResultMap[T], string>> {
-  return await request<SearchRequest<T>, SearchResultMap[T]>('/netease/search', params)
+  return await request<SearchRequest<T>, SearchResultMap[T]>('/netease/search/detail', params)
 }
